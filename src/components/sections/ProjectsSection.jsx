@@ -17,7 +17,6 @@ function ProjectsSection({ onOpenProject }) {
         variants={staggerParent}
       >
         {projects.map((project) => {
-          const Icon = project.icon;
           return (
             <motion.article
               key={project.slug}
@@ -27,33 +26,27 @@ function ProjectsSection({ onOpenProject }) {
               <div className="project-media">
                 <div className="project-media-copy">
                   <span className="pill">{project.period}</span>
-                  <div className="project-shot" aria-hidden="true">
-                    <div className="project-shot-top">
+                  <div className="project-shot">
+                    <div className="project-shot-top" aria-hidden="true">
                       <span className="project-shot-dot" />
                       <span className="project-shot-dot" />
                       <span className="project-shot-dot" />
                     </div>
                     <div className="project-shot-body">
-                      <div className="project-shot-copy">
-                        <div className="card-icon">
-                          <Icon size={20} />
-                        </div>
-                        <strong>Platform screenshot area</strong>
-                        <span>
-                          Horizontal showcase reserved for project visuals.
-                        </span>
-                      </div>
+                      <img
+                        className="project-preview-image"
+                        src={project.image}
+                        alt={`${project.title} preview`}
+                      />
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="project-title">{project.title}</h3>
-                    <p className="meta-line">{project.subtitle}</p>
                   </div>
                 </div>
               </div>
 
               <div className="project-top">
                 <div>
+                  <h3 className="project-title">{project.title}</h3>
+                  <p className="meta-line">{project.subtitle}</p>
                   <p className="meta-line">{project.organization}</p>
                   <p className="project-overview">{project.overview}</p>
                 </div>

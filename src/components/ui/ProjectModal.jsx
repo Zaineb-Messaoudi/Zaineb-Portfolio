@@ -66,20 +66,23 @@ function ProjectModal({ project, onClose }) {
               <div className="project-media">
                 <div className="project-media-copy">
                   <span className="pill">{project.period}</span>
-                  <div className="project-shot" aria-hidden="true">
-                    <div className="project-shot-top">
+                  <div className="project-shot">
+                    <div className="project-shot-top" aria-hidden="true">
                       <span className="project-shot-dot" />
                       <span className="project-shot-dot" />
                       <span className="project-shot-dot" />
                     </div>
                     <div className="project-shot-body">
-                      <div className="project-shot-copy">
-                        <strong>Platform screenshot area</strong>
-                        <span>
-                          Add a wide product capture here for the final showcase.
-                        </span>
-                      </div>
+                      <img
+                        className="project-preview-image"
+                        src={project.image}
+                        alt={`${project.title} preview`}
+                      />
                     </div>
+                  </div>
+                  <div>
+                    <h4 className="project-title">{project.title}</h4>
+                    <p className="meta-line">{project.subtitle}</p>
                   </div>
                   <p className="project-overview">{project.overview}</p>
                   <div className="badge-list">

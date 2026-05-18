@@ -265,7 +265,7 @@ export const projects = [
     period: "2025 – 2026",
     organization: "ESPRIT · BuildDream",
     icon: AudioLines,
-    image: "/assets/esprit.png",
+    image: "/assets/projects/oralis-preview.png",
     overview:
       "Architected and developed a full-stack oral assessment platform that transforms student audio and video submissions into structured speaking insights for instructors.",
     features: [
@@ -285,7 +285,7 @@ export const projects = [
     period: "2025 – 2026",
     organization: "ESPRIT · BuildDream · Machine Learning Module",
     icon: BrainCircuit,
-    image: "/assets/esprit.png",
+    image: "/assets/projects/talentlens-preview.png",
     overview:
       "Led the Career Optimisation module inside a five-person academic team and turned structured HR datasets into explainable hiring and career intelligence.",
     features: [
@@ -315,7 +315,7 @@ export const projects = [
     period: "2025 – 2026",
     organization: "ESPRIT · BuildDream",
     icon: Building2,
-    image: "/assets/BCT.png",
+    image: "/assets/projects/event-platform-preview.png",
     overview:
       "Owned the Feedback & Reclamation microservice within a six-microservice event platform, focusing on ratings, complaints, analytics, and secure access control.",
     features: [
@@ -334,7 +334,7 @@ export const projects = [
     period: "2024 – 2025",
     organization: "ESPRIT · Hextech",
     icon: MonitorSmartphone,
-    image: "/assets/esprit.png",
+    image: "/assets/projects/maternity-preview.png",
     overview:
       "Delivered three synchronized product surfaces for the same domain: web, mobile, and desktop, aligning data and experiences across platforms.",
     features: [
@@ -353,7 +353,7 @@ export const projects = [
     period: "2024 – 2025",
     organization: "Academic Project",
     icon: GraduationCap,
-    image: "/assets/esprit.png",
+    image: "/assets/projects/museum-preview.png",
     overview:
       "Created an immersive 3D learning environment focused on climate change awareness and biodiversity education.",
     features: [
