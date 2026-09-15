@@ -16,79 +16,43 @@ function ProjectsSection({ onOpenProject }) {
         viewport={{ once: true, amount: 0.08 }}
         variants={staggerParent}
       >
-        {projects.map((project) => {
-          return (
-            <motion.article
-              key={project.slug}
-              className="project-card"
-              variants={fadeUp}
-            >
-              <div className="project-media">
-                <div className="project-media-copy">
-                  <span className="pill">{project.period}</span>
-                  <div className="project-shot">
-                    <div className="project-shot-top" aria-hidden="true">
-                      <span className="project-shot-dot" />
-                      <span className="project-shot-dot" />
-                      <span className="project-shot-dot" />
-                    </div>
-                    <div className="project-shot-body">
-                      <img
-                        className="project-preview-image"
-                        src={project.image}
-                        alt={`${project.title} preview`}
-                      />
-                    </div>
+        {projects.map((project) => (
+          <motion.article key={project.slug} className="project-card" variants={fadeUp}>
+            <div className="project-media">
+              <div className="project-media-copy">
+                <span className="pill">{project.period}</span>
+                <div className="project-shot">
+                  <div className="project-shot-top" aria-hidden="true">
+                    <span className="project-shot-dot" />
+                    <span className="project-shot-dot" />
+                    <span className="project-shot-dot" />
+                  </div>
+                  <div className="project-shot-body">
+                    <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} />
                   </div>
                 </div>
               </div>
-
-              <div className="project-top">
-                <div>
-                  <h3 className="project-title">{project.title}</h3>
-                  <p className="meta-line">{project.subtitle}</p>
-                  <p className="meta-line">{project.organization}</p>
-                  <p className="project-overview">{project.overview}</p>
-                </div>
+            </div>
+            <div className="project-top">
+              <div>
+                <h3 className="project-title">{project.title}</h3>
+                <p className="meta-line">{project.subtitle}</p>
+                <p className="meta-line">{project.organization}</p>
+                <p className="project-overview">{project.overview}</p>
               </div>
-
-              <div className="badge-list">
-                {project.emphasis.map((item) => (
-                  <span key={item} className="tag">
-                    {item}
-                  </span>
-                ))}
-              </div>
-
-              <div className="stack-list">
-                {project.stack.slice(0, 5).map((tech) => (
-                  <span key={tech} className="stack-chip">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <div className="project-actions">
-                <button
-                  type="button"
-                  className="button button-secondary"
-                  onClick={() => onOpenProject(project)}
-                  aria-label={`Open detailed view for ${project.title}`}
-                >
-                  View details
-                </button>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => onOpenProject(project)}
-                >
-                  Explore architecture
-                  <ExternalLink size={16} />
-                </button>
-              </div>
-            </motion.article>
-          );
-        })}
+            </div>
+            <div className="badge-list">
+              {project.emphasis.map((item) => <span key={item} className="tag">{item}</span>)}
+            </div>
+            <div className="stack-list">
+              {project.stack.slice(0, 5).map((tech) => <span key={tech} className="stack-chip">{tech}</span>)}
+            </div>
+            <div className="project-actions">
+              <button type="button" className="button button-secondary" onClick={() => onOpenProject(project)} aria-label={`Open detailed view for ${project.title}`}>View details</button>
+              <button type="button" className="text-button" onClick={() => onOpenProject(project)}>Explore architecture <ExternalLink size={16} /></button>
+            </div>
+          </motion.article>
+        ))}
       </motion.div>
     </SectionShell>
   );

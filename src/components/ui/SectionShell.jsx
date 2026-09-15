@@ -5,7 +5,7 @@ function SectionShell({ id, eyebrow, title, description, children }) {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section id={id} className="section" aria-labelledby={`${id}-title`}>
+    <section id={id} className={`section section-${id}`} aria-labelledby={`${id}-title`}>
       <div className="container">
         <div className="section-inner">
           <motion.div
@@ -21,7 +21,15 @@ function SectionShell({ id, eyebrow, title, description, children }) {
             </h2>
             <p className="section-description">{description}</p>
           </motion.div>
-          {children}
+          <motion.div
+            className="section-content-depth"
+            initial={reduceMotion ? false : { opacity: 0, y: 46, rotateX: 9, scale: .97 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.14 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {children}
+          </motion.div>
         </div>
       </div>
     </section>
