@@ -58,7 +58,7 @@ function HeroSection() {
 
             <motion.div className="hero-actions" variants={fadeUp}>
               <a className="button button-primary" href="#projects">Explore projects <ArrowRight size={18} /></a>
-              <a className="button button-secondary" href="#contact">Start a conversation</a>
+              <a className="button button-secondary" href="#contact">Contact me</a>
               <a className="button button-ghost" href="https://jobby.tn/cv/zaineb-messaoudi-22d-182?lang=en" target="_blank" rel="noreferrer">
                 View my CV <ExternalLink size={17} />
               </a>
