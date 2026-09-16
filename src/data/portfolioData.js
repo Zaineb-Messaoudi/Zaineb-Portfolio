@@ -25,7 +25,8 @@ export const personal = {
   linkedin: "https://www.linkedin.com/in/zaineb-messaoudi-ab7b61252/",
   github: "https://github.com/Zaineb-Messaoudi",
   availability:
-    "Seeking a 6-month or longer end-of-studies / PFE internship starting in January 2027.",
+    "Seeking a 6+ months PFE internship starting from January 2027.",
+  availabilitySecondary: "And Open to Junior & Freelance Opportunities.",
   highlights: [
     "Full-stack delivery",
     "Applied AI / ML",

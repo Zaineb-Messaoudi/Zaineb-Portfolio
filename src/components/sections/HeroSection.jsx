@@ -52,7 +52,8 @@ function HeroSection() {
             </motion.div>
             <motion.p className="availability-line availability-primary" variants={fadeUp}>
               <span className="availability-label">{t("CURRENT MISSION")}</span>
-              {localizedPersonal.availability}
+              <strong>{localizedPersonal.availability}</strong>
+              <strong>{localizedPersonal.availabilitySecondary}</strong>
             </motion.p>
 
             <motion.div className="hero-tagline" variants={fadeUp}>
