@@ -8,7 +8,7 @@
   --surface-border: rgba(184, 128, 150, 0.16);
   --surface-border-strong: rgba(184, 128, 150, 0.24);
   --text: #2d1b28;
-  --muted: #876979;
+  --muted: #6e5162;
   --muted-strong: #6f4c5f;
   --accent-cyan: #f0a8c4;
   --accent-blue: #d28ad6;
@@ -197,7 +197,7 @@ button {
 .section-inner,
 .navbar,
 .footer-inner {
-  animation: livingSurface 9s ease-in-out infinite alternate;
+  transition: box-shadow .6s ease;
 }
 
 .hero-title,
@@ -266,8 +266,7 @@ button {
 .summary-item,
 .stat-card,
 .certification-item {
-  animation: cardBreath 6s ease-in-out infinite;
-  animation-delay: calc(var(--card-index, 0) * -0.32s);
+  transition: filter .3s ease;
 }
 
 .glass-card:hover,
@@ -280,73 +279,34 @@ button {
 .stat-card:hover,
 .certification-item:hover {
   z-index: 4;
-  transform: translate3d(0, -14px, 35px) rotate(-1.5deg) scale(1.025) !important;
+  transform: translateY(-6px) !important;
   border-color: var(--accent-rose);
-  box-shadow: 0 28px 55px rgba(228,122,168,.24), 0 0 0 5px rgba(228,122,168,.08);
+  box-shadow: 0 20px 40px rgba(228,122,168,.16);
 }
 
 .cards-grid .glass-card:nth-child(1):hover,
 .skill-card:nth-child(1):hover,
-.project-card:nth-child(1):hover {
-  transform: translate3d(0, -18px, 45px) rotate(-2deg) scale(1.035) !important;
-}
-
+.project-card:nth-child(1):hover,
 .cards-grid .glass-card:nth-child(2):hover,
 .skill-card:nth-child(2):hover,
-.project-card:nth-child(2):hover {
-  transform: translate3d(8px, -9px, 28px) rotate(2.5deg) scale(1.02) !important;
-}
-
+.project-card:nth-child(2):hover,
 .cards-grid .glass-card:nth-child(3):hover,
 .skill-card:nth-child(3):hover,
-.project-card:nth-child(3):hover {
-  transform: translate3d(-8px, -13px, 36px) skewY(-1deg) scale(1.03) !important;
-}
-
+.project-card:nth-child(3):hover,
 .cards-grid .glass-card:nth-child(4):hover,
 .skill-card:nth-child(4):hover,
-.project-card:nth-child(4):hover {
-  transform: translate3d(3px, -22px, 55px) rotate(1deg) scale(1.045) !important;
-}
-
-.experience-card:nth-child(1):hover {
-  transform: translate3d(16px, -12px, 35px) rotate(-1.5deg) !important;
-}
-
-.experience-card:nth-child(2):hover {
-  transform: translate3d(-12px, -18px, 48px) rotate(1.8deg) !important;
-}
-
-.experience-card:nth-child(3):hover {
-  transform: translate3d(9px, -8px, 24px) skewX(-1.5deg) !important;
-}
-
-.experience-card:nth-child(4):hover {
-  transform: translate3d(-5px, -24px, 60px) rotate(-2deg) scale(1.02) !important;
-}
-
-.contact-grid .contact-card:nth-child(1):hover {
-  transform: translate3d(-8px, -14px, 35px) rotate(-3deg) !important;
-}
-
-.contact-grid .contact-card:nth-child(2):hover {
-  transform: translate3d(8px, -10px, 26px) rotate(2deg) !important;
-}
-
-.contact-grid .contact-card:nth-child(3):hover {
-  transform: translate3d(-4px, -20px, 48px) scale(1.04) !important;
-}
-
-.contact-grid .contact-card:nth-child(4):hover {
-  transform: translate3d(7px, -7px, 20px) skewY(2deg) !important;
-}
-
-.education-card:hover {
-  transform: translate3d(0, -16px, 42px) rotateX(5deg) rotateY(-3deg) !important;
-}
-
+.project-card:nth-child(4):hover,
+.experience-card:nth-child(1):hover,
+.experience-card:nth-child(2):hover,
+.experience-card:nth-child(3):hover,
+.experience-card:nth-child(4):hover,
+.contact-grid .contact-card:nth-child(1):hover,
+.contact-grid .contact-card:nth-child(2):hover,
+.contact-grid .contact-card:nth-child(3):hover,
+.contact-grid .contact-card:nth-child(4):hover,
+.education-card:hover,
 .certification-item:hover {
-  transform: translateX(10px) rotate(-1deg) scale(1.02) !important;
+  transform: translateY(-6px) !important;
 }
 
 .project-card:nth-child(1) .project-media::before,
@@ -438,25 +398,19 @@ button {
 .summary-item:hover,
 .stat-card:hover,
 .certification-item:hover {
-  transform: translateY(-5px) scale(1.01) !important;
+  transform: translateY(-6px) !important;
   box-shadow: 0 14px 28px rgba(228,122,168,.12);
 }
 
-.summary-item,
-.stat-card,
-.certification-item {
-  animation-duration: 10s;
-}
-
 .education-card:hover {
-  transform: translateY(-7px) rotateX(1deg) !important;
+  transform: translateY(-6px) !important;
 }
 
 .contact-grid .contact-card:nth-child(1):hover,
 .contact-grid .contact-card:nth-child(2):hover,
 .contact-grid .contact-card:nth-child(3):hover,
 .contact-grid .contact-card:nth-child(4):hover {
-  transform: translateY(-7px) rotate(0deg) scale(1.01) !important;
+  transform: translateY(-6px) !important;
 }
 
 .project-media,
@@ -624,7 +578,7 @@ button {
 
 .hero-visual .profile-frame:hover {
   animation-play-state: paused;
-  transform: translateY(-10px) rotateY(-4deg) rotateX(2deg);
+  transform: translateY(-6px);
 }
 
 .project-card,
@@ -636,8 +590,8 @@ button {
 }
 
 .project-card:hover {
-  transform: translateY(-12px) rotateX(2deg) rotateY(-2deg);
-  box-shadow: 20px 28px 55px rgba(185,124,151,.2);
+  transform: translateY(-6px) !important;
+  box-shadow: 0 20px 40px rgba(228,122,168,.16);
 }
 
 @keyframes portraitFloat {
@@ -1530,10 +1484,7 @@ button {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.cards-grid .glass-card:nth-child(2) { transform: translateY(1.2rem) rotate(-1.5deg); }
-.cards-grid .glass-card:nth-child(3) { transform: translateY(-.5rem) rotate(1.2deg); }
-.cards-grid .glass-card:nth-child(4) { transform: translateY(1.7rem) rotate(-1deg); }
-.cards-grid .glass-card:hover { transform: translateY(-.45rem) rotate(0); }
+.cards-grid .glass-card:hover { transform: translateY(-6px) !important; }
 
 .glass-card,
 .skill-card,
@@ -1609,9 +1560,7 @@ button {
     rgba(255, 255, 255, 0.64);
 }
 
-.experience-card:nth-child(even) { transform: translateX(2.5rem) rotate(.7deg); }
-.experience-card:nth-child(odd) { transform: translateX(-.3rem) rotate(-.45deg); }
-.experience-card:hover { transform: translateX(0) rotate(0) translateY(-5px); }
+.experience-card:hover { transform: translateY(-6px) !important; }
 
 .experience-card::before {
   content: "";
@@ -2524,4 +2473,99 @@ html[data-theme="dark"] .studio-shell { border-color: rgba(245,183,222,.24); }
   .studio-canvas { min-height: 21rem; }
   .studio-fallback { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
   .studio-fallback button { padding: .55rem .7rem; border: 1px solid var(--surface-border); border-radius: 99px; background: var(--bg-panel); color: var(--muted-strong); font: 700 .72rem "DM Mono", monospace; }
+  .project-actions { flex-wrap: wrap; gap: .6rem; }
+}
+
+/* ---- Project links + case-study depth ---- */
+.project-links { display: flex; align-items: center; gap: .5rem; }
+.icon-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.35rem; height: 2.35rem;
+  border: 1px solid var(--surface-border); border-radius: 50%;
+  background: var(--bg-panel); color: var(--muted-strong);
+  transition: color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.icon-link:hover, .icon-link:focus-visible {
+  color: var(--text); border-color: var(--accent-rose); transform: translateY(-2px);
+}
+.decision-list { display: grid; gap: .85rem; margin-top: .75rem; }
+.decision-item {
+  padding: .95rem 1.1rem;
+  border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--accent-rose);
+  border-radius: .7rem;
+  background: var(--bg-panel);
+}
+.decision-item strong { display: block; margin-bottom: .35rem; font-size: .95rem; color: var(--text); }
+.decision-item p { margin: 0; color: var(--muted-strong); font-size: .9rem; line-height: 1.6; }
+
+/* ---- Freeze decorative layers while a modal is open ---- */
+.page-shell[data-modal-open="true"] .flower-fall,
+.page-shell[data-modal-open="true"] .section-burst,
+.page-shell[data-modal-open="true"] .pointer-glow,
+.page-shell[data-modal-open="true"] .cursor-trail {
+  opacity: 0;
+  animation-play-state: paused;
+  transition: opacity .2s ease;
+}
+.page-shell[data-modal-open="true"] .flower-fall * ,
+.page-shell[data-modal-open="true"] .section-burst * {
+  animation-play-state: paused;
+}
+
+/* ---- Fix: grid items (project-media-copy is display:grid) stretch to full
+   width by default, which blows up the compact .pill badge into a giant block ---- */
+.project-media-copy > .pill {
+  justify-self: start;
+  width: fit-content;
+}
+
+/* ---- Themed scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-rose) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  background-image: linear-gradient(180deg, var(--accent-rose), var(--accent-indigo));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg, var(--accent-rose), var(--accent-blue));
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+:root[data-theme="dark"] {
+  scrollbar-color: var(--accent-rose) rgba(255, 255, 255, 0.04);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Horizontal fallback strips (.world-fallback, .studio-fallback) read better
+   with a slimmer, always-visible thumb since they scroll sideways in a small area. */
+.world-fallback::-webkit-scrollbar,
+.studio-fallback::-webkit-scrollbar {
+  height: 6px;
+}
+
+.world-fallback::-webkit-scrollbar-thumb,
+.studio-fallback::-webkit-scrollbar-thumb {
+  border-width: 1px;
 }

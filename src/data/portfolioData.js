@@ -12,6 +12,7 @@ import {
   MonitorSmartphone,
   ShieldCheck,
   Sparkles,
+  Users,
 } from "lucide-react";
 
 export const personal = {
@@ -111,6 +112,9 @@ export const creativeInterests = [
     text: "Reading gives me space to slow down, notice patterns, and bring better questions to the work.",
   },
 ];
+
+export const personalMotto =
+  "Good software should feel as thoughtful as it is functional — built to include, explain itself, and hold up in production.";
 
 export const aboutCards = [
   {
@@ -233,32 +237,44 @@ export const skills = [
   {
     title: "Languages",
     icon: FileCode2,
+    proficiency: 90,
     items: ["Python", "Java", "JavaScript", "TypeScript", "PHP", "C", "C++"],
   },
   {
     title: "Frameworks & Platforms",
     icon: MonitorSmartphone,
+    proficiency: 88,
     items: ["React", "Angular", "NestJS", "Node.js", "Spring Boot", "Django", "FastAPI", "Symfony", "FlutterFlow", "JavaFX", "Odoo"],
   },
   {
     title: "Databases",
     icon: Database,
+    proficiency: 82,
     items: ["MongoDB", "MySQL", "PostgreSQL", "Firebase"],
   },
   {
     title: "AI / ML",
     icon: Microscope,
+    proficiency: 85,
     items: ["scikit-learn", "XGBoost", "LightGBM", "SHAP", "Pandas", "NumPy", "NLP", "Artificial Intelligence"],
   },
   {
     title: "Design / UX",
     icon: Sparkles,
-    items: ["Figma", "Adobe XD", "Photoshop", "Illustrator", "Canva"],
+    proficiency: 75,
+    items: ["Figma", "Adobe Creative Suite", "Photoshop", "Illustrator", "Canva", "Graphic Design"],
   },
   {
     title: "DevOps & Delivery",
     icon: ShieldCheck,
-    items: ["Git", "GitHub", "Jenkins", "Docker", "Kubernetes", "Agile", "Scrum"],
+    proficiency: 80,
+    items: ["Git", "GitHub", "Jenkins", "Docker", "Kubernetes", "Jira", "Agile", "Scrum", "Kanban"],
+  },
+  {
+    title: "Leadership & Collaboration",
+    icon: Users,
+    proficiency: 78,
+    items: ["Team Leadership", "Cross-functional Collaboration", "Multitasking & Time Management", "Agile Facilitation"],
   },
 ];
 
@@ -267,7 +283,7 @@ export const projects = [
     slug: "oralis",
     title: "Oralis",
     subtitle: "AI-Assisted Oral Performance Assessment Platform",
-    period: "Jan 2025 – Jan 2026",
+    period: "Jan 2026 – May 2026",
     organization: "Team project · Full Stack Developer",
     icon: AudioLines,
     image: "/assets/projects/oralis-preview.png",
@@ -285,12 +301,34 @@ export const projects = [
     impact: "Speech insights for clearer, more actionable feedback",
     role: "Full Stack Developer",
     outcome: "Connected speech analysis, secure access, and deployment-ready services into one product.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/Esprit-PIWEB-4TWIN7-2026-AI-Web-Platform-for-Oral-Assessment",
+      demo: "https://esprit-piweb-4-twin-7-2026-ai-web-p.vercel.app/",
+    },
+    problem:
+      "Instructors grading oral presentations rely on memory and rough notes, so feedback arrives late, varies between graders, and rarely points to anything a student can concretely practise.",
+    decisions: [
+      {
+        title: "Split the Node and Python layers",
+        text: "Speech processing needs the Python ML ecosystem, but the product API needed NestJS conventions the rest of the team already knew. Rather than force one runtime, I ran NestJS for the product API and FastAPI for the audio pipeline, which kept slow inference work off the request path that serves the UI.",
+      },
+      {
+        title: "Scoring signals over a single grade",
+        text: "Returning one opaque number would have made the tool feel arbitrary to students. Reporting separate signals — filler words, pause distribution, pronunciation — costs more UI work but makes every score traceable to something the student can hear in their own recording.",
+      },
+      {
+        title: "RBAC before features",
+        text: "Student recordings are sensitive, so JWT auth and role-based access went in before the analysis features rather than being retrofitted. It slowed the first demo but meant instructor-only routes were never briefly public.",
+      },
+    ],
+    constraint:
+      "Five-person team, one semester, with the audio pipeline and the web product being built in parallel — the API contract had to be agreed early and kept stable.",
   },
   {
     slug: "talentlens",
     title: "TalentLens",
     subtitle: "HR Intelligence Platform",
-    period: "Jan 2025 – Jan 2026",
+    period: "Jan 2026 – May 2026",
     organization: "Team project · Machine Learning Lead",
     icon: BrainCircuit,
     image: "/assets/projects/talentlens-preview.png",
@@ -308,12 +346,34 @@ export const projects = [
     impact: "R² 0.88 salary regression · AUC 0.75 career classification",
     role: "Machine Learning Lead",
     outcome: "Turned HR data into explainable salary and career intelligence for decision-makers.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/TalentLens-BuildDream-ProjectML",
+      demo: "https://talent-lens-build-dream-project-ml.vercel.app/",
+    },
+    problem:
+      "HR teams sit on years of structured employee data but still set salary bands and career paths by intuition. A model that only outputs a number does not help — nobody will act on a recommendation they cannot justify to a candidate.",
+    decisions: [
+      {
+        title: "Gradient boosting over deep learning",
+        text: "The dataset was tabular and mid-sized, which is where XGBoost and LightGBM reliably beat neural networks while training in seconds. Fast training mattered more than squeezing out marginal accuracy: it let me iterate on features many times inside one semester.",
+      },
+      {
+        title: "Explainability as a requirement, not a nice-to-have",
+        text: "I added SHAP TreeExplainer so every prediction comes with its contributing factors and supports what-if scenarios. This was the deciding reason to stay with tree models — the same explanation quality would have been far harder to get from a black-box alternative.",
+      },
+      {
+        title: "Reporting AUC 0.75 honestly",
+        text: "Career classification scored noticeably lower than salary regression. Rather than hide it or tune on the test set, I kept the held-out evaluation intact and treated the gap as a finding: career trajectory depends on context the dataset simply does not capture.",
+      },
+    ],
+    constraint:
+      "Led the ML module for a five-person team, which meant agreeing the FastAPI contract early so frontend work could proceed against it before the models were finished.",
   },
   {
     slug: "maternity-tracking",
     title: "Pregnancy & Maternity Tracking",
     subtitle: "Synchronized Multi-Platform Delivery",
-    period: "Jan 2024 – Jan 2025",
+    period: "Jan 2025 – May 2025",
     organization: "Team project · Full Stack Developer",
     icon: MonitorSmartphone,
     image: "/assets/projects/maternity-preview.png",
@@ -330,6 +390,27 @@ export const projects = [
     impact: "One product experience across web, mobile, and desktop",
     role: "Full Stack Developer",
     outcome: "Maintained a consistent data experience across three synchronized product surfaces.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/Motherise",
+    },
+    problem:
+      "Pregnancy tracking is not a single-device activity: appointments get logged on a phone, reviewed on a laptop, and discussed at a desk. Three separate apps with three separate sources of truth would have been worse than no app at all.",
+    decisions: [
+      {
+        title: "One data contract, three clients",
+        text: "The hardest part was never any single client — it was keeping Symfony, FlutterFlow, and JavaFX agreeing on the same records. I treated the data model as the fixed contract and let each platform differ only in presentation.",
+      },
+      {
+        title: "Firebase alongside SQL, not instead of it",
+        text: "Relational SQL suited the structured medical records, while Firebase handled the sync and real-time paths the mobile client needed. Running both added integration overhead but avoided bending one store into a job it was poor at.",
+      },
+      {
+        title: "Accepting unfamiliar stacks",
+        text: "The stack was imposed by the coursework rather than chosen. Delivering JavaFX and FlutterFlow surfaces I had not used before was the real constraint, and it taught me more about reading unfamiliar framework docs quickly than a free technology choice would have.",
+      },
+    ],
+    constraint:
+      "Six-person team shipping three platforms simultaneously in one semester, with a stack fixed by the course rather than selected for the problem.",
   },
 ];
 

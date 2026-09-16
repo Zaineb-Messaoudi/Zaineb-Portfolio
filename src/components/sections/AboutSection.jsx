@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BrainCircuit, Braces, Layers3, Rocket } from "lucide-react";
 import { useState } from "react";
-import { aboutCards, creativeInterests, sectionMeta } from "../../data/portfolioData";
+import { aboutCards, creativeInterests, personalMotto, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
 
@@ -25,6 +25,17 @@ function AboutSection() {
           return <motion.article key={card.title} className="glass-card" variants={fadeUp}><div className="card-icon"><Icon size={20} /></div><h3 className="card-title">{card.title}</h3><p className="card-text">{card.text}</p></motion.article>;
         })}
       </motion.div>
+
+      <motion.blockquote
+        className="glass-card"
+        style={{ margin: "1.75rem 0", fontStyle: "italic", fontSize: "1.05rem", lineHeight: 1.6 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.5 }}
+      >
+        “{personalMotto}”
+      </motion.blockquote>
 
       <div className="engineering-map">
         <div className="engineering-map-copy">

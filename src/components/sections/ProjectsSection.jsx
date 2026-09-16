@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
 import { projects, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
@@ -49,7 +49,32 @@ function ProjectsSection({ onOpenProject }) {
             </div>
             <div className="project-actions">
               <button type="button" className="button button-secondary" onClick={() => onOpenProject(project)} aria-label={`Open detailed view for ${project.title}`}>View details</button>
-              <button type="button" className="text-button" onClick={() => onOpenProject(project)}>Explore architecture <ExternalLink size={16} /></button>
+              <div className="project-links">
+                {project.links?.github ? (
+                  <a
+                    className="icon-link"
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    title={`${project.title} source code on GitHub`}
+                    aria-label={`${project.title} source code on GitHub`}
+                  >
+                    <Github size={18} />
+                  </a>
+                ) : null}
+                {project.links?.demo ? (
+                  <a
+                    className="icon-link"
+                    href={project.links.demo}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    title={`${project.title} live demo`}
+                    aria-label={`${project.title} live demo`}
+                  >
+                    <ExternalLink size={18} />
+                  </a>
+                ) : null}
+              </div>
             </div>
           </motion.article>
         ))}
