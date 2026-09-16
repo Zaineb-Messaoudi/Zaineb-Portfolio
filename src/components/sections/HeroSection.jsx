@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { focusAreas, heroStats, personal } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
+import { localize, useLanguage } from "../../i18n";
 
 function HeroArtwork({ reduceMotion }) {
   return (
@@ -22,6 +23,11 @@ function HeroArtwork({ reduceMotion }) {
 
 function HeroSection() {
   const reduceMotion = useReducedMotion();
+  const { language, t } = useLanguage();
+  const localizedPersonal = localize(personal, language);
+  const localizedFocusAreas = localize(focusAreas, language);
+  const localizedHeroStats = localize(heroStats, language);
+  const cvPath = language === "fr" ? "/assets/cv/cv-fr.pdf" : "/assets/cv/cv-en.pdf";
 
   return (
     <section id="hero" className="section hero" aria-labelledby="hero-title">
@@ -35,32 +41,32 @@ function HeroSection() {
             variants={staggerParent}
           >
             <motion.p className="hero-kicker" variants={fadeUp}>
-              SOFTWARE ENGINEERING · FULL STACK & AI
+              {t("SOFTWARE ENGINEERING · FULL STACK & AI")}
             </motion.p>
             <motion.h1 id="hero-title" className="hero-title" variants={fadeUp}>
               {personal.name}
             </motion.h1>
             <motion.div className="hero-copy" variants={fadeUp}>
-              <strong>{personal.title}</strong>
-              <span>{personal.focus}</span>
+              <strong>{localizedPersonal.title}</strong>
+              <span>{localizedPersonal.focus}</span>
             </motion.div>
             <motion.p className="availability-line availability-primary" variants={fadeUp}>
-              <span className="availability-label">CURRENT MISSION</span>
-              {personal.availability}
+              <span className="availability-label">{t("CURRENT MISSION")}</span>
+              {localizedPersonal.availability}
             </motion.p>
 
             <motion.div className="hero-tagline" variants={fadeUp}>
-              {focusAreas.slice(0, 3).map((item) => {
+              {localizedFocusAreas.slice(0, 3).map((item) => {
                 const Icon = item.icon;
                 return <span key={item.label} className="pill"><Icon size={16} />{item.label}</span>;
               })}
             </motion.div>
 
             <motion.div className="hero-actions" variants={fadeUp}>
-              <a className="button button-primary" href="#projects">Explore projects <ArrowRight size={18} /></a>
-              <a className="button button-secondary" href="#contact">Contact me</a>
-              <a className="button button-ghost" href="https://jobby.tn/cv/zaineb-messaoudi-22d-182?lang=en" target="_blank" rel="noreferrer">
-                View my CV <ExternalLink size={17} />
+              <a className="button button-primary" href="#projects">{t("Explore projects")} <ArrowRight size={18} /></a>
+              <a className="button button-secondary" href="#contact">{t("Contact me")}</a>
+              <a className="button button-ghost" href={cvPath} target="_blank" rel="noreferrer">
+                {t("View my CV")} <ExternalLink size={17} />
               </a>
             </motion.div>
           </motion.div>
@@ -78,7 +84,7 @@ function HeroSection() {
               whileHover={reduceMotion ? undefined : { y: -6, scale: 1.015 }}
               transition={{ type: "spring", stiffness: 180, damping: 18 }}
             >
-              <img className="profile-image" src={personal.profileImage} alt="Portrait of Zaineb Messaoudi" />
+              <img className="profile-image" src={localizedPersonal.profileImage} alt={language === "fr" ? "Portrait de Zaineb Messaoudi" : "Portrait of Zaineb Messaoudi"} />
             </motion.div>
           </motion.div>
         </div>
@@ -90,13 +96,13 @@ function HeroSection() {
           viewport={{ once: true, amount: 0.3 }}
           variants={staggerParent}
         >
-          {heroStats.map((stat) => <motion.div key={stat.label} className="stat-card" variants={fadeUp}><span className="meta-line">{stat.label}</span><strong>{stat.value}</strong></motion.div>)}
+          {localizedHeroStats.map((stat) => <motion.div key={stat.label} className="stat-card" variants={fadeUp}><span className="meta-line">{stat.label}</span><strong>{stat.value}</strong></motion.div>)}
         </motion.div>
 
-        <div className="creative-ticker" aria-label="Portfolio themes">
+        <div className="creative-ticker" aria-label={language === "fr" ? "Thèmes du portfolio" : "Portfolio themes"}>
           <div className="creative-ticker-track">
             {["BUILD", "DESIGN", "EXPLAIN", "SHIP", "ACCESSIBLE BY DEFAULT", "BUILD", "DESIGN", "EXPLAIN", "SHIP", "ACCESSIBLE BY DEFAULT"].map((item, index) => (
-              <span key={`${item}-${index}`}>{item}<i aria-hidden="true">✦</i></span>
+              <span key={`${item}-${index}`}>{t(item)}<i aria-hidden="true">✦</i></span>
             ))}
           </div>
         </div>

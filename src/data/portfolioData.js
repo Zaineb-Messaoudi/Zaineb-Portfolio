@@ -32,7 +32,11 @@ export const personal = {
     "Accessible products",
     "Secure backend systems",
   ],
-  profileImage: "/assets/Zainzb.jpeg",
+  profileImage: "/assets/Zaineb.png",
+  cv: {
+    en: "/assets/cv/cv-en.pdf",
+    fr: "/assets/cv/cv-fr.pdf",
+  },
   logoLight: "/assets/zaineb-logo-light.png",
   logoDark: "/assets/zaineb-logo-dark.png",
 };

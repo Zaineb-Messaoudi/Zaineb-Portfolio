@@ -2,13 +2,17 @@ import { motion, useReducedMotion } from "framer-motion";
 import { experience, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
+import { localize, useLanguage } from "../../i18n";
 
 function ExperienceSection() {
   const reduceMotion = useReducedMotion();
+  const { language } = useLanguage();
+  const localizedExperience = localize(experience, language);
+  const localizedMeta = localize(sectionMeta.experience, language);
   return (
-    <SectionShell id="experience" {...sectionMeta.experience}>
+    <SectionShell id="experience" {...localizedMeta}>
       <motion.div className="timeline" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.12 }} variants={staggerParent}>
-        {experience.map((item, index) => (
+        {localizedExperience.map((item, index) => (
           <motion.article key={`${item.company}-${item.role}`} className="experience-card" variants={fadeUp} style={{ "--node-accent": item.accent }}>
             <span className="experience-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
             <div className="experience-head">

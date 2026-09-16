@@ -13,6 +13,7 @@ import SummarySection from "../components/sections/SummarySection";
 import ProjectModal from "../components/ui/ProjectModal";
 import { navItems } from "../data/portfolioData";
 import { useActiveSection } from "../hooks/useActiveSection";
+import { useLanguage } from "../i18n";
 
 function FlowerFall({ activeSection }) {
   const flowers = Array.from({ length: 120 }, (_, index) => index);
@@ -37,7 +38,8 @@ function FlowerFall({ activeSection }) {
 }
 
 function HomePage() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("portfolio-theme") || "light");
+  const { language, setLanguage } = useLanguage();
+  const [theme, setTheme] = useState(() => localStorage.getItem("portfolio-theme") || "dark");
   const sectionIds = useMemo(() => navItems.map((item) => item.id), []);
   const activeSection = useActiveSection(sectionIds);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -63,7 +65,7 @@ function HomePage() {
     <div className="page-shell" data-modal-open={isModalOpen ? "true" : undefined}>
       <FlowerFall activeSection={decorSection} />
       <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
-      <Navbar activeSection={activeSection} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} />
+      <Navbar activeSection={activeSection} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} language={language} onChangeLanguage={setLanguage} />
       <main id="main-content">
         <HeroSection />
         <AboutSection />

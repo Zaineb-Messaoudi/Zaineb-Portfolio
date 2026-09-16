@@ -1,15 +1,29 @@
-import { Suspense, lazy } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import LoadingScreen from "./components/ui/LoadingScreen";
 
-const HomePage = lazy(() => import("./pages/HomePage"));
+import HomePage from "./pages/HomePage";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const [loadingExiting, setLoadingExiting] = useState(false);
+
+  useEffect(() => {
+    const exitTimer = window.setTimeout(() => setLoadingExiting(true), 350);
+    const removeTimer = window.setTimeout(() => setLoading(false), 900);
+    return () => {
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(removeTimer);
+    };
+  }, []);
+
   return (
-    <Suspense fallback={<div className="app-loading">Loading portfolio...</div>}>
+    <>
       <Routes>
         <Route path="/" element={<HomePage />} />
       </Routes>
-    </Suspense>
+      {loading ? <LoadingScreen isExiting={loadingExiting} /> : null}
+    </>
   );
 }
 

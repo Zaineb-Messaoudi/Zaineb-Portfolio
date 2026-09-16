@@ -3,12 +3,16 @@ import { ExternalLink, Github } from "lucide-react";
 import { projects, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
+import { localize, useLanguage } from "../../i18n";
 
 function ProjectsSection({ onOpenProject }) {
   const reduceMotion = useReducedMotion();
+  const { language, t } = useLanguage();
+  const localizedProjects = localize(projects, language);
+  const localizedMeta = localize(sectionMeta.projects, language);
 
   return (
-    <SectionShell id="projects" {...sectionMeta.projects}>
+    <SectionShell id="projects" {...localizedMeta}>
       <motion.div
         className="project-grid"
         initial={reduceMotion ? false : "hidden"}
@@ -16,7 +20,7 @@ function ProjectsSection({ onOpenProject }) {
         viewport={{ once: true, amount: 0.08 }}
         variants={staggerParent}
       >
-        {projects.map((project) => (
+        {localizedProjects.map((project) => (
           <motion.article key={project.slug} className="project-card" variants={fadeUp}>
             <div className="project-media">
               <div className="project-media-copy">
@@ -48,7 +52,7 @@ function ProjectsSection({ onOpenProject }) {
               {project.stack.slice(0, 5).map((tech) => <span key={tech} className="stack-chip">{tech}</span>)}
             </div>
             <div className="project-actions">
-              <button type="button" className="button button-secondary" onClick={() => onOpenProject(project)} aria-label={`Open detailed view for ${project.title}`}>View details</button>
+              <button type="button" className="button button-secondary" onClick={() => onOpenProject(project)} aria-label={`${t("View details")} : ${project.title}`}>{t("View details")}</button>
               <div className="project-links">
                 {project.links?.github ? (
                   <a

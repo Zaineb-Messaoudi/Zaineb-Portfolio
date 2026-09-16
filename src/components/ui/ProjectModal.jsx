@@ -2,9 +2,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, Github, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useLanguage } from "../../i18n";
 
 function ProjectModal({ project, onClose }) {
   const reduceMotion = useReducedMotion();
+  const { t } = useLanguage();
   const dialogRef = useRef(null);
   const contentRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -78,7 +80,7 @@ function ProjectModal({ project, onClose }) {
                 <h3 id="project-modal-title" className="section-title">{project.title}</h3>
                 <p className="section-description">{project.subtitle}</p>
               </div>
-              <button type="button" className="close-button" ref={closeButtonRef} onClick={onClose} aria-label={`Close details for ${project.title}`}><X size={18} /></button>
+              <button type="button" className="close-button" ref={closeButtonRef} onClick={onClose} aria-label={`${t("Close details for")} ${project.title}`}><X size={18} /></button>
             </div>
 
             <div className="modal-content" ref={contentRef}>
@@ -119,14 +121,14 @@ function ProjectModal({ project, onClose }) {
 
               {project.problem ? (
                 <div>
-                  <h4 className="card-title">The problem</h4>
+                  <h4 className="card-title">{t("The problem")}</h4>
                   <p className="project-overview">{project.problem}</p>
                 </div>
               ) : null}
 
               {project.decisions?.length ? (
                 <div>
-                  <h4 className="card-title">Decisions & trade-offs</h4>
+                  <h4 className="card-title">{t("Decisions & trade-offs")}</h4>
                   <div className="decision-list">
                     {project.decisions.map((decision) => (
                       <article className="decision-item" key={decision.title}>
@@ -140,18 +142,18 @@ function ProjectModal({ project, onClose }) {
 
               {project.constraint ? (
                 <div>
-                  <h4 className="card-title">Constraints</h4>
+                  <h4 className="card-title">{t("Constraints")}</h4>
                   <p className="project-overview">{project.constraint}</p>
                 </div>
               ) : null}
 
               <div>
-                <h4 className="card-title">Key features</h4>
+                <h4 className="card-title">{t("Key features")}</h4>
                 <ul className="bullet-list">{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
               </div>
 
               <div>
-                <h4 className="card-title">Technology stack</h4>
+                <h4 className="card-title">{t("Technology stack")}</h4>
                 <div className="stack-list">{project.stack.map((item) => <span key={item} className="stack-chip">{item}</span>)}</div>
               </div>
             </div>

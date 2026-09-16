@@ -4,6 +4,7 @@ import { useState } from "react";
 import { aboutCards, creativeInterests, personalMotto, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
+import { localize, useLanguage } from "../../i18n";
 
 const engineeringLayers = [
   { id: "interface", number: "01", label: "Interface", icon: Braces, title: "Make complexity feel clear", description: "React interfaces, Figma thinking, keyboard-friendly flows, and accessible product decisions.", tools: ["React", "Angular", "Figma", "WCAG 2.1"], color: "#e47aa8" },
@@ -14,13 +15,17 @@ const engineeringLayers = [
 
 function AboutSection() {
   const reduceMotion = useReducedMotion();
+  const { language, t } = useLanguage();
+  const localizedCards = localize(aboutCards, language);
+  const localizedInterests = localize(creativeInterests, language);
+  const localizedMeta = localize(sectionMeta.about, language);
   const [activeLayer, setActiveLayer] = useState(engineeringLayers[0]);
   const ActiveIcon = activeLayer.icon;
 
   return (
-    <SectionShell id="about" {...sectionMeta.about}>
+    <SectionShell id="about" {...localizedMeta}>
       <motion.div className="cards-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.15 }} variants={staggerParent}>
-        {aboutCards.map((card) => {
+        {localizedCards.map((card) => {
           const Icon = card.icon;
           return <motion.article key={card.title} className="glass-card" variants={fadeUp}><div className="card-icon"><Icon size={20} /></div><h3 className="card-title">{card.title}</h3><p className="card-text">{card.text}</p></motion.article>;
         })}
@@ -34,14 +39,14 @@ function AboutSection() {
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.5 }}
       >
-        “{personalMotto}”
+        “{t(personalMotto)}”
       </motion.blockquote>
 
       <div className="engineering-map">
         <div className="engineering-map-copy">
-          <p className="eyebrow">The engineering map</p>
-          <h3>Where product thinking meets implementation</h3>
-          <p>Explore the four layers I bring to a project. Each one connects directly to the tools, systems, and outcomes in my experience.</p>
+          <p className="eyebrow">{t("The engineering map")}</p>
+          <h3>{t("Where product thinking meets implementation")}</h3>
+          <p>{t("Explore the four layers I bring to a project. Each one connects directly to the tools, systems, and outcomes in my experience.")}</p>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeLayer.id}
@@ -54,9 +59,9 @@ function AboutSection() {
             >
               <div className="engineering-map-detail-icon"><ActiveIcon size={22} /></div>
               <div>
-                <span>{activeLayer.number} / {activeLayer.label}</span>
-                <strong>{activeLayer.title}</strong>
-                <p>{activeLayer.description}</p>
+                <span>{activeLayer.number} / {t(activeLayer.label)}</span>
+                <strong>{t(activeLayer.title)}</strong>
+                <p>{t(activeLayer.description)}</p>
                 <div className="engineering-tools">{activeLayer.tools.map((tool) => <em key={tool}>{tool}</em>)}</div>
               </div>
             </motion.div>
@@ -67,19 +72,19 @@ function AboutSection() {
           {engineeringLayers.map((layer) => {
             const Icon = layer.icon;
             const isActive = activeLayer.id === layer.id;
-            return <button key={layer.id} type="button" className={`engineering-layer ${isActive ? "is-active" : ""}`} style={{ "--layer-color": layer.color }} onClick={() => setActiveLayer(layer)} aria-pressed={isActive}><span className="engineering-layer-number">{layer.number}</span><span className="engineering-layer-icon"><Icon size={19} /></span><span>{layer.label}</span></button>;
+            return <button key={layer.id} type="button" className={`engineering-layer ${isActive ? "is-active" : ""}`} style={{ "--layer-color": layer.color }} onClick={() => setActiveLayer(layer)} aria-pressed={isActive}><span className="engineering-layer-number">{layer.number}</span><span className="engineering-layer-icon"><Icon size={19} /></span><span>{t(layer.label)}</span></button>;
           })}
         </div>
       </div>
 
       <div className="creative-strip">
         <div className="creative-strip-heading">
-          <p className="eyebrow">Beyond the stack</p>
-          <h3>The creative side of engineering</h3>
-          <p>Good software is not only correct. It should also feel clear, thoughtful, and memorable.</p>
+          <p className="eyebrow">{t("Beyond the stack")}</p>
+          <h3>{t("The creative side of engineering")}</h3>
+          <p>{t("Good software is not only correct. It should also feel clear, thoughtful, and memorable.")}</p>
         </div>
         <div className="creative-interest-grid">
-          {creativeInterests.map((interest, index) => (
+          {localizedInterests.map((interest, index) => (
             <motion.article key={interest.label} className="creative-interest" initial={reduceMotion ? false : { opacity: 0, y: 14 }} whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: index * 0.08, duration: 0.4 }}>
               <span>{interest.label}</span><h4>{interest.title}</h4><p>{interest.text}</p>
             </motion.article>

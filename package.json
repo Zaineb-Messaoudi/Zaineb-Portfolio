@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "npm run build && playwright test",
+    "test:responsive": "npm run build && playwright test tests/responsive.spec.js",
+    "test:accessibility": "npm run build && playwright test tests/accessibility.spec.js"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -19,6 +22,8 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@vitejs/plugin-react": "^4.5.0",
     "vite": "^6.3.5"
   }

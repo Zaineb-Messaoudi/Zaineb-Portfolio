@@ -2,12 +2,16 @@ import { motion, useReducedMotion } from "framer-motion";
 import { education, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
+import { localize, useLanguage } from "../../i18n";
 
 function EducationSection() {
   const reduceMotion = useReducedMotion();
+  const { language } = useLanguage();
+  const localizedEducation = localize(education, language);
+  const localizedMeta = localize(sectionMeta.education, language);
 
   return (
-    <SectionShell id="education" {...sectionMeta.education}>
+    <SectionShell id="education" {...localizedMeta}>
       <motion.div
         className="education-grid"
         initial={reduceMotion ? false : "hidden"}
@@ -15,7 +19,7 @@ function EducationSection() {
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerParent}
       >
-        {education.map((item) => (
+        {localizedEducation.map((item) => (
           <motion.article key={item.school} className="education-card" variants={fadeUp}>
             <div className="education-top">
               <div>

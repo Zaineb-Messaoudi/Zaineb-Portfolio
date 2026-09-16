@@ -4,9 +4,14 @@ import { certifications, sectionMeta, skills } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
 import SkillRadar from "../ui/SkillRadar";
+import { localize, useLanguage } from "../../i18n";
 
 function SkillsSection() {
   const reduceMotion = useReducedMotion();
+  const { language, t } = useLanguage();
+  const localizedSkills = localize(skills, language);
+  const localizedCertifications = localize(certifications, language);
+  const localizedMeta = localize(sectionMeta.skills, language);
   const [activeIndex, setActiveIndex] = useState(0);
   const cardRefs = useRef([]);
 
@@ -16,13 +21,13 @@ function SkillsSection() {
   };
 
   return (
-    <SectionShell id="skills" {...sectionMeta.skills}>
+    <SectionShell id="skills" {...localizedMeta}>
       <div className="engineering-map-copy" style={{ marginBottom: "1.5rem" }}>
-        <p className="eyebrow">Interactive overview</p>
-        <h3 className="section-subtitle">A quick read on where I'm strongest</h3>
-        <p>Click any point on the radar to jump to that skill card below.</p>
+        <p className="eyebrow">{t("Interactive overview")}</p>
+        <h3 className="section-subtitle">{t("A quick read on where I'm strongest")}</h3>
+        <p>{t("Click any point on the radar to jump to that skill card below.")}</p>
       </div>
-      <SkillRadar data={skills} activeIndex={activeIndex} onSelect={handleSelect} />
+      <SkillRadar data={localizedSkills} activeIndex={activeIndex} onSelect={handleSelect} />
 
       <motion.div
         className="skills-grid"
@@ -32,7 +37,7 @@ function SkillsSection() {
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerParent}
       >
-        {skills.map((group, index) => {
+        {localizedSkills.map((group, index) => {
           const Icon = group.icon;
           const isActive = index === activeIndex;
           return (
@@ -63,11 +68,11 @@ function SkillsSection() {
 
       <div className="certifications-block">
         <div>
-          <p className="eyebrow">Continuous learning</p>
-          <h3 className="section-subtitle">Certifications & training</h3>
+          <p className="eyebrow">{t("Continuous learning")}</p>
+          <h3 className="section-subtitle">{t("Certifications & training")}</h3>
         </div>
         <div className="certification-list">
-          {certifications.map((certification) => (
+          {localizedCertifications.map((certification) => (
             <article className="certification-item" key={certification.name}>
               <strong>{certification.name}</strong>
               <span>{certification.issuer}</span>
