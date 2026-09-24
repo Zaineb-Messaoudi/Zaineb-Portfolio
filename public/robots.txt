@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /account/
 Disallow: /search
 
-Sitemap: https://zaineb-messaoudi.github.io/Zaineb-Portfolio/sitemap.xml
+Sitemap: https://zainebportfolio.vercel.app/sitemap.xml

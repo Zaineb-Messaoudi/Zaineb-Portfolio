@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { personal, projects } from "../data/portfolioData";
 import { useLanguage } from "../i18n";
 
-const DEFAULT_SITE_URL = "https://zaineb-messaoudi.github.io/Zaineb-Portfolio";
+const DEFAULT_SITE_URL = "https://zainebportfolio.vercel.app";
 
 function upsertMeta(attribute, value, content) {
   let element = document.head.querySelector(`meta[${attribute}="${value}"]`);
