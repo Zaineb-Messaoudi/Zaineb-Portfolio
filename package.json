@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test:e2e": "npm run build && playwright test",
     "test:responsive": "npm run build && playwright test tests/responsive.spec.js",
-    "test:accessibility": "npm run build && playwright test tests/accessibility.spec.js"
+    "test:accessibility": "npm run build && playwright test tests/accessibility.spec.js",
+    "check:indexability": "node scripts/check-indexability.mjs http://127.0.0.1:4173/",
+    "check:links": "node scripts/check-links.mjs http://127.0.0.1:4173/"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

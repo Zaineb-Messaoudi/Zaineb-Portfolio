@@ -11,6 +11,7 @@ import ProjectsSection from "../components/sections/ProjectsSection";
 import SkillsSection from "../components/sections/SkillsSection";
 import SummarySection from "../components/sections/SummarySection";
 import ProjectModal from "../components/ui/ProjectModal";
+import SEOHead from "../components/SEOHead";
 import { navItems } from "../data/portfolioData";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { useLanguage } from "../i18n";
@@ -63,6 +64,7 @@ function HomePage() {
 
   return (
     <div className="page-shell" data-modal-open={isModalOpen ? "true" : undefined}>
+      <SEOHead />
       <FlowerFall activeSection={decorSection} />
       <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
       <Navbar activeSection={activeSection} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} language={language} onChangeLanguage={setLanguage} />

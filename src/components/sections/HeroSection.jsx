@@ -40,16 +40,16 @@ function HeroSection() {
             viewport={{ once: true, amount: 0.2 }}
             variants={staggerParent}
           >
-            <motion.p className="hero-kicker" variants={fadeUp}>
-              {t("SOFTWARE ENGINEERING · FULL STACK & AI")}
-            </motion.p>
-            <motion.h1 id="hero-title" className="hero-title" variants={fadeUp}>
-              {personal.name}
-            </motion.h1>
-            <motion.div className="hero-copy" variants={fadeUp}>
-              <strong>{localizedPersonal.title}</strong>
-              <span>{localizedPersonal.focus}</span>
+            <motion.div className="hero-brand-block" variants={fadeUp}>
+              <div className="hero-brand-mark-wrap">
+                <img className="hero-brand-mark" src={personal.logoLight} alt="Zaineb logo" />
+              </div>
+              <div className="hero-brand-copy">
+                <h1 id="hero-title" className="hero-title">{personal.name}</h1>
+                <p className="hero-role">{localizedPersonal.title}</p>
+              </div>
             </motion.div>
+
             <motion.p className="availability-line availability-primary" variants={fadeUp}>
               <span className="availability-label">{t("CURRENT MISSION")}</span>
               <strong>{localizedPersonal.availability}</strong>
@@ -57,7 +57,7 @@ function HeroSection() {
             </motion.p>
 
             <motion.div className="hero-tagline" variants={fadeUp}>
-              {localizedFocusAreas.slice(0, 3).map((item) => {
+              {localizedFocusAreas.slice(0, 4).map((item) => {
                 const Icon = item.icon;
                 return <span key={item.label} className="pill"><Icon size={16} />{item.label}</span>;
               })}
@@ -70,6 +70,11 @@ function HeroSection() {
                 {t("View my CV")} <ExternalLink size={17} />
               </a>
             </motion.div>
+
+            <motion.a className="hero-email" href={`mailto:${personal.email}`} variants={fadeUp}>
+              <span className="hero-email-icon" aria-hidden="true">✉</span>
+              <span>{personal.email}</span>
+            </motion.a>
           </motion.div>
 
           <motion.div

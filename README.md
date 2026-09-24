@@ -52,6 +52,24 @@ npm run build
 npm run preview
 ```
 
+## SEO and deployment checks
+
+The production bundle includes `robots.txt`, `sitemap.xml`, canonical metadata,
+Open Graph/Twitter metadata, Person JSON-LD, and a web manifest. Set
+`VITE_SITE_URL` to the deployed HTTPS origin when using a custom domain; the
+default is the repository's GitHub Pages URL.
+
+After starting a production preview, these checks can be run locally:
+
+```bash
+npm run check:indexability
+npm run check:links
+```
+
+The SEO workflow also runs these checks on pushes and pull requests to prevent
+accidental `noindex` responses and broken same-origin links from reaching
+production.
+
 ## Deploy to Vercel
 
 This portfolio is configured for Vercel with SPA rewrites in `vercel.json`.

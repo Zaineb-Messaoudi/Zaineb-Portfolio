@@ -92,7 +92,7 @@ function ProjectModal({ project, onClose }) {
                       <span className="project-shot-dot" /><span className="project-shot-dot" /><span className="project-shot-dot" />
                     </div>
                     <div className="project-shot-body">
-                      <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} />
+                      <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
                     </div>
                   </div>
                   <div>

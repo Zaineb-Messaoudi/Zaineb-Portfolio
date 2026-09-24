@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /search
+
+Sitemap: https://zaineb-messaoudi.github.io/Zaineb-Portfolio/sitemap.xml
