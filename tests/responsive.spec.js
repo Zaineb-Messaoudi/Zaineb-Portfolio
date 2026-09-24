@@ -17,7 +17,7 @@ for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     await page.goto("/");
     await expect(page.locator("#hero")).toBeVisible();
-    await expect(page.locator(".profile-image")).toHaveAttribute("src", "/assets/Zaineb.png");
+    await expect(page.locator(".profile-image")).toHaveAttribute("src", "/assets/Zaineb.webp");
 
     const dimensions = await page.evaluate(() => ({
       documentWidth: document.documentElement.scrollWidth,

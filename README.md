@@ -70,6 +70,10 @@ The SEO workflow also runs these checks on pushes and pull requests to prevent
 accidental `noindex` responses and broken same-origin links from reaching
 production.
 
+Critical portfolio images are served as optimized WebP assets, the loading
+logo is preloaded, Google Fonts use non-blocking loading hints, and decorative
+animation nodes are capped to keep the initial page responsive.
+
 ## Deploy to Vercel
 
 This portfolio is configured for Vercel with SPA rewrites in `vercel.json`.

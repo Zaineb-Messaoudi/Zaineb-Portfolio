@@ -7,9 +7,9 @@
   "theme_color": "#1d1226",
   "icons": [
     {
-      "src": "/assets/zaineb-logo-light.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "/assets/zaineb-logo-light.webp",
+      "sizes": "96x96",
+      "type": "image/webp"
     }
   ]
 }

@@ -17,7 +17,7 @@ import { useActiveSection } from "../hooks/useActiveSection";
 import { useLanguage } from "../i18n";
 
 function FlowerFall({ activeSection }) {
-  const flowers = Array.from({ length: 120 }, (_, index) => index);
+  const flowers = Array.from({ length: 48 }, (_, index) => index);
   return (
     <div key={activeSection} className="flower-fall" aria-hidden="true">
       {flowers.map((flower) => (

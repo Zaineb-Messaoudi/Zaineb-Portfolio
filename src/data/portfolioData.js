@@ -33,13 +33,13 @@ export const personal = {
     "Accessible products",
     "Secure backend systems",
   ],
-  profileImage: "/assets/Zaineb.png",
+  profileImage: "/assets/Zaineb.webp",
   cv: {
     en: "/assets/cv/cv-en.pdf",
     fr: "/assets/cv/cv-fr.pdf",
   },
-  logoLight: "/assets/zaineb-logo-light.png",
-  logoDark: "/assets/zaineb-logo-dark.png",
+  logoLight: "/assets/zaineb-logo-light.webp",
+  logoDark: "/assets/zaineb-logo-dark.webp",
 };
 
 export const navItems = [

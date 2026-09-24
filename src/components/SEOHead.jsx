@@ -35,7 +35,7 @@ function SEOHead() {
     const description = language === "fr"
       ? "Portfolio de Zaineb Messaoudi, étudiante en ingénierie logicielle spécialisée en full-stack, IA appliquée et produits numériques accessibles."
       : "Portfolio of Zaineb Messaoudi, a software engineering student focused on full-stack systems, applied AI, and accessible digital products.";
-    const imageUrl = `${siteUrl}/assets/zaineb-horizontal-logo-dark.png`;
+    const imageUrl = `${siteUrl}/assets/zaineb-horizontal-logo-dark.webp`;
 
     document.title = title;
     upsertMeta("name", "description", description);

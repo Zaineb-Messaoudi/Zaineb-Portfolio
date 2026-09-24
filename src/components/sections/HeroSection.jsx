@@ -90,7 +90,7 @@ function HeroSection() {
               whileHover={reduceMotion ? undefined : { y: -6, scale: 1.015 }}
               transition={{ type: "spring", stiffness: 180, damping: 18 }}
             >
-              <img className="profile-image" src={localizedPersonal.profileImage} alt={language === "fr" ? "Portrait de Zaineb Messaoudi" : "Portrait of Zaineb Messaoudi"} />
+              <img className="profile-image" src={localizedPersonal.profileImage} alt={language === "fr" ? "Portrait de Zaineb Messaoudi" : "Portrait of Zaineb Messaoudi"} width="720" height="960" fetchPriority="high" decoding="async" />
             </motion.div>
           </motion.div>
         </div>
