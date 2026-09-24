@@ -12,8 +12,8 @@ function Footer() {
       <div className="section-inner footer-shell">
         <div className="footer-grid">
           <div className="footer-brand-block">
-            <img className="footer-logo" src={personal.logoLight} alt="" aria-hidden="true" />
-            <img className="footer-logo footer-logo-dark" src={personal.logoDark} alt="" aria-hidden="true" />
+            <img className="footer-logo" src={personal.logoLight} alt="" aria-hidden="true" width="96" height="96" loading="lazy" decoding="async" />
+            <img className="footer-logo footer-logo-dark" src={personal.logoDark} alt="" aria-hidden="true" width="96" height="96" loading="lazy" decoding="async" />
             <p className="eyebrow">{t("Portfolio")}</p>
             <h2 id="footer-heading" className="footer-title">{localizedPersonal.name}</h2>
             <p className="footer-copy">{t("Software Engineering student focused on full-stack systems, applied AI, accessibility, and polished digital products.")}</p>

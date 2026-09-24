@@ -1,0 +1,19 @@
+# Zaineb Messaoudi Portfolio
+
+> Portfolio of Zaineb Messaoudi, a software engineering student focused on full-stack systems, applied AI, accessibility, and polished digital products.
+
+## Primary pages
+
+- [Portfolio homepage](https://zainebportfolio.vercel.app/)
+- [Projects](https://zainebportfolio.vercel.app/#projects)
+- [Experience](https://zainebportfolio.vercel.app/#experience)
+- [Technical skills](https://zainebportfolio.vercel.app/#skills)
+- [Contact](https://zainebportfolio.vercel.app/#contact)
+- [Curriculum vitae](https://zainebportfolio.vercel.app/assets/cv/cv-en.pdf)
+
+## Topics
+
+- Full-stack software engineering
+- Applied artificial intelligence and machine learning
+- Web accessibility and WCAG-oriented product design
+- React, Node.js, NestJS, Django, Spring Boot, MongoDB, and PostgreSQL

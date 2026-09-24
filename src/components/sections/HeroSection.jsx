@@ -42,7 +42,7 @@ function HeroSection() {
           >
             <motion.div className="hero-brand-block" variants={fadeUp}>
               <div className="hero-brand-mark-wrap">
-                <img className="hero-brand-mark" src={personal.logoLight} alt="Zaineb logo" />
+                <img className="hero-brand-mark" src={personal.logoLight} alt="Zaineb logo" width="131" height="127" decoding="async" />
               </div>
               <div className="hero-brand-copy">
                 <h1 id="hero-title" className="hero-title">{personal.name}</h1>

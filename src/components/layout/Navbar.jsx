@@ -35,7 +35,7 @@ function Navbar({ activeSection, theme, onToggleTheme, language, onChangeLanguag
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <nav className="navbar" aria-label={language === "fr" ? "Navigation principale" : "Primary navigation"}>
         <div className="brand">
-          <img className="brand-logo" src={theme === "dark" ? personal.logoDark : personal.logoLight} alt="" aria-hidden="true" />
+          <img className="brand-logo" src={theme === "dark" ? personal.logoDark : personal.logoLight} alt="" aria-hidden="true" width="96" height="96" decoding="async" />
           <div className="brand-copy"><strong>{personal.name}</strong><span>{t("Software Engineering Portfolio")}</span></div>
         </div>
         <div className="nav-links">
