@@ -3,8 +3,8 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.setTimeout(90_000);
 
-async function expectNoOverlappingBranchLabels(page) {
-  const overlaps = await page.locator(".world-branch-label:visible").evaluateAll((labels) => {
+async function expectNoOverlappingLabels(page, selector) {
+  const overlaps = await page.locator(selector).evaluateAll((labels) => {
     const boxes = labels.map((label) => {
       const { left, right, top, bottom } = label.getBoundingClientRect();
       return { label: label.innerText.trim(), left, right, top, bottom };
@@ -15,6 +15,18 @@ async function expectNoOverlappingBranchLabels(page) {
       .map((other) => `${box.label} / ${other.label}`));
   });
   expect(overlaps).toEqual([]);
+}
+
+async function expectLabelsCenteredOnAnchors(page, selector) {
+  const offsets = await page.locator(selector).evaluateAll((labels) => labels.map((label) => {
+    const overlay = label.parentElement.getBoundingClientRect();
+    const bounds = label.getBoundingClientRect();
+    return {
+      x: Math.abs(bounds.left + bounds.width / 2 - overlay.left - Number.parseFloat(label.style.left)),
+      y: Math.abs(bounds.top + bounds.height / 2 - overlay.top - Number.parseFloat(label.style.top)),
+    };
+  }));
+  expect(offsets.every(({ x, y }) => x < 1 && y < 1)).toBe(true);
 }
 
 const accessibilityViewports = [
@@ -107,11 +119,21 @@ test("3D landmarks expose selectable portfolio stops", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   await expect(page.locator(".world-stop-label:not(.world-branch-label)")).toHaveCount(8);
+  await expectNoOverlappingLabels(page, ".world-stop-label:not(.world-branch-label):visible");
+  await expectLabelsCenteredOnAnchors(page, ".world-stop-label:not(.world-branch-label):visible");
   const projectLandmark = page.getByRole("button", { name: "Explore Projects" });
   await expect(projectLandmark).toBeVisible();
   await projectLandmark.click();
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
   await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "projects");
+});
+
+test("tablet landmark labels stay centered and avoid collisions", async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 768 });
+  await page.goto("/");
+  await expect(page.locator(".loading-overlay")).toBeHidden();
+  await expectNoOverlappingLabels(page, ".world-stop-label:not(.world-branch-label):visible");
+  await expectLabelsCenteredOnAnchors(page, ".world-stop-label:not(.world-branch-label):visible");
 });
 
 test("the full-page quest HUD follows the visitor between game chapters", async ({ page }) => {
@@ -151,7 +173,8 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']")).toHaveCount(4);
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
   await expect(page.locator(".world-stop-label:not(.world-branch-label):visible")).toHaveCount(0);
-  await expectNoOverlappingBranchLabels(page);
+  await expectNoOverlappingLabels(page, ".world-branch-label:visible");
+  await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
   await expect(page.locator("#experience .experience-card")).toHaveCount(4);
 
   await page.getByRole("button", { name: "Walk to QCMed" }).click();
@@ -189,7 +212,8 @@ test("project branch reveals full inline project details after travel", async ({
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(5);
-  await expectNoOverlappingBranchLabels(page);
+  await expectNoOverlappingLabels(page, ".world-branch-label:visible");
+  await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
 
   await page.getByRole("button", { name: "Walk to LegalGraph" }).click();
   await expect(page.locator(".project-details")).toBeVisible();
@@ -219,7 +243,8 @@ test("mobile project branch labels remain readable without collisions", async ({
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(5);
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible").first()).toBeVisible();
-  await expectNoOverlappingBranchLabels(page);
+  await expectNoOverlappingLabels(page, ".world-branch-label:visible");
+  await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
 });
 
 test("desktop arrow keys move between landmarks and reveal a selected branch", async ({ page }) => {

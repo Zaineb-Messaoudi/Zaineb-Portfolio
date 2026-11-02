@@ -762,6 +762,7 @@ export default function GameWorld({
       }
 
       const bounds = host.getBoundingClientRect();
+      const visibleStopLabels = [];
       world.markers.forEach((marker, index) => {
         const selected = index === currentIndex;
         marker.scale.setScalar(selected && !reduceMotion ? 1.07 + Math.sin(time * 0.0025) * 0.035 : selected ? 1.06 : 1);
@@ -779,11 +780,59 @@ export default function GameWorld({
           && projectedStop.y < 0.86
           && !branchCategoryRef.current
           && (bounds.width > 640 || selected);
-        label.style.transform = `translate3d(${(projectedStop.x * 0.5 + 0.5) * bounds.width}px,${(-projectedStop.y * 0.5 + 0.5) * bounds.height}px,0)`;
         label.style.visibility = onScreen ? "visible" : "hidden";
         label.tabIndex = onScreen ? 0 : -1;
         label.dataset.current = String(selected);
         label.setAttribute("aria-hidden", String(!onScreen));
+        if (onScreen) {
+          visibleStopLabels.push({
+            label,
+            left: (projectedStop.x * 0.5 + 0.5) * bounds.width,
+            top: (-projectedStop.y * 0.5 + 0.5) * bounds.height,
+          });
+        }
+      });
+      const placedStopLabels = [];
+      visibleStopLabels.forEach(({ label, left, top }) => {
+        const labelWidth = label.offsetWidth;
+        const labelHeight = label.offsetHeight;
+        const halfWidth = labelWidth / 2;
+        const halfHeight = labelHeight / 2;
+        const x = Math.max(halfWidth + 8, Math.min(bounds.width - halfWidth - 8, left));
+        const verticalStep = labelHeight + 8;
+        const offsets = [0, -1, 1, -2, 2, -3, 3, -4, 4].map((step) => step * verticalStep);
+        const placement = offsets.map((offset) => {
+          const y = top + offset;
+          return {
+            left: x - halfWidth,
+            right: x + halfWidth,
+            top: y - halfHeight,
+            bottom: y + halfHeight,
+            x,
+            y,
+          };
+        }).find((candidate) =>
+          candidate.top >= 4
+          && candidate.bottom <= bounds.height - 4
+          && placedStopLabels.every((placed) =>
+            candidate.left >= placed.right
+            || candidate.right <= placed.left
+            || candidate.top >= placed.bottom
+            || candidate.bottom <= placed.top
+          )
+        );
+        const fallback = placement || {
+          x,
+          y: Math.max(halfHeight + 4, Math.min(bounds.height - halfHeight - 4, top)),
+        };
+        label.style.left = `${fallback.x}px`;
+        label.style.top = `${fallback.y}px`;
+        placedStopLabels.push({
+          left: fallback.x - halfWidth,
+          right: fallback.x + halfWidth,
+          top: fallback.y - halfHeight,
+          bottom: fallback.y + halfHeight,
+        });
       });
       world.branchMarkers.forEach((marker) => {
         marker.scale.setScalar(marker.userData.branchId === selectedBranch && !reduceMotion ? 1.1 + Math.sin(time * 0.003) * 0.04 : 1);
@@ -792,7 +841,7 @@ export default function GameWorld({
         const [category, index] = marker.userData.branchId.split(":");
         const branchIndex = Number(index);
         marker.getWorldPosition(projectedStop);
-        projectedStop.y += 1.5;
+        projectedStop.y += 2.8;
         projectedStop.project(world.camera);
         const compactLabels = bounds.width <= 1023;
         const onScreen = category === branchCategoryRef.current
@@ -805,12 +854,13 @@ export default function GameWorld({
             && projectedStop.y < 0.84
           ));
         const labelX = compactLabels
-          ? bounds.width * (branchIndex % 2 === 0 ? 0.08 : 0.52)
+          ? bounds.width * (branchIndex % 2 === 0 ? 0.25 : 0.75)
           : (projectedStop.x * 0.5 + 0.5) * bounds.width;
         const labelY = compactLabels
           ? bounds.height * 0.12 + Math.floor(branchIndex / 2) * 56
           : (-projectedStop.y * 0.5 + 0.5) * bounds.height;
-        label.style.transform = `translate3d(${labelX}px,${labelY}px,0)`;
+        label.style.left = `${labelX}px`;
+        label.style.top = `${labelY}px`;
         label.style.visibility = onScreen ? "visible" : "hidden";
         label.tabIndex = onScreen ? 0 : -1;
         label.setAttribute("aria-hidden", String(!onScreen));
