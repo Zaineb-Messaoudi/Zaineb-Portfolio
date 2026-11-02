@@ -29,6 +29,34 @@ async function expectLabelsCenteredOnAnchors(page, selector) {
   expect(offsets.every(({ x, y }) => x < 1 && y < 1)).toBe(true);
 }
 
+async function expectBranchRoadsAndLabels(page, category, expectedCount) {
+  const labels = page.locator(`.world-branch-label[data-branch-id^='${category}:']:visible`);
+  await expect(labels).toHaveCount(expectedCount);
+  await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-branch-road-count", String(expectedCount));
+  const viewport = await page.locator(".world-stop-labels").evaluate((overlay) => {
+    const bounds = overlay.getBoundingClientRect();
+    return { width: bounds.width, height: bounds.height };
+  });
+  const anchors = await labels.evaluateAll((items) => items.map((label) => {
+    const overlay = label.parentElement.getBoundingClientRect();
+    const bounds = label.getBoundingClientRect();
+    return {
+      anchorX: Number(label.dataset.anchorX),
+      anchorY: Number(label.dataset.anchorY),
+      centerX: bounds.left + bounds.width / 2 - overlay.left,
+      centerY: bounds.top + bounds.height / 2 - overlay.top,
+    };
+  }));
+  expect(anchors.every(({ anchorX, anchorY, centerX, centerY }) =>
+    anchorX >= 0
+    && anchorX <= viewport.width
+    && anchorY >= 0
+    && anchorY <= viewport.height
+    && Math.abs(centerX - anchorX) < 100
+    && Math.abs(centerY - anchorY) < 100
+  ), JSON.stringify({ viewport, anchors }, null, 2)).toBe(true);
+}
+
 const accessibilityViewports = [
   { name: "small-phone", width: 320, height: 568 },
   { name: "foldable-open", width: 717, height: 512 },
@@ -209,7 +237,7 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await expect(page.locator(".world-intro")).toBeHidden();
   await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']")).toHaveCount(4);
-  await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
+  await expectBranchRoadsAndLabels(page, "experience", 4);
   const navBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
   const firstInternshipLabel = await page.locator(".world-branch-label[data-branch-id='experience:0']").boundingBox();
   expect(firstInternshipLabel.y).toBeGreaterThan(navBottom);
@@ -255,7 +283,7 @@ test("project branch reveals full inline project details after travel", async ({
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
   await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(6);
+  await expectBranchRoadsAndLabels(page, "projects", 6);
   const navBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
   const firstProjectLabel = await page.locator(".world-branch-label[data-branch-id='projects:0']").boundingBox();
   expect(firstProjectLabel.y).toBeGreaterThan(navBottom);
@@ -291,7 +319,7 @@ test("mobile project branch labels remain readable without collisions", async ({
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(6);
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(6);
+  await expectBranchRoadsAndLabels(page, "projects", 6);
   const mobileNavBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
   const mobileViewportHeight = await page.evaluate(() => window.innerHeight);
   const mobileLabelBoxes = await page.locator(".world-branch-label:visible").evaluateAll((labels) =>
