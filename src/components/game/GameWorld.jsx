@@ -856,7 +856,7 @@ export default function GameWorld({
         const columns = bounds.width < 600 ? 2 : 3;
         const slot = branchIndex % columns;
         const labelX = bounds.width * (slot + 0.5) / columns;
-        const labelY = bounds.height * 0.12 + Math.floor(branchIndex / columns) * 56;
+        const labelY = Math.max(100, bounds.height * 0.14) + Math.floor(branchIndex / columns) * 56;
         const onScreen = category === branchCategoryRef.current;
         label.style.left = `${labelX}px`;
         label.style.top = `${labelY}px`;

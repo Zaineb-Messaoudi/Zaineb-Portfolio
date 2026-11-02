@@ -7,7 +7,7 @@ function ProjectDetails({ project, onBack }) {
   const isFrench = language === "fr";
 
   return (
-    <article className="project-details">
+    <article id={`project-details-${project.slug}`} className="project-details" tabIndex="-1">
       <div className="project-details-heading">
         <div>
           <p className="eyebrow">{project.organization}</p>

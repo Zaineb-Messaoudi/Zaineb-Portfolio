@@ -835,6 +835,11 @@ body::after {
   scroll-margin-top: 76px;
 }
 
+.game-portfolio .experience-card,
+.game-portfolio .project-details {
+  scroll-margin-top: 92px;
+}
+
 .game-portfolio .section + .section {
   padding-top: clamp(40px, 6vw, 76px);
 }

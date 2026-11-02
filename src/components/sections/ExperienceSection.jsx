@@ -24,7 +24,14 @@ function ExperienceSection({ gameActive = false, selectedExperienceIndex = null,
       ) : null}
       <motion.div className="timeline" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.12 }} variants={staggerParent}>
         {localizedExperience.map((item, index) => selectedExperienceIndex === null || selectedExperienceIndex === index ? (
-          <motion.article key={`${item.company}-${item.role}`} className="experience-card" variants={fadeUp} style={{ "--node-accent": item.accent }}>
+          <motion.article
+            id={`experience-entry-${index}`}
+            key={`${item.company}-${item.role}`}
+            className="experience-card"
+            tabIndex={selectedExperienceIndex === index ? -1 : undefined}
+            variants={fadeUp}
+            style={{ "--node-accent": item.accent }}
+          >
             <span className="experience-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
             <div className="experience-head">
               <div className="experience-company">

@@ -95,15 +95,33 @@ function HomePage() {
     const delay = Math.max(0, 1000 - (performance.now() - arrivalReveal.requestedAt));
     const reveal = window.setTimeout(() => {
       if (arrivalReveal.stop !== activeStop) return;
-      document.getElementById(arrivalReveal.destination)?.scrollIntoView({
+      const destination = document.getElementById(arrivalReveal.destination);
+      destination?.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
         block: "start",
       });
-      document.getElementById(`${activeStop}-title`)?.focus({ preventScroll: true });
+      if (destination?.matches(".experience-card, .project-details")) {
+        destination.focus({ preventScroll: true });
+      } else {
+        document.getElementById(`${activeStop}-title`)?.focus({ preventScroll: true });
+      }
       setArrivalReveal(null);
     }, delay);
     return () => window.clearTimeout(reveal);
   }, [activeStop, arrivalReveal, chapterOpen, isTraveling]);
+
+  useEffect(() => {
+    if (!selectedProject || branchCategory === "projects") return undefined;
+    const frame = window.requestAnimationFrame(() => {
+    const details = document.getElementById(`project-details-${selectedProject.slug}`);
+    details?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+    details?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [branchCategory, selectedProject]);
 
   const visitStop = (id) => {
     setJourneyMapOpen(false);
@@ -182,7 +200,11 @@ function HomePage() {
     if (category === "experience") setSelectedExperienceIndex(Number(index));
     if (category === "projects") setSelectedProject(localizedProjects[Number(index)]);
     setArrivalReveal(reveal
-      ? { stop: category, destination: category, requestedAt: selectionStartedAt.current }
+      ? {
+          stop: category,
+          destination: category === "experience" ? `experience-entry-${index}` : `project-details-${localizedProjects[Number(index)].slug}`,
+          requestedAt: selectionStartedAt.current,
+        }
       : null);
   };
 

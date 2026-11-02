@@ -210,6 +210,9 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']")).toHaveCount(4);
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
+  const navBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
+  const firstInternshipLabel = await page.locator(".world-branch-label[data-branch-id='experience:0']").boundingBox();
+  expect(firstInternshipLabel.y).toBeGreaterThan(navBottom);
   await expect(page.locator(".world-stop-label:not(.world-branch-label):visible")).toHaveCount(0);
   await expectNoOverlappingLabels(page, ".world-branch-label:visible");
   await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
@@ -218,6 +221,8 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await page.getByRole("button", { name: "Walk to QCMed" }).click();
   await expect(page.locator("#experience .experience-card")).toHaveCount(1);
   await expect(page.locator("#experience .experience-card")).toContainText("QCMed");
+  await expect(page.locator("#experience-entry-0")).toBeInViewport();
+  await expect(page.locator("#experience-entry-0")).toBeFocused();
 
   await page.getByRole("button", { name: "Back to internship trail" }).click();
   await expect(page.locator("#experience .experience-card")).toHaveCount(4);
@@ -251,6 +256,9 @@ test("project branch reveals full inline project details after travel", async ({
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
   await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(6);
+  const navBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
+  const firstProjectLabel = await page.locator(".world-branch-label[data-branch-id='projects:0']").boundingBox();
+  expect(firstProjectLabel.y).toBeGreaterThan(navBottom);
   await expectNoOverlappingLabels(page, ".world-branch-label:visible");
   await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
 
@@ -258,6 +266,8 @@ test("project branch reveals full inline project details after travel", async ({
   await expect(page.locator(".project-details")).toBeVisible();
   await expect(page.locator(".project-details")).toContainText("LegalGraph");
   await expect(page.locator(".project-details")).toContainText("Decisions & trade-offs");
+  await expect(page.locator("#project-details-legalgraph")).toBeInViewport();
+  await expect(page.locator("#project-details-legalgraph")).toBeFocused();
 
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("button", { name: "Return to the main road" }).click();
@@ -281,7 +291,16 @@ test("mobile project branch labels remain readable without collisions", async ({
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(6);
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible").first()).toBeVisible();
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(6);
+  const mobileNavBottom = await page.locator(".navbar-wrap").evaluate((nav) => nav.getBoundingClientRect().bottom);
+  const mobileViewportHeight = await page.evaluate(() => window.innerHeight);
+  const mobileLabelBoxes = await page.locator(".world-branch-label:visible").evaluateAll((labels) =>
+    labels.map((label) => {
+      const { top, bottom } = label.getBoundingClientRect();
+      return { top, bottom };
+    })
+  );
+  expect(mobileLabelBoxes.every(({ top, bottom }) => top > mobileNavBottom && bottom < mobileViewportHeight)).toBe(true);
   await expectNoOverlappingLabels(page, ".world-branch-label:visible");
   await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
 });
