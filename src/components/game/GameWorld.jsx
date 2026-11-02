@@ -558,7 +558,7 @@ function makeScene(THREE, host, branchCounts) {
     const { width, height } = host.getBoundingClientRect();
     if (!width || !height) return;
     camera.aspect = width / height;
-    camera.fov = width < 600 ? 49 : width < 940 ? 45 : 42;
+    camera.fov = width < 600 ? 58 : width < 1024 ? 50 : 42;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
   });
@@ -794,7 +794,7 @@ export default function GameWorld({
         marker.getWorldPosition(projectedStop);
         projectedStop.y += 1.5;
         projectedStop.project(world.camera);
-        const compactLabels = bounds.width <= 640;
+        const compactLabels = bounds.width <= 1023;
         const onScreen = category === branchCategoryRef.current
           && (compactLabels || (
             projectedStop.z < 1
@@ -804,11 +804,11 @@ export default function GameWorld({
             && projectedStop.y > -0.9
             && projectedStop.y < 0.84
           ));
-        const labelX = bounds.width <= 640
+        const labelX = compactLabels
           ? bounds.width * (branchIndex % 2 === 0 ? 0.08 : 0.52)
           : (projectedStop.x * 0.5 + 0.5) * bounds.width;
-        const labelY = bounds.width <= 640
-          ? bounds.height * 0.22 + Math.floor(branchIndex / 2) * 56
+        const labelY = compactLabels
+          ? bounds.height * 0.12 + Math.floor(branchIndex / 2) * 56
           : (-projectedStop.y * 0.5 + 0.5) * bounds.height;
         label.style.transform = `translate3d(${labelX}px,${labelY}px,0)`;
         label.style.visibility = onScreen ? "visible" : "hidden";

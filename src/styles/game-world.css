@@ -1498,6 +1498,123 @@ body::after {
   }
 }
 
+@media (max-width: 1023px) {
+  .game-portfolio.is-game-mode .game-hero {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    padding-top: 88px;
+  }
+
+  .game-portfolio.is-game-mode .game-hero-copy {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(640px, calc(100% - 48px));
+    margin: 20px auto 0;
+  }
+
+  .game-portfolio.is-game-mode .game-world,
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    width: 100%;
+    height: clamp(400px, 55svh, 620px);
+    flex: 0 0 auto;
+    margin-top: 16px;
+  }
+
+  .game-portfolio.is-game-mode .world-intro,
+  .game-portfolio.is-game-mode .world-coordinates {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero {
+    height: auto;
+    min-height: 0;
+    padding-top: 74px;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero-copy {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: clamp(360px, 55svh, 560px);
+    margin-top: 0;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: min(340px, calc(100vw - 24px));
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-track {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-status {
+    min-height: 54px;
+    padding: 6px 9px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-compass,
+  .game-portfolio.is-game-mode .journey-hud-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-controls {
+    padding: 4px 8px 7px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-controls button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-map {
+    max-height: min(28svh, 250px);
+  }
+
+  .game-portfolio.is-game-mode .world-branch-label {
+    max-width: min(190px, 42vw);
+    min-height: 44px;
+    padding: 6px 9px;
+    font-size: clamp(0.65rem, 1.15vw, 0.75rem);
+    line-height: 1.2;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 700px) {
+  .game-portfolio.is-game-mode .game-hero-copy {
+    width: calc(100% - 36px);
+    margin-top: 12px;
+  }
+
+  .game-portfolio.is-game-mode .game-world {
+    height: clamp(360px, 58svh, 500px);
+    margin-top: 10px;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: clamp(350px, 55svh, 460px);
+  }
+
+  .game-portfolio.is-game-mode .journey-hud {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-map {
+    max-height: min(25svh, 190px);
+  }
+}
+
 :root[data-theme="dark"] .game-portfolio .navbar,
 :root[data-theme="dark"] .game-portfolio .nav-links {
   border-color: transparent;
