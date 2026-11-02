@@ -12,7 +12,18 @@ const LABELS = {
   contact: { en: "Contact", fr: "Contact" },
 };
 
-function JourneyHUD({ activeSection, language, mapOpen, onMapOpenChange, isTraveling, travelTargetLabel, onSelectStop, onDirection }) {
+function JourneyHUD({
+  activeSection,
+  language,
+  mapOpen,
+  onMapOpenChange,
+  branchCategory,
+  onReturnToMainRoad,
+  isTraveling,
+  travelTargetLabel,
+  onSelectStop,
+  onDirection,
+}) {
   const currentIndex = Math.max(0, STOPS.findIndex((stop) => stop.id === activeSection));
   const currentLabel = LABELS[STOPS[currentIndex].id][language];
   const isFrench = language === "fr";
@@ -71,6 +82,17 @@ function JourneyHUD({ activeSection, language, mapOpen, onMapOpenChange, isTrave
               </button>
             );
           })}
+          {branchCategory ? (
+            <button
+              type="button"
+              className="journey-hud-return"
+              disabled={isTraveling}
+              onClick={onReturnToMainRoad}
+            >
+              <ArrowLeft size={15} aria-hidden="true" />
+              {isFrench ? "Retourner à la route principale" : "Return to the main road"}
+            </button>
+          ) : null}
         </nav>
       ) : null}
     </aside>

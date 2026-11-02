@@ -342,6 +342,7 @@ function createAdventurer(THREE, scene) {
   const jacket = new THREE.MeshStandardMaterial({ color: "#bf7564", roughness: 0.59 });
   const skin = new THREE.MeshStandardMaterial({ color: "#be805e", roughness: 0.73 });
   const dark = new THREE.MeshStandardMaterial({ color: "#392e36", roughness: 0.62 });
+  const hairHighlight = new THREE.MeshStandardMaterial({ color: "#56414b", roughness: 0.62 });
   const gold = new THREE.MeshStandardMaterial({ color: "#f8cd7a", roughness: 0.44, metalness: 0.18 });
 
   const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.48, 0.68, 4, 8), jacket);
@@ -365,14 +366,45 @@ function createAdventurer(THREE, scene) {
     lock.castShadow = true;
     player.add(lock);
   }
-  const braid = new THREE.Mesh(new THREE.CapsuleGeometry(0.13, 0.62, 4, 8), dark);
-  braid.position.set(0, 2.05, -0.37);
-  braid.rotation.x = -0.18;
-  braid.castShadow = true;
-  player.add(braid);
-  const braidTie = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.035, 6, 12), gold);
-  braidTie.position.set(0, 2.28, -0.39);
-  player.add(braidTie);
+  const ponytail = new THREE.Group();
+  ponytail.position.set(-0.2, 2.53, 0.02);
+  const ponytailRoot = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), dark);
+  ponytailRoot.position.set(0, -0.02, 0.03);
+  ponytailRoot.scale.set(1, 0.8, 0.78);
+  ponytailRoot.castShadow = true;
+  ponytail.add(ponytailRoot);
+  const ponytailCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.03, -0.05, 0.02),
+    new THREE.Vector3(-0.2, -0.24, 0.12),
+    new THREE.Vector3(-0.25, -0.5, 0.2),
+    new THREE.Vector3(-0.12, -0.76, 0.27),
+    new THREE.Vector3(0.05, -0.94, 0.23),
+  ]);
+  const ponytailMesh = new THREE.Mesh(new THREE.TubeGeometry(ponytailCurve, 24, 0.16, 8, false), dark);
+  ponytailMesh.castShadow = true;
+  ponytail.add(ponytailMesh);
+  const flowingLock = new THREE.Mesh(
+    new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.01, -0.1, 0.13),
+        new THREE.Vector3(-0.12, -0.32, 0.27),
+        new THREE.Vector3(-0.13, -0.58, 0.34),
+        new THREE.Vector3(0.02, -0.82, 0.3),
+      ]),
+      20,
+      0.055,
+      6,
+      false
+    ),
+    hairHighlight
+  );
+  flowingLock.castShadow = true;
+  ponytail.add(flowingLock);
+  const ponytailTie = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.045, 7, 16), gold);
+  ponytailTie.position.set(-0.04, -0.1, 0.08);
+  ponytailTie.rotation.y = Math.PI / 2;
+  ponytail.add(ponytailTie);
+  player.add(ponytail);
 
   const pack = new THREE.Mesh(new THREE.BoxGeometry(0.64, 0.75, 0.33), coat);
   pack.position.set(0, 1.64, -0.48);
@@ -416,6 +448,7 @@ function createAdventurer(THREE, scene) {
   player.userData.legs = legs;
   player.userData.arms = arms;
   player.userData.body = torso;
+  player.userData.ponytail = ponytail;
   scene.add(player);
   return player;
 }
@@ -538,9 +571,11 @@ export default function GameWorld({
   activeSection,
   branchCategory,
   branchTarget,
+  branchReturning,
   branchLabels,
   branchCounts,
   onArriveBranch,
+  onArriveMainRoad,
   onArriveStop,
   onSelectBranch,
   onSelectStop,
@@ -553,7 +588,9 @@ export default function GameWorld({
   const activeSectionRef = useRef(activeSection);
   const branchCategoryRef = useRef(branchCategory);
   const branchTargetRef = useRef(branchTarget);
+  const branchReturningRef = useRef(branchReturning);
   const onArriveBranchRef = useRef(onArriveBranch);
+  const onArriveMainRoadRef = useRef(onArriveMainRoad);
   const onArriveStopRef = useRef(onArriveStop);
   const onSelectBranchRef = useRef(onSelectBranch);
   const onSelectStopRef = useRef(onSelectStop);
@@ -563,12 +600,14 @@ export default function GameWorld({
     activeSectionRef.current = activeSection;
     branchCategoryRef.current = branchCategory;
     branchTargetRef.current = branchTarget;
+    branchReturningRef.current = branchReturning;
     onArriveBranchRef.current = onArriveBranch;
+    onArriveMainRoadRef.current = onArriveMainRoad;
     onArriveStopRef.current = onArriveStop;
     onSelectBranchRef.current = onSelectBranch;
     onSelectStopRef.current = onSelectStop;
     scheduleRenderRef.current?.();
-  }, [activeSection, branchCategory, branchTarget, onArriveBranch, onArriveStop, onSelectBranch, onSelectStop]);
+  }, [activeSection, branchCategory, branchTarget, branchReturning, onArriveBranch, onArriveMainRoad, onArriveStop, onSelectBranch, onSelectStop]);
 
   useEffect(() => {
     let cancelled = false;
@@ -622,6 +661,7 @@ export default function GameWorld({
     let routeProgress = 0;
     let branchWaitForHub = false;
     let currentBranchTarget = null;
+    let currentBranchReturning = false;
     let lastArrivedTarget = null;
     let branchProgress = 0;
 
@@ -634,6 +674,7 @@ export default function GameWorld({
       previousTime = time;
       const smoothing = reduceMotion ? 1 : 1 - Math.exp(-elapsed * 5.4);
       const selectedBranch = branchTargetRef.current;
+      const returningToHub = branchReturningRef.current;
       const branchCurve = selectedBranch ? world.branchCurves.get(selectedBranch) : null;
       const branchCategory = selectedBranch?.split(":")[0];
 
@@ -641,12 +682,13 @@ export default function GameWorld({
         group.visible = category === branchCategoryRef.current;
       });
 
-      if (selectedBranch !== currentBranchTarget) {
+      if (selectedBranch !== currentBranchTarget || returningToHub !== currentBranchReturning) {
         currentBranchTarget = selectedBranch;
+        currentBranchReturning = returningToHub;
         branchProgress = 0;
         const branchParts = selectedBranch?.split(":");
         const parentIndex = branchParts ? STOPS.findIndex((stop) => stop.id === branchParts[0]) : -1;
-        branchWaitForHub = Boolean(branchCurve && parentIndex >= 0 && position.distanceTo(worldStopPoints[parentIndex]) > 0.45);
+        branchWaitForHub = Boolean(!returningToHub && branchCurve && parentIndex >= 0 && position.distanceTo(worldStopPoints[parentIndex]) > 0.45);
       }
 
       let targetTangent;
@@ -662,10 +704,13 @@ export default function GameWorld({
           }
         } else {
           branchProgress += (1 - branchProgress) * smoothing;
-          targetLocation = branchCurve.getPointAt(branchProgress);
+          const curveProgress = returningToHub ? 1 - branchProgress : branchProgress;
+          targetLocation = branchCurve.getPointAt(curveProgress);
           branchSettled = branchProgress >= 0.995;
         }
-        targetTangent = branchCurve.getTangentAt(branchWaitForHub ? 0 : branchProgress);
+        const curveProgress = returningToHub ? 1 - branchProgress : branchProgress;
+        targetTangent = branchCurve.getTangentAt(branchWaitForHub ? 0 : curveProgress);
+        if (returningToHub) targetTangent.negate();
       } else {
         routeProgress += (desiredProgress - routeProgress) * smoothing;
         targetLocation = world.routeCurve.getPoint(routeProgress);
@@ -683,10 +728,14 @@ export default function GameWorld({
       world.adventurer.userData.legs.forEach((leg, index) => { leg.rotation.x = index === 0 ? stride : -stride; });
       world.adventurer.userData.arms.forEach((arm, index) => { arm.rotation.x = index === 0 ? -stride * 0.72 : stride * 0.72; });
       world.adventurer.userData.body.rotation.z = walking && !reduceMotion ? Math.sin(time * 0.006) * 0.025 : 0;
+      world.adventurer.userData.ponytail.rotation.z = walking && !reduceMotion ? Math.sin(time * 0.012 + 0.8) * 0.13 : 0;
+      world.adventurer.userData.ponytail.rotation.x = walking && !reduceMotion ? Math.sin(time * 0.009) * 0.08 : 0;
       world.adventurer.position.y += walking && !reduceMotion ? Math.abs(Math.sin(time * 0.024)) * 0.11 : 0;
       world.adventurer.scale.setScalar(1.34);
 
-      const nearbyStop = branchCurve && !branchWaitForHub ? branchCurve.getPointAt(branchProgress) : worldStopPoints[currentIndex];
+      const nearbyStop = branchCurve && !branchWaitForHub
+        ? branchCurve.getPointAt(returningToHub ? 1 - branchProgress : branchProgress)
+        : worldStopPoints[currentIndex];
       nextCameraTarget.set(
         THREE.MathUtils.clamp(nearbyStop.x + 8, -16, 30),
         0,
@@ -698,9 +747,13 @@ export default function GameWorld({
       world.camera.lookAt(cameraTarget.x, 0, cameraTarget.z);
 
       const targetId = selectedBranch || activeSectionRef.current;
-      if (!walking && branchSettled && !branchWaitForHub && lastArrivedTarget !== targetId) {
-        lastArrivedTarget = targetId;
-        if (selectedBranch) {
+      const arrivalKey = `${targetId}:${returningToHub ? "return" : "arrive"}`;
+      if (!walking && branchSettled && !branchWaitForHub && lastArrivedTarget !== arrivalKey) {
+        lastArrivedTarget = arrivalKey;
+        if (returningToHub) {
+          onArriveMainRoadRef.current?.();
+          lastArrivedTarget = `${activeSectionRef.current}:arrive`;
+        } else if (selectedBranch) {
           onArriveBranchRef.current?.(selectedBranch);
           if (selectedBranch.endsWith(":hub")) lastArrivedTarget = activeSectionRef.current;
         } else {
@@ -741,13 +794,16 @@ export default function GameWorld({
         marker.getWorldPosition(projectedStop);
         projectedStop.y += 1.5;
         projectedStop.project(world.camera);
+        const compactLabels = bounds.width <= 640;
         const onScreen = category === branchCategoryRef.current
-          && projectedStop.z < 1
-          && projectedStop.z > -1
-          && projectedStop.x > -0.9
-          && projectedStop.x < 0.9
-          && projectedStop.y > -0.9
-          && projectedStop.y < 0.84;
+          && (compactLabels || (
+            projectedStop.z < 1
+            && projectedStop.z > -1
+            && projectedStop.x > -0.9
+            && projectedStop.x < 0.9
+            && projectedStop.y > -0.9
+            && projectedStop.y < 0.84
+          ));
         const labelX = bounds.width <= 640
           ? bounds.width * (branchIndex % 2 === 0 ? 0.08 : 0.52)
           : (projectedStop.x * 0.5 + 0.5) * bounds.width;

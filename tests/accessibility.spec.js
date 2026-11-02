@@ -68,14 +68,26 @@ test("the About chapter features the same accessible profile portrait as the her
   await expect(portrait).toBeVisible();
   await expect(portrait).toHaveAttribute("src", "/assets/Zaineb.webp");
   await expect(portrait).toHaveAttribute("alt", "Portrait of Zaineb Messaoudi");
+  const portraitFrame = page.locator("#about .about-portrait");
+  expect(Number.parseFloat(await portraitFrame.evaluate((frame) => getComputedStyle(frame).width))).toBeGreaterThan(252);
+});
+
+test("the hero resume link opens the supplied PDF in a browser tab", async ({ page }) => {
+  await page.goto("/");
+  const resumeLink = page.getByRole("link", { name: /view my resume/i });
+  await expect(resumeLink).toHaveAttribute("href", "/assets/cv/zaineb-messaoudi-resume-en.pdf");
+  await expect(resumeLink).toHaveAttribute("target", "_blank");
+  await expect(resumeLink).not.toHaveAttribute("download", "");
 });
 
 test("the journey HUD collapses while visitors read the scrollable sections", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByRole("button", { name: "Back to the 3D world" })).toBeHidden();
   await page.evaluate(() => window.scrollTo(0, document.querySelector("#about").offsetTop));
   await expect(page.locator(".game-portfolio")).toHaveClass(/is-reading/);
   await expect(page.locator(".journey-hud-controls")).toBeHidden();
   await expect(page.getByRole("button", { name: "Open the journey map" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Back to the 3D world" })).toBeVisible();
 });
 
 test("journey map walks to a section, then scrolls the normal page to it", async ({ page }) => {
@@ -150,6 +162,26 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await expect(page.locator("#experience .experience-card")).toHaveCount(4);
 });
 
+test("BCT reveals its exact details after a one-second arrival pause and can return to the main road", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open the journey map" }).click();
+  await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Internships" }).click();
+  await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
+  const selectedAt = Date.now();
+  await page.getByRole("button", { name: /Walk to .*BCT/ }).click();
+  await expect(page.locator("#experience")).toBeInViewport({ timeout: 1500 });
+  expect(Date.now() - selectedAt).toBeGreaterThanOrEqual(1000);
+  await expect(page.locator("#experience .experience-card")).toHaveCount(1);
+  await expect(page.locator("#experience .experience-card")).toContainText("BCT");
+
+  await page.getByRole("button", { name: "Open the journey map" }).click();
+  await page.getByRole("button", { name: "Return to the main road" }).click();
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "");
+  await expect(page.locator(".world-stop-label:not(.world-branch-label)")).toHaveCount(8);
+  await expect(page.locator(".world-branch-label:visible")).toHaveCount(0);
+});
+
 test("project branch reveals full inline project details after travel", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
@@ -163,6 +195,21 @@ test("project branch reveals full inline project details after travel", async ({
   await expect(page.locator(".project-details")).toBeVisible();
   await expect(page.locator(".project-details")).toContainText("LegalGraph");
   await expect(page.locator(".project-details")).toContainText("Decisions & trade-offs");
+
+  await page.getByRole("button", { name: "Open the journey map" }).click();
+  await page.getByRole("button", { name: "Return to the main road" }).click();
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "");
+  await expect(page.locator(".world-stop-label:not(.world-branch-label)")).toHaveCount(8);
+});
+
+test("navbar destinations jump directly to their content sections", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await expect(page.locator(".navbar-wrap")).toHaveCSS("position", "fixed");
+  await page.locator(".navbar").getByRole("button", { name: "Skills" }).click();
+  await expect(page.locator("#skills")).toBeInViewport();
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "skills");
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "");
 });
 
 test("mobile project branch labels remain readable without collisions", async ({ page }) => {
@@ -170,7 +217,8 @@ test("mobile project branch labels remain readable without collisions", async ({
   await page.goto("/");
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(5);
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(5);
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible").first()).toBeVisible();
   await expectNoOverlappingBranchLabels(page);
 });
 
@@ -189,7 +237,7 @@ test("desktop arrow keys move between landmarks and reveal a selected branch", a
   await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "experience");
 
   await page.keyboard.press("ArrowRight");
-  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-traveling", "true");
+  await expect(page.locator(".world-branch-label[data-current='true']")).toHaveCount(1);
   await page.waitForFunction(() => document.querySelector(".game-portfolio")?.dataset.gameTraveling === "false", { timeout: 20000 });
   await page.keyboard.press("ArrowDown");
   await expect(page.locator("#experience .experience-card")).toHaveCount(1);

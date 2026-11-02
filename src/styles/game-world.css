@@ -49,7 +49,7 @@ body::after {
 }
 
 .game-portfolio .navbar-wrap {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -58,6 +58,12 @@ body::after {
   min-height: 74px;
   padding-top: 0;
   border: 0;
+  background: linear-gradient(180deg, rgb(9 17 28 / 86%), rgb(9 17 28 / 0%));
+  pointer-events: none;
+}
+
+.game-portfolio .navbar {
+  pointer-events: auto;
 }
 
 .game-portfolio .navbar {
@@ -421,8 +427,7 @@ body::after {
 }
 
 .player-card,
-.player-quest,
-.begin-journey {
+.player-quest {
   pointer-events: auto;
 }
 
@@ -514,7 +519,6 @@ body::after {
 
 .player-quest button {
   display: inline-flex;
-  grid-column: 2;
   align-items: center;
   gap: 8px;
   width: fit-content;
@@ -534,29 +538,31 @@ body::after {
   color: #fff;
 }
 
-.begin-journey {
-  display: inline-flex;
-  min-height: 48px;
+.hero-quest-actions {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  padding: 11px 17px;
-  border: 1px solid rgb(255 255 255 / 80%);
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 10px 24px rgb(9 16 31 / 26%);
-  color: #182035;
-  font-family: var(--font-body);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: transform 170ms ease, box-shadow 170ms ease;
-  cursor: pointer;
+  gap: 8px 18px;
 }
 
-.begin-journey:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgb(9 16 31 / 38%);
+.hero-quest-actions a {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 7px;
+  color: var(--game-gold);
+  font-family: var(--font-code);
+  font-size: 0.59rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.hero-quest-actions a:hover,
+.hero-quest-actions a:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .world-bottom-fade {
@@ -1346,12 +1352,6 @@ body::after {
 
   .player-quest a {
     font-size: 0.53rem;
-  }
-
-  .begin-journey {
-    min-height: 40px;
-    padding: 8px 12px;
-    font-size: 0.67rem;
   }
 
   .world-caption {
@@ -2171,6 +2171,35 @@ body::after {
   color: var(--game-mint);
 }
 
+.journey-hud-return {
+  display: flex;
+  min-height: 42px;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 5px;
+  padding: 8px 10px;
+  border: 1px solid rgb(255 210 123 / 42%);
+  border-radius: 7px;
+  background: rgb(255 210 123 / 9%);
+  color: #ffe3a2;
+  font: 700 0.73rem var(--font-body);
+  cursor: pointer;
+}
+
+.journey-hud-return:hover,
+.journey-hud-return:focus-visible {
+  border-color: var(--game-gold);
+  background: rgb(255 210 123 / 18%);
+  color: #fff;
+}
+
+.journey-hud-return:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .game-world-canvas,
   .world-vignette,
@@ -2421,8 +2450,8 @@ body::after {
 .about-portrait {
   position: relative;
   display: grid;
-  width: clamp(170px, 19vw, 252px);
-  height: clamp(170px, 19vw, 252px);
+  width: clamp(210px, 23vw, 310px);
+  height: clamp(210px, 23vw, 310px);
   aspect-ratio: 1;
   place-items: center;
   margin: 0 14px 0 0;
@@ -2520,8 +2549,8 @@ body::after {
   }
 
   .about-portrait {
-    width: clamp(150px, 42vw, 190px);
-    height: clamp(150px, 42vw, 190px);
+    width: clamp(190px, 55vw, 230px);
+    height: clamp(190px, 55vw, 230px);
     justify-self: center;
     margin: 0 14px 8px;
   }
