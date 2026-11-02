@@ -9,6 +9,12 @@ function ExperienceSection({ gameActive = false, selectedExperienceIndex = null,
   const { language } = useLanguage();
   const localizedExperience = localize(experience, language);
   const localizedMeta = localize(sectionMeta.experience, language);
+  const companyMarks = {
+    QCMed: "QC",
+    "Esprit Tech": "ET",
+    "Central Bank of Tunisia (BCT)": "BCT",
+    "I-Way": "IW",
+  };
   return (
     <SectionShell id="experience" gameActive={gameActive} {...localizedMeta}>
       {selectedExperienceIndex !== null ? (
@@ -21,7 +27,20 @@ function ExperienceSection({ gameActive = false, selectedExperienceIndex = null,
           <motion.article key={`${item.company}-${item.role}`} className="experience-card" variants={fadeUp} style={{ "--node-accent": item.accent }}>
             <span className="experience-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
             <div className="experience-head">
-              <div className="experience-company"><img className="logo-mark" src={item.logo} alt={`${item.company} logo`} loading="lazy" decoding="async" /><div><h3 className="experience-title">{item.role}</h3><p className="meta-line">{item.company} • {item.location}</p></div></div>
+              <div className="experience-company">
+                <span className="experience-logo" aria-hidden="true">
+                  <img
+                    className="logo-mark"
+                    src={item.logo}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => { event.currentTarget.style.display = "none"; }}
+                  />
+                  <span>{companyMarks[item.company] || item.company.slice(0, 2).toUpperCase()}</span>
+                </span>
+                <div><h3 className="experience-title">{item.role}</h3><p className="meta-line">{item.company} • {item.location}</p></div>
+              </div>
               <span className="pill">{item.period}</span>
             </div>
             <p className="project-overview">{item.summary}</p>

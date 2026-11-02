@@ -736,15 +736,24 @@ export default function GameWorld({
       const nearbyStop = branchCurve && !branchWaitForHub
         ? branchCurve.getPointAt(returningToHub ? 1 - branchProgress : branchProgress)
         : worldStopPoints[currentIndex];
-      nextCameraTarget.set(
-        THREE.MathUtils.clamp(nearbyStop.x + 8, -16, 30),
-        0,
-        THREE.MathUtils.clamp(nearbyStop.z * 0.26, -4, 4)
-      );
+      const activeBranchIndex = branchCategoryRef.current
+        ? STOPS.findIndex((stop) => stop.id === branchCategoryRef.current)
+        : -1;
+      const cameraFocus = branchCategoryRef.current && (!branchCurve || branchWaitForHub) && activeBranchIndex >= 0
+        ? worldStopPoints[activeBranchIndex]
+        : branchCurve
+          ? targetLocation
+          : position;
+      nextCameraTarget.set(cameraFocus.x, 0, cameraFocus.z);
       const cameraEase = reduceMotion ? 1 : 1 - Math.exp(-elapsed * 3.2);
       cameraTarget.lerp(nextCameraTarget, cameraEase);
-      world.camera.position.set(cameraTarget.x * 0.3, 25, 37 + cameraTarget.z * 0.28);
+      if (branchCategoryRef.current) {
+        world.camera.position.set(cameraTarget.x, 21, cameraTarget.z + 17);
+      } else {
+        world.camera.position.set(cameraTarget.x + 10, 16, cameraTarget.z + 21);
+      }
       world.camera.lookAt(cameraTarget.x, 0, cameraTarget.z);
+      world.renderer.domElement.dataset.cameraMode = branchCategoryRef.current ? "branch" : "route";
 
       const targetId = selectedBranch || activeSectionRef.current;
       const arrivalKey = `${targetId}:${returningToHub ? "return" : "arrive"}`;
@@ -779,6 +788,7 @@ export default function GameWorld({
           && projectedStop.y > -0.92
           && projectedStop.y < 0.86
           && !branchCategoryRef.current
+          && Math.abs(index - currentIndex) <= 1
           && (bounds.width > 640 || selected);
         label.style.visibility = onScreen ? "visible" : "hidden";
         label.tabIndex = onScreen ? 0 : -1;
@@ -843,22 +853,11 @@ export default function GameWorld({
         marker.getWorldPosition(projectedStop);
         projectedStop.y += 2.8;
         projectedStop.project(world.camera);
-        const compactLabels = bounds.width <= 1023;
-        const onScreen = category === branchCategoryRef.current
-          && (compactLabels || (
-            projectedStop.z < 1
-            && projectedStop.z > -1
-            && projectedStop.x > -0.9
-            && projectedStop.x < 0.9
-            && projectedStop.y > -0.9
-            && projectedStop.y < 0.84
-          ));
-        const labelX = compactLabels
-          ? bounds.width * (branchIndex % 2 === 0 ? 0.25 : 0.75)
-          : (projectedStop.x * 0.5 + 0.5) * bounds.width;
-        const labelY = compactLabels
-          ? bounds.height * 0.12 + Math.floor(branchIndex / 2) * 56
-          : (-projectedStop.y * 0.5 + 0.5) * bounds.height;
+        const columns = bounds.width < 600 ? 2 : 3;
+        const slot = branchIndex % columns;
+        const labelX = bounds.width * (slot + 0.5) / columns;
+        const labelY = bounds.height * 0.12 + Math.floor(branchIndex / columns) * 56;
+        const onScreen = category === branchCategoryRef.current;
         label.style.left = `${labelX}px`;
         label.style.top = `${labelY}px`;
         label.style.visibility = onScreen ? "visible" : "hidden";

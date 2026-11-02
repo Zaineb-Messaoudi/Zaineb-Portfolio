@@ -316,7 +316,12 @@ function HomePage() {
 
   const selectProject = (project) => {
     const index = projects.findIndex((item) => item.slug === project.slug);
-    if (index >= 0) selectBranch(`projects:${index}`);
+    if (index < 0) return;
+    if (branchCategory === "projects" && activeStop === "projects") {
+      selectBranch(`projects:${index}`);
+      return;
+    }
+    setSelectedProject(localizedProjects[index]);
   };
 
   return (

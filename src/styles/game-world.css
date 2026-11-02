@@ -1500,30 +1500,76 @@ body::after {
 
 @media (max-width: 1023px) {
   .game-portfolio.is-game-mode .game-hero {
-    display: flex;
-    height: auto;
-    min-height: 0;
-    flex-direction: column;
-    padding-top: 88px;
+    display: block;
+    height: 100svh;
+    min-height: 100svh;
+    padding-top: 0;
   }
 
   .game-portfolio.is-game-mode .game-hero-copy {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: min(640px, calc(100% - 48px));
-    margin: 20px auto 0;
+    position: absolute;
+    top: clamp(84px, 11svh, 118px);
+    left: 18px;
+    width: min(420px, 43vw);
+    gap: 12px;
+    margin: 0;
+  }
+
+  .game-portfolio.is-game-mode .player-card > img {
+    width: 62px;
+    height: 76px;
+  }
+
+  .game-portfolio.is-game-mode .player-card h1 {
+    max-width: none;
+    font-size: clamp(1.5rem, 4.5vw, 2.3rem);
+    line-height: 0.94;
+  }
+
+  .game-portfolio.is-game-mode .player-card p {
+    font-size: 0.72rem;
+  }
+
+  .game-portfolio.is-game-mode .player-location {
+    font-size: 0.64rem;
+  }
+
+  .game-portfolio.is-game-mode .player-quest {
+    width: min(460px, 100%);
+    grid-template-columns: 9px minmax(0, 1fr) auto;
+    gap: 0 10px;
+    padding: 10px 12px;
+  }
+
+  .game-portfolio.is-game-mode .player-quest p {
+    font-size: 0.73rem;
+  }
+
+  .game-portfolio.is-game-mode .player-quest button {
+    margin-top: 0;
+  }
+
+  .game-portfolio.is-game-mode .hero-quest-actions {
+    grid-column: 3;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .game-portfolio.is-game-mode .hero-quest-actions a {
+    min-height: 28px;
+    font-size: 0.54rem;
   }
 
   .game-portfolio.is-game-mode .game-world,
   .game-portfolio.is-game-mode.has-branch-roads .game-world {
-    position: relative;
-    inset: auto;
+    position: absolute;
+    inset: 0;
     z-index: 0;
     width: 100%;
-    height: clamp(400px, 55svh, 620px);
-    flex: 0 0 auto;
-    margin-top: 16px;
+    height: 100%;
+    margin: 0;
   }
 
   .game-portfolio.is-game-mode .world-intro,
@@ -1532,9 +1578,8 @@ body::after {
   }
 
   .game-portfolio.is-game-mode.has-branch-roads .game-hero {
-    height: auto;
-    min-height: 0;
-    padding-top: 74px;
+    height: 100svh;
+    min-height: 100svh;
   }
 
   .game-portfolio.is-game-mode.has-branch-roads .game-hero-copy {
@@ -1542,8 +1587,7 @@ body::after {
   }
 
   .game-portfolio.is-game-mode.has-branch-roads .game-world {
-    height: clamp(360px, 55svh, 560px);
-    margin-top: 0;
+    height: 100%;
   }
 
   .game-portfolio.is-game-mode .journey-hud {
@@ -1597,8 +1641,7 @@ body::after {
   }
 
   .game-portfolio.is-game-mode .game-world {
-    height: clamp(360px, 58svh, 500px);
-    margin-top: 10px;
+    height: 100%;
   }
 
   .game-portfolio.is-game-mode.has-branch-roads .game-world {
@@ -2391,8 +2434,8 @@ body::after {
 }
 
 .game-portfolio.is-game-mode.has-branch-roads .game-hero {
-  height: min(56svh, 560px);
-  min-height: 410px;
+  height: 100svh;
+  min-height: 100svh;
 }
 
 .game-portfolio.is-game-mode.has-branch-roads .game-hero-copy {
@@ -2706,5 +2749,223 @@ body::after {
   .about-portrait::before {
     transition-duration: 0.01ms !important;
     animation: none !important;
+  }
+}
+
+.game-portfolio .footer-shell {
+  gap: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-color: rgb(132 226 207 / 0.32);
+  border-radius: 8px 22px 22px;
+  background:
+    radial-gradient(ellipse at 2% 0%, rgb(132 226 207 / 0.1), transparent 34%),
+    linear-gradient(145deg, #142630, #0d1b25);
+}
+
+.game-portfolio .footer-grid {
+  grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.game-portfolio .footer-brand-block,
+.game-portfolio .footer-column {
+  min-width: 0;
+  gap: 0.9rem;
+}
+
+.game-portfolio .footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.game-portfolio .footer-brand-mark {
+  position: relative;
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(132 226 207 / 0.34);
+  border-radius: 7px 14px 14px;
+  background: #19333a;
+  color: #d7fff4;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.game-portfolio .footer-brand-mark > span:last-child {
+  position: relative;
+}
+
+.game-portfolio .footer-logo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.3rem;
+  object-fit: contain;
+  background: #19333a;
+}
+
+:root[data-theme="dark"] .game-portfolio .footer-logo {
+  display: block;
+}
+
+.game-portfolio .experience-logo {
+  position: relative;
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(var(--region-rgb) / 0.3);
+  border-radius: 8px 14px 14px;
+  background: #eaf3ef;
+  color: #172a32;
+  font-family: var(--font-code);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.game-portfolio .experience-logo .logo-mark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.game-portfolio .footer-brand .eyebrow {
+  width: fit-content;
+  margin: 0 0 0.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--game-mint);
+  font-size: 0.56rem;
+}
+
+.game-portfolio .footer-title {
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.15;
+}
+
+.game-portfolio .footer-copy {
+  max-width: 48ch;
+  margin: 0;
+  color: #c6d3cf;
+  line-height: 1.6;
+}
+
+.game-portfolio .footer-status {
+  max-width: 100%;
+  width: fit-content;
+  border-radius: 6px 12px 12px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.game-portfolio .footer-heading {
+  margin: 0;
+  color: #f7f5eb;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+}
+
+.game-portfolio .footer-link-list,
+.game-portfolio .footer-contact-list {
+  gap: 0.8rem;
+}
+
+.game-portfolio .footer-text-link,
+.game-portfolio .footer-contact-item {
+  min-width: 0;
+  color: #c6d3cf;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.game-portfolio .footer-text-link:hover,
+.game-portfolio .footer-contact-item:hover {
+  color: var(--game-mint);
+}
+
+.game-portfolio .footer-bottom {
+  justify-content: flex-start;
+  padding-top: 1.15rem;
+  border-color: rgb(132 226 207 / 0.2);
+}
+
+.game-portfolio .footer-bottom .footer-copy {
+  flex: 0 1 auto;
+}
+
+.game-portfolio.is-game-mode .experience-number {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgb(132 226 207 / 0.36);
+  border-radius: 50%;
+  background: #132830;
+  box-shadow: 0 4px 14px rgb(3 8 13 / 26%);
+  color: var(--game-mint);
+  font-family: var(--font-code);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .game-portfolio.is-game-mode .game-hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+}
+
+@media (max-width: 1023px) {
+  .game-portfolio.is-game-mode .game-hero {
+    min-height: 100svh;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: 100%;
+  }
+
+  .game-portfolio .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 1.25rem;
+  }
+
+  .game-portfolio .footer-brand-block {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 420px) {
+  .game-portfolio .footer-shell {
+    padding: 1.25rem;
+  }
+
+  .game-portfolio .footer-status {
+    font-size: 0.75rem;
+  }
+
+  .game-portfolio .experience-number {
+    top: 1rem;
+    right: 1rem;
   }
 }

@@ -112,20 +112,57 @@ test("journey map walks to a section, then scrolls the normal page to it", async
   await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "projects");
   await expect(page.locator("#hero")).toBeInViewport();
   expect(await page.evaluate(() => window.scrollY)).toBeLessThan(20);
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(5);
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(6);
 });
 
 test("3D landmarks expose selectable portfolio stops", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   await expect(page.locator(".world-stop-label:not(.world-branch-label)")).toHaveCount(8);
+  expect(await page.locator(".world-stop-label:not(.world-branch-label):visible").count()).toBeLessThan(8);
+  await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "route");
   await expectNoOverlappingLabels(page, ".world-stop-label:not(.world-branch-label):visible");
   await expectLabelsCenteredOnAnchors(page, ".world-stop-label:not(.world-branch-label):visible");
-  const projectLandmark = page.getByRole("button", { name: "Explore Projects" });
-  await expect(projectLandmark).toBeVisible();
-  await projectLandmark.click();
-  await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
-  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "projects");
+  const aboutLandmark = page.getByRole("button", { name: "Explore About" });
+  await expect(aboutLandmark).toBeVisible();
+  await aboutLandmark.click();
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "about");
+});
+
+test("SolarShare is included with its CV details and GitHub source", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await page.locator("#projects").scrollIntoViewIfNeeded();
+
+  const solarShare = page.locator(".project-card").filter({ has: page.getByRole("heading", { name: "SolarShare" }) });
+  await expect(solarShare).toBeVisible();
+  await expect(solarShare).toContainText("Laravel 12");
+  await expect(solarShare.locator("a[aria-label='SolarShare source code on GitHub']")).toHaveAttribute(
+    "href",
+    "https://github.com/Zaineb-Messaoudi/projet_laravel_5twin7"
+  );
+  await expect(page.locator(".project-card")).toHaveCount(6);
+  await solarShare.getByRole("button", { name: /SolarShare/ }).click();
+  await expect(page.locator(".project-details")).toContainText("70 tests and 1,007 assertions");
+});
+
+test("unavailable project and internship images show branded fallbacks", async ({ page }) => {
+  await page.route("**/assets/projects/oralis-preview.png", (route) => route.abort());
+  await page.route("**/assets/I-WAY.jpg", (route) => route.abort());
+  await page.goto("/");
+
+  const experience = page.locator("#experience");
+  await experience.scrollIntoViewIfNeeded();
+  await experience.locator(".experience-card").nth(3).scrollIntoViewIfNeeded();
+  await expect(experience.locator(".experience-logo img").nth(3)).toBeHidden();
+  await expect(experience.locator(".experience-logo").nth(3)).toContainText("IW");
+
+  const projects = page.locator("#projects");
+  await projects.scrollIntoViewIfNeeded();
+  const oralis = page.locator(".project-card").filter({ has: page.getByRole("heading", { name: "Oralis" }) });
+  await oralis.scrollIntoViewIfNeeded();
+  await expect(oralis.locator(".project-media-placeholder")).toBeVisible();
+  await expect(oralis.locator(".project-media-placeholder")).toContainText("Oralis");
 });
 
 test("tablet landmark labels stay centered and avoid collisions", async ({ page }) => {
@@ -170,6 +207,7 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Internships" }).click();
   await expect(page.locator("#experience")).toHaveClass(/is-game-active/);
   await expect(page.locator(".world-intro")).toBeHidden();
+  await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']")).toHaveCount(4);
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
   await expect(page.locator(".world-stop-label:not(.world-branch-label):visible")).toHaveCount(0);
@@ -211,7 +249,8 @@ test("project branch reveals full inline project details after travel", async ({
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(5);
+  await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(6);
   await expectNoOverlappingLabels(page, ".world-branch-label:visible");
   await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");
 
@@ -241,7 +280,7 @@ test("mobile project branch labels remain readable without collisions", async ({
   await page.goto("/");
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
-  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(5);
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']")).toHaveCount(6);
   await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible").first()).toBeVisible();
   await expectNoOverlappingLabels(page, ".world-branch-label:visible");
   await expectLabelsCenteredOnAnchors(page, ".world-branch-label:visible");

@@ -17,7 +17,7 @@ import {
 
 export const personal = {
   name: "Zaineb Messaoudi",
-  title: "3rd Year Software Engineering Student",
+  title: "Final-year Software Engineering Student",
   focus:
     "Full Stack & AI · building accessible, measurable, production-minded digital products.",
   location: "Tunis, TN",
@@ -56,12 +56,12 @@ export const navItems = [
 export const heroStats = [
   { label: "Full-stack internships", value: "4" },
   { label: "Product domains", value: "3" },
-  { label: "Core projects", value: "3" },
+  { label: "Core projects", value: "6" },
   { label: "PFE availability", value: "Jan 2027" },
 ];
 
 export const summaryPoints = [
-  "Third-year Software Engineering student at ESPRIT (TWIN — Web & Internet Technologies) with hands-on full-stack delivery experience.",
+  "Final-year Software Engineering student at ESPRIT (TWIN — Web & Internet Technologies), available for a six-month PFE internship from January 2027.",
   "Built products across fintech, health, and edtech: secure internal platforms, healthcare workflows, accessibility tooling, and AI-enabled learning systems.",
   "Comfortable moving from interface design and backend architecture to deployment, real-time updates, authentication, and data-driven features.",
   "Brings a practical AI/ML foundation with a product mindset: explainable models, useful automation, and interfaces that remain clear and inclusive.",
@@ -155,11 +155,11 @@ export const experience = [
     logo: "/assets/qcmed.png",
     accent: "var(--accent-cyan)",
     summary:
-      "Delivered full-stack QCM and challenge features for a health platform, improving resident progress visibility and administrator workflows.",
+      "Delivered full-stack quiz and challenge features for a health platform, expanding the exam bank to 294 sets across 18 specialties and improving resident progress visibility.",
     bullets: [
-      "Built React and NestJS features with richer question attributes and granular resident progress tracking.",
-      "Developed a Node.js REST API for answer statistics using MongoDB aggregations and synchronized the admin dashboard in real time with WebSockets.",
-      "Improved partial-answer scoring and integrated AWS SES notification workflows for residents and administrators.",
+      "Built React and NestJS quiz and challenge modules with detailed question attributes and granular medical-resident progress tracking.",
+      "Designed a Node.js REST API with MongoDB aggregations and synchronized the administrator dashboard over WebSockets.",
+      "Improved partial-answer scoring; 60% of testers gave positive feedback on the change.",
     ],
     stack: ["React", "NestJS", "Node.js", "MongoDB", "WebSockets", "AWS SES"],
   },
@@ -171,11 +171,11 @@ export const experience = [
     logo: "/assets/esprit.png",
     accent: "var(--accent-cyan)",
     summary:
-      "Delivered HIKMALEARN, a full-stack accessibility platform for students with disabilities, from interface design through production deployment.",
+      "Delivered HIKMALEARN, an accessibility platform for students with disabilities, in 1.5 months with a six-person team and production-ready accessibility features.",
     bullets: [
-      "Designed the React frontend and Django REST backend and passed a WCAG 2.1 audit after a two-month delivery.",
-      "Integrated automated video captioning, screen reader support, keyboard navigation, and AI-generated image descriptions.",
-      "Collaborated with a six-developer team through code reviews and two-week Agile sprints.",
+      "Built the React frontend and Django REST backend, shipping after a successful WCAG 2.1 audit with 100% unit-test coverage.",
+      "Implemented automatic video captioning, screen-reader support, keyboard navigation, and AI-generated image descriptions.",
+      "Collaborated in a six-person team through code reviews and two-week Agile sprints.",
     ],
     stack: ["React", "Django REST", "Python", "WCAG 2.1", "Cloud AI", "Agile"],
   },
@@ -245,43 +245,43 @@ export const skills = [
     title: "Languages",
     icon: FileCode2,
     proficiency: 90,
-    items: ["Python", "Java", "JavaScript", "TypeScript", "PHP", "C", "C++"],
+    items: ["Python", "TypeScript", "JavaScript", "Java", "PHP", "C / C++", "SQL", "HTML", "CSS"],
   },
   {
     title: "Frameworks & Platforms",
     icon: MonitorSmartphone,
     proficiency: 88,
-    items: ["React", "Angular", "NestJS", "Node.js", "Spring Boot", "Django", "FastAPI", "Symfony", "FlutterFlow", "JavaFX", "Odoo"],
+    items: ["React", "Angular", "NestJS", "Node.js", "Django", "FastAPI", "Spring Boot", "Laravel", "Odoo", "REST APIs", "JWT", "RBAC"],
   },
   {
-    title: "Databases",
+    title: "Data & Real-Time",
     icon: Database,
     proficiency: 82,
-    items: ["MongoDB", "MySQL", "PostgreSQL", "Firebase"],
+    items: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Meilisearch", "WebSockets", "Socket.IO", "WebRTC"],
   },
   {
     title: "AI / ML",
     icon: Microscope,
     proficiency: 85,
-    items: ["scikit-learn", "XGBoost", "LightGBM", "SHAP", "Pandas", "NumPy", "NLP", "Artificial Intelligence"],
+    items: ["LLMs", "RAG", "Ollama", "Hugging Face", "NLP", "Faster-Whisper", "OpenCV", "MediaPipe", "scikit-learn", "XGBoost", "LightGBM", "SHAP", "Pandas"],
   },
   {
     title: "Design / UX",
     icon: Sparkles,
-    proficiency: 75,
+    proficiency: 78,
     items: ["Figma", "Adobe Creative Suite", "Photoshop", "Illustrator", "Canva", "Graphic Design"],
   },
   {
-    title: "DevOps & Delivery",
+    title: "DevOps & QA",
     icon: ShieldCheck,
     proficiency: 80,
-    items: ["Git", "GitHub", "Jenkins", "Docker", "Kubernetes", "Jira", "Agile", "Scrum", "Kanban"],
+    items: ["Docker", "Git / GitHub", "CI/CD", "Jenkins", "Kubernetes", "Jira / Xray", "SonarQube", "Agile / Scrum"],
   },
   {
-    title: "Leadership & Collaboration",
+    title: "UI/UX & Multimedia",
     icon: Users,
-    proficiency: 78,
-    items: ["Team Leadership", "Cross-functional Collaboration", "Multitasking & Time Management", "Agile Facilitation"],
+    proficiency: 75,
+    items: ["Figma", "Canva", "Adobe Photoshop", "Adobe Illustrator"],
   },
 ];
 
@@ -337,13 +337,13 @@ export const projects = [
     overview:
       "A learning platform combining course management with source-grounded AI support, voice transcription, study resources, quizzes, and learning analytics.",
     features: [
-      "Manages courses and learning materials for students, teachers, and administrators",
-      "Provides AI assistance grounded in learning sources",
-      "Adds voice transcription and AI-generated study resources",
-      "Includes quizzes and exercises for active practice",
-      "Surfaces personalized learning analytics",
+      "Provides course and material management with role-based permissions, versioning, and rollback",
+      "Handles prerequisite cycles, scheduled publishing, moderation, and ZIP export",
+      "Offers a real-time classroom presence board with Django Channels and WebSockets",
+      "Answers learning questions with cited sources and supports voice transcription",
+      "Includes AI-generated study resources, quizzes, exercises, and learning analytics",
     ],
-    stack: ["React", "Django", "Python", "AI", "Voice"],
+    stack: ["React", "Django REST", "Django Channels", "WebSockets", "MySQL", "Ollama", "Hugging Face"],
     emphasis: ["EdTech", "Multimodal AI", "Personalized Learning"],
     impact: "Course materials, voice tools, practice, and learning analytics in one platform",
     role: "Full Stack Developer",
@@ -367,6 +367,50 @@ export const projects = [
       "The repository contains separate React/Vite frontend and Django backend applications with a documented frontend/backend contract.",
   },
   {
+    slug: "solarshare",
+    title: "SolarShare",
+    subtitle: "AI-Powered Equipment Rental Marketplace",
+    period: "Sep 2026 – Oct 2026",
+    organization: "Individual project",
+    icon: Sparkles,
+    image: null,
+    overview:
+      "Built an equipment-rental marketplace combining a searchable catalogue and practical AI assistance, backed by a tested Laravel application and production-oriented Docker delivery.",
+    features: [
+      "Implemented a catalogue module covered by 70 tests and 1,007 assertions",
+      "Added natural-language semantic search powered by Meilisearch",
+      "Built a retrieval-augmented chatbot and AI-assisted price and description generation",
+      "Added automatic catalogue categorization and image validation",
+      "Prepared Docker CI/CD with PHP-FPM, Nginx, queue workers, health checks, and rollback",
+    ],
+    stack: ["Laravel 12", "MySQL", "Redis", "Meilisearch", "Ollama", "Docker"],
+    emphasis: ["Applied AI", "Search & Discovery", "Production Readiness"],
+    impact: "Seven AI-assisted marketplace features with a catalogue suite of 70 tests and 1,007 assertions",
+    role: "Full Stack Developer",
+    outcome: "Connects equipment discovery, rental catalogue workflows, and AI assistance in one marketplace.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/projet_laravel_5twin7",
+    },
+    problem:
+      "Finding the right equipment to rent can require browsing large catalogues with inconsistent descriptions. SolarShare brings search, catalogue tools, and AI assistance into one marketplace.",
+    decisions: [
+      {
+        title: "Natural-language search",
+        text: "Meilisearch supports semantic catalogue discovery so visitors can describe the equipment they need instead of relying only on exact product wording.",
+      },
+      {
+        title: "AI features around the catalogue",
+        text: "The seven AI features include a RAG chatbot, generated prices and descriptions, automatic categorization, and image validation, alongside semantic search.",
+      },
+      {
+        title: "Test and deployment discipline",
+        text: "The catalogue module has 70 tests and 1,007 assertions. The Docker delivery includes PHP-FPM, Nginx, queue workers, health checks, and rollback.",
+      },
+    ],
+    constraint:
+      "AI features use Ollama; production delivery is containerized and includes background queue processing.",
+  },
+  {
     slug: "oralis",
     title: "Oralis",
     subtitle: "AI-Assisted Oral Performance Assessment Platform",
@@ -375,7 +419,7 @@ export const projects = [
     icon: AudioLines,
     image: "/assets/projects/oralis-preview.png",
     overview:
-      "Architected and developed a full-stack oral assessment platform that transforms student audio and video submissions into structured speaking insights for instructors.",
+      "Built part of a five-person full-stack oral-assessment team, turning student audio and video submissions into structured speaking insights for instructors.",
     features: [
       "Speech-to-text transcription pipeline for audio and video submissions",
       "Filler-word detection, pause analysis, pronunciation scoring, and confidence evaluation",
@@ -383,9 +427,9 @@ export const projects = [
       "File upload validation, scalable REST APIs, and deployment-ready backend architecture",
       "Dockerized CI/CD workflows with automated testing and Kubernetes-ready pipelines",
     ],
-    stack: ["React", "NestJS", "MongoDB", "FastAPI", "Python", "JWT", "Docker", "Kubernetes"],
+    stack: ["React", "NestJS", "MongoDB", "FastAPI", "Python", "WebRTC", "Socket.IO", "JWT", "Docker"],
     emphasis: ["AI/Speech Analysis", "Secure Architecture", "CI/CD"],
-    impact: "Speech insights for clearer, more actionable feedback",
+    impact: "Speech and visual-delivery signals for clearer feedback on oral presentations",
     role: "Full Stack Developer",
     outcome: "Connected speech analysis, secure access, and deployment-ready services into one product.",
     links: {
@@ -420,9 +464,9 @@ export const projects = [
     icon: BrainCircuit,
     image: "/assets/projects/talentlens-preview.png",
     overview:
-      "Led the Career Optimisation module inside a five-person academic team and turned structured HR datasets into explainable hiring and career intelligence.",
+      "Led the machine-learning module in a five-person team, applying explainable models to a dataset of 15,000 job postings.",
     features: [
-      "Built a multi-output ML pipeline using XGBoost and LightGBM to predict salary ranges and job demand",
+      "Built a multi-output ML pipeline using XGBoost and LightGBM on 15,000 job postings",
       "Reached R2 = 0.88 on salary regression and AUC = 0.75 on career classification on held-out test data using CRISP-DM evaluation flow",
       "Added SHAP TreeExplainer for feature importance and what-if scenario explainability",
       "Contributed to anomaly detection with Isolation Forest, market segmentation with K-Means, and job recommendation with KNN",
@@ -501,9 +545,11 @@ export const projects = [
   },
 ];
 
-export const languageItems = ["Arabic · Native", "French · Fluent", "English · Intermediate"];
+export const languageItems = ["Arabic · Native", "French · Fluent", "English · B2 (Amideast certified)"];
 
 export const certifications = [
+  { name: "Blockchain Certifications (HCF, HBF, HCDA)", issuer: "Hedora Association", date: "Oct 2026" },
+  { name: "Associate Python Developer", issuer: "DataCamp", date: "Sep 2026" },
   { name: "MongoDB CRUD Operations", issuer: "MongoDB", date: "Dec 2025" },
   { name: "Prompt Engineering and Generative AI", issuer: "Coursera · ODC", date: "Jun 2025" },
   { name: "Microsoft Azure Fundamentals (AZ-900)", issuer: "Microsoft Learn", date: "Jul 2024" },
