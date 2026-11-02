@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Compass, Map, MapPin, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Compass, Map, MapPin, X, Moon, Sun } from "lucide-react";
 import { STOPS } from "./GameWorld";
 
 const LABELS = {
@@ -61,6 +61,25 @@ function JourneyHUD({
         <button type="button" aria-label={isFrench ? "Ouvrir le point sélectionné" : "Open selected point"} onClick={() => onDirection("down")}><ArrowDown size={16} aria-hidden="true" /></button>
         <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point suivant" : "Walk to next point"} onClick={() => onDirection("right")}><ArrowRight size={16} aria-hidden="true" /></button>
       </div>
+      <button
+        type="button"
+        className="journey-hud-reduce3d"
+        aria-label={isFrench ? "Réduire le mode 3D" : "Reduce 3D mode"}
+        onClick={() => {
+          const currently = localStorage.getItem("portfolio-reduce-3d") === "true";
+          localStorage.setItem("portfolio-reduce-3d", String(!currently));
+          document.body.classList.toggle("low-power", !currently);
+          const button = event.currentTarget;
+          button.setAttribute(
+            "aria-label",
+            !currently
+              ? isFrench ? "Rétablir le mode 3D complet" : "Restore full 3D mode"
+              : isFrench ? "Réduire le mode 3D" : "Reduce 3D mode"
+          );
+        }}
+      >
+        {localStorage.getItem("portfolio-reduce-3d") === "true" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+      </button>
       {mapOpen ? (
         <nav id="journey-hud-map" className="journey-hud-map" aria-label={isFrench ? "Destinations" : "Destinations"}>
           {STOPS.map((stop, index) => {

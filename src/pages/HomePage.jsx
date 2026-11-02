@@ -91,13 +91,13 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!arrivalReveal || !chapterOpen || isTraveling) return undefined;
+    if (!arrivalReveal) return undefined;
     const delay = Math.max(0, 1000 - (performance.now() - arrivalReveal.requestedAt));
     const reveal = window.setTimeout(() => {
       if (arrivalReveal.stop !== activeStop) return;
       const destination = document.getElementById(arrivalReveal.destination);
       destination?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
         block: "start",
       });
       if (destination?.matches(".experience-card, .project-details")) {
@@ -115,7 +115,7 @@ function HomePage() {
     const frame = window.requestAnimationFrame(() => {
     const details = document.getElementById(`project-details-${selectedProject.slug}`);
     details?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
       block: "start",
     });
     details?.focus({ preventScroll: true });
@@ -130,7 +130,7 @@ function HomePage() {
     if (id === activeStop) {
       setChapterOpen(id !== "hero");
       document.getElementById(id === "hero" || id === "projects" || id === "experience" ? "hero" : id)
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({ block: "start" });
       return;
     }
 
@@ -147,7 +147,7 @@ function HomePage() {
     setActiveStop(id);
     window.scrollTo({
       top: 0,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
     });
   };
 
@@ -186,7 +186,7 @@ function HomePage() {
     selectionStartedAt.current = performance.now();
     window.scrollTo({
       top: 0,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
     });
   };
 
@@ -227,7 +227,7 @@ function HomePage() {
     setIsTraveling(true);
     window.scrollTo({
       top: 0,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
     });
   };
 
@@ -259,7 +259,7 @@ function HomePage() {
     directNavigationTarget.current = isSameStop ? null : id;
     setIsTraveling(!isSameStop);
     document.getElementById(id)?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "auto",
       block: "start",
     });
     document.getElementById(id === "hero" ? "game-hero-title" : `${id}-title`)?.focus({ preventScroll: true });
@@ -311,10 +311,6 @@ function HomePage() {
         || target.closest(".navbar")
       )) return;
       if (!["ArrowLeft", "ArrowRight", "ArrowDown"].includes(event.key)) return;
-      if (event.repeat) {
-        event.preventDefault();
-        return;
-      }
       if (isTraveling && event.key !== "ArrowDown") {
         event.preventDefault();
         return;
@@ -333,7 +329,7 @@ function HomePage() {
 
   const closeChapter = () => {
     setChapterOpen(false);
-    document.getElementById("hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("hero")?.scrollIntoView({ block: "start" });
   };
 
   const selectProject = (project) => {

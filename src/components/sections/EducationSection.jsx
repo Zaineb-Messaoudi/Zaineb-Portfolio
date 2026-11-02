@@ -12,7 +12,7 @@ function EducationSection({ gameActive = false }) {
 
   return (
     <SectionShell id="education" gameActive={gameActive} {...localizedMeta}>
-      <motion.div
+      <motion-div
         className="education-grid"
         initial={reduceMotion ? false : "hidden"}
         whileInView={reduceMotion ? undefined : "visible"}
@@ -39,7 +39,7 @@ function EducationSection({ gameActive = false }) {
             </ul>
           </motion.article>
         ))}
-      </motion.div>
+      </motion-div>
     </SectionShell>
   );
 }

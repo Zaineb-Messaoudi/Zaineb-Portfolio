@@ -512,6 +512,10 @@ function makeScene(THREE, host, branchCounts) {
 
   const lowPower = window.matchMedia("(max-width: 760px), (pointer: coarse)").matches
     || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
+  // Note: reduce3d/localStorage toggle removed to avoid blank page issues
+  // if (reduce3d) document.body.classList.add("low-power");
+  // else document.body.classList.remove("low-power");
+  
   const renderer = new THREE.WebGLRenderer({
     alpha: false,
     antialias: !lowPower,
@@ -569,6 +573,15 @@ function makeScene(THREE, host, branchCounts) {
   return { scene, camera, renderer, adventurer, markers, raycaster, pointer, resizeObserver, routeCurve, ...branchWorld };
 }
 
+let THREE = null;
+
+export async function initTHREE() {
+  if (!THREE) {
+    THREE = await import("three");
+  }
+  return THREE;
+}
+
 export default function GameWorld({
   activeSection,
   branchCategory,
@@ -615,7 +628,8 @@ export default function GameWorld({
     let cancelled = false;
     let cleanup = () => {};
 
-    void import("three").then((THREE) => {
+    initTHREE().then((THREE_) => {
+      const THREE = THREE_;
       const host = hostRef.current;
       if (cancelled || !host) return;
 

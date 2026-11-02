@@ -15,10 +15,8 @@ async function submitContactForm(event, setStatus, t) {
   setStatus({ type: "loading", message: t("Sending your message...") });
 
   if (!formEndpoint) {
-    setStatus({
-      type: "error",
-      message: t("Contact form is not live yet. Please use email or LinkedIn until the form endpoint is connected."),
-    });
+    setStatus({ type: "error", message: t("Contact form is not live yet. Please use email or LinkedIn until the form endpoint is connected.") });
+    formElement.setAttribute("aria-disabled", "true");
     return;
   }
 
@@ -63,14 +61,14 @@ function ContactSection({ gameActive = false }) {
 
   return (
     <SectionShell id="contact" gameActive={gameActive} {...localizedMeta}>
-      <motion.div
+      <motion-div
         className="contact-grid"
         initial={reduceMotion ? false : "hidden"}
         whileInView={reduceMotion ? undefined : "visible"}
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerParent}
       >
-        <motion.div className="glass-card" variants={fadeUp}>
+        <motion-div className="glass-card" variants={fadeUp}>
           <h3 className="card-title">{t("Direct channels")}</h3>
           <div style={{ marginTop: "1rem", display: "grid", gap: "0.85rem" }}>
             {localizedCards.map((card) => (
@@ -87,15 +85,15 @@ function ContactSection({ gameActive = false }) {
               </a>
             ))}
           </div>
-        </motion.div>
+        </motion-div>
 
-        <motion.div className="glass-card" variants={fadeUp}>
+        <motion-div className="glass-card" variants={fadeUp}>
           <h3 className="card-title">{t("Send a message")}</h3>
           <p className="project-overview">
             {t("For internship roles, collaborative builds, or applied AI conversations, this form sends directly to Zaineb's inbox.")}
           </p>
 
-          <form className="contact-form"           onSubmit={(event) => submitContactForm(event, setStatus, t)}>
+          <form className="contact-form" onSubmit={(event) => submitContactForm(event, setStatus, t)}>
             <input type="hidden" name="_subject" value="New portfolio contact" />
             <div className="field">
               <label htmlFor="name">{t("Name")}</label>
@@ -147,8 +145,8 @@ function ContactSection({ gameActive = false }) {
               </p>
             ) : null}
           </form>
-        </motion.div>
-      </motion.div>
+        </motion-div>
+      </motion-div>
     </SectionShell>
   );
 }

@@ -14,13 +14,13 @@ function SummarySection({ gameActive = false }) {
   const localizedProcess = localize(processSteps, language);
   return (
     <SectionShell id="summary" gameActive={gameActive} {...localizedMeta}>
-      <motion.div className="summary-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.2 }} variants={staggerParent}>
+      <motion-div className="summary-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.2 }} variants={staggerParent}>
         {localizedPoints.map((item) => <motion.article key={item} className="summary-item" variants={fadeUp}>{item}</motion.article>)}
-      </motion.div>
-      <motion.div initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: 0.1, duration: 0.55 }} style={{ marginTop: "1.75rem" }}>
+      </motion-div>
+      <motion-div initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: 0.1, duration: 0.55 }} style={{ marginTop: "1.75rem" }}>
         <p className="card-title">{t("Spoken languages")}</p>
         <div className="language-list">{localizedLanguages.map((item) => <span key={item} className="stack-chip">{item}</span>)}</div>
-      </motion.div>
+      </motion-div>
       <div className="impact-strip" aria-label="Selected impact metrics">
         {localizedImpact.map((stat) => <div className="impact-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
       </div>

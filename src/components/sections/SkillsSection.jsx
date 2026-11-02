@@ -17,7 +17,7 @@ function SkillsSection({ gameActive = false }) {
 
   const handleSelect = (index) => {
     setActiveIndex(index);
-    cardRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    cardRefs.current[index]?.scrollIntoView({ block: "center" });
   };
 
   return (
@@ -29,7 +29,7 @@ function SkillsSection({ gameActive = false }) {
       </div>
       <SkillRadar data={localizedSkills} activeIndex={activeIndex} onSelect={handleSelect} />
 
-      <motion.div
+      <motion-div
         className="skills-grid"
         style={{ marginTop: "2.5rem" }}
         initial={reduceMotion ? false : "hidden"}
@@ -86,7 +86,7 @@ function SkillsSection({ gameActive = false }) {
             </motion.article>
           );
         })}
-      </motion.div>
+      </motion-div>
 
       <div className="certifications-block">
         <div>

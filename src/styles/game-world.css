@@ -1847,6 +1847,14 @@ body::after {
   letter-spacing: 0.14em;
 }
 
+.section-head-visual {
+  margin-top: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .game-portfolio .section .eyebrow {
   border-color: rgb(var(--region-rgb) / 0.42);
   background: rgb(var(--region-rgb) / 0.1);

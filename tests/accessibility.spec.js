@@ -167,7 +167,7 @@ test("SolarShare is included with its CV details and GitHub source", async ({ pa
   await expect(solarShare).toContainText("Laravel 12");
   await expect(solarShare.locator("a[aria-label='SolarShare source code on GitHub']")).toHaveAttribute(
     "href",
-    "https://github.com/Zaineb-Messaoudi/projet_laravel_5twin7"
+    "https://github.com/Zaineb-Messaoudi/Esprit_5TWIN7_BuilDream"
   );
   await expect(page.locator(".project-card")).toHaveCount(6);
   await solarShare.getByRole("button", { name: /SolarShare/ }).click();

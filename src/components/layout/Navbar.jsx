@@ -5,7 +5,7 @@ import { localize, useLanguage } from "../../i18n";
 
 function scrollToSection(id) {
   const element = document.getElementById(id);
-  element?.scrollIntoView({ behavior: "smooth", block: "start" });
+  element?.scrollIntoView({ block: "start" });
 }
 
 function Navbar({ activeSection, language, onChangeLanguage, onNavigate }) {

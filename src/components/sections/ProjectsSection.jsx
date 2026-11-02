@@ -18,7 +18,7 @@ function ProjectsSection({ onOpenProject, gameActive = false, onSelectProjectSto
       {selectedProject ? (
         <ProjectDetails project={selectedProject} onBack={onBackToProjects} />
       ) : (
-        <motion.div
+        <motion-div
           className="project-grid"
           initial={reduceMotion ? false : "hidden"}
           whileInView={reduceMotion ? undefined : "visible"}
@@ -92,7 +92,7 @@ function ProjectsSection({ onOpenProject, gameActive = false, onSelectProjectSto
             </div>
           </motion.article>
         ))}
-        </motion.div>
+        </motion-div>
       )}
     </SectionShell>
   );

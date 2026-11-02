@@ -70,7 +70,7 @@ export const summaryPoints = [
 export const impactStats = [
   { value: "40%", label: "faster collaboration cycle at BCT" },
   { value: "60%", label: "less processing time per file at I-Way" },
-  { value: "0.88", label: "R² salary regression with TalentLens" },
+  { value: "R² 0.88", label: "salary regression with TalentLens" },
   { value: "WCAG 2.1", label: "audit passed for HIKMALEARN" },
 ];
 
@@ -371,7 +371,7 @@ export const projects = [
     title: "SolarShare",
     subtitle: "AI-Powered Equipment Rental Marketplace",
     period: "Sep 2026 – Oct 2026",
-    organization: "Individual project",
+    organization: "Public GitHub project",
     icon: Sparkles,
     image: null,
     overview:
@@ -389,7 +389,7 @@ export const projects = [
     role: "Full Stack Developer",
     outcome: "Connects equipment discovery, rental catalogue workflows, and AI assistance in one marketplace.",
     links: {
-      github: "https://github.com/Zaineb-Messaoudi/projet_laravel_5twin7",
+      github: "https://github.com/Zaineb-Messaoudi/Esprit_5TWIN7_BuilDream",
     },
     problem:
       "Finding the right equipment to rent can require browsing large catalogues with inconsistent descriptions. SolarShare brings search, catalogue tools, and AI assistance into one marketplace.",
