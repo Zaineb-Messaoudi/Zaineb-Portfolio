@@ -280,8 +280,9 @@ function addBranchRoutes(THREE, scene, routeCurve, branchCounts) {
       const z = parentStop.z + Math.sin(angle) * layout.radius;
       const endpoint = new THREE.Vector3(x, terrainHeight(x, z) - 0.72, z);
       const curve = new THREE.CatmullRomCurve3([hub.clone(), endpoint.clone()]);
-      const route = new THREE.Mesh(new THREE.TubeGeometry(curve, 28, 0.22, 7, false), roadMaterial);
+      const route = new THREE.Mesh(new THREE.TubeGeometry(curve, 28, 0.38, 7, false), roadMaterial);
       route.castShadow = true;
+      route.userData.isBranchRoad = true;
       group.add(route);
       branchCurves.set(`${category}:${index}`, curve);
 
@@ -328,6 +329,7 @@ function addBranchRoutes(THREE, scene, routeCurve, branchCounts) {
       group.add(tree);
     }
 
+    group.userData.branchRoadCount = group.children.filter((child) => child.userData.isBranchRoad).length;
     group.visible = false;
     scene.add(group);
     branchGroups[category] = group;
@@ -656,6 +658,9 @@ export default function GameWorld({
     const cameraTarget = new THREE.Vector3(0, 0, 0);
     const nextCameraTarget = new THREE.Vector3(0, 0, 0);
     const projectedStop = new THREE.Vector3();
+    const branchPosition = new THREE.Vector3();
+    const branchMinimum = new THREE.Vector3();
+    const branchMaximum = new THREE.Vector3();
     const worldStopPoints = STOPS.map((_, index) => world.routeCurve.getPoint(index / (STOPS.length - 1)));
     let previousTime = 0;
     let routeProgress = 0;
@@ -739,20 +744,40 @@ export default function GameWorld({
       const activeBranchIndex = branchCategoryRef.current
         ? STOPS.findIndex((stop) => stop.id === branchCategoryRef.current)
         : -1;
-      const cameraFocus = branchCategoryRef.current && (!branchCurve || branchWaitForHub) && activeBranchIndex >= 0
-        ? worldStopPoints[activeBranchIndex]
-        : branchCurve
-          ? targetLocation
-          : position;
-      nextCameraTarget.set(cameraFocus.x, 0, cameraFocus.z);
+      let branchDistance = 0;
+      if (activeBranchIndex >= 0) {
+        branchMinimum.copy(worldStopPoints[activeBranchIndex]);
+        branchMaximum.copy(worldStopPoints[activeBranchIndex]);
+        world.branchMarkers.forEach((marker) => {
+          if (!marker.userData.branchId.startsWith(`${branchCategoryRef.current}:`)) return;
+          marker.getWorldPosition(branchPosition);
+          branchMinimum.min(branchPosition);
+          branchMaximum.max(branchPosition);
+        });
+        const branchRadius = branchMinimum.distanceTo(branchMaximum) * 0.5 + 2.5;
+        const branchCenter = branchMinimum.add(branchMaximum).multiplyScalar(0.5);
+        const limitingFov = 2 * Math.atan(
+          Math.tan(THREE.MathUtils.degToRad(world.camera.fov / 2)) * Math.min(world.camera.aspect, 1)
+        );
+        branchDistance = (branchRadius * 1.35) / Math.sin(limitingFov / 2);
+        nextCameraTarget.copy(branchCenter);
+      } else {
+        const cameraFocus = branchCurve ? targetLocation : position;
+        nextCameraTarget.set(cameraFocus.x, 0, cameraFocus.z);
+      }
       const cameraEase = reduceMotion ? 1 : 1 - Math.exp(-elapsed * 3.2);
       cameraTarget.lerp(nextCameraTarget, cameraEase);
       if (branchCategoryRef.current) {
-        world.camera.position.set(cameraTarget.x, 21, cameraTarget.z + 17);
+        world.camera.position.set(
+          cameraTarget.x + branchDistance * 0.3,
+          cameraTarget.y + branchDistance * 0.8,
+          cameraTarget.z + branchDistance * 0.52
+        );
       } else {
         world.camera.position.set(cameraTarget.x + 10, 16, cameraTarget.z + 21);
       }
-      world.camera.lookAt(cameraTarget.x, 0, cameraTarget.z);
+      world.camera.lookAt(cameraTarget.x, branchCategoryRef.current ? cameraTarget.y : 0, cameraTarget.z);
+      world.camera.updateMatrixWorld();
       world.renderer.domElement.dataset.cameraMode = branchCategoryRef.current ? "branch" : "route";
 
       const targetId = selectedBranch || activeSectionRef.current;
@@ -771,6 +796,8 @@ export default function GameWorld({
       }
 
       const bounds = host.getBoundingClientRect();
+      const activeBranchGroup = world.branchGroups[branchCategoryRef.current];
+      world.renderer.domElement.dataset.branchRoadCount = String(activeBranchGroup?.userData.branchRoadCount || 0);
       const visibleStopLabels = [];
       world.markers.forEach((marker, index) => {
         const selected = index === currentIndex;
@@ -844,26 +871,73 @@ export default function GameWorld({
           bottom: fallback.y + halfHeight,
         });
       });
+      const branchLabelPlacements = [];
       world.branchMarkers.forEach((marker) => {
         marker.scale.setScalar(marker.userData.branchId === selectedBranch && !reduceMotion ? 1.1 + Math.sin(time * 0.003) * 0.04 : 1);
         const label = branchLabelRefs.current[marker.userData.branchId];
         if (!label) return;
         const [category, index] = marker.userData.branchId.split(":");
-        const branchIndex = Number(index);
         marker.getWorldPosition(projectedStop);
-        projectedStop.y += 2.8;
+        projectedStop.y += 2.1;
         projectedStop.project(world.camera);
-        const columns = bounds.width < 600 ? 2 : 3;
-        const slot = branchIndex % columns;
-        const labelX = bounds.width * (slot + 0.5) / columns;
-        const labelY = Math.max(100, bounds.height * 0.14) + Math.floor(branchIndex / columns) * 56;
+        const anchorX = (projectedStop.x * 0.5 + 0.5) * bounds.width;
+        const anchorY = (-projectedStop.y * 0.5 + 0.5) * bounds.height;
         const onScreen = category === branchCategoryRef.current;
-        label.style.left = `${labelX}px`;
-        label.style.top = `${labelY}px`;
         label.style.visibility = onScreen ? "visible" : "hidden";
         label.tabIndex = onScreen ? 0 : -1;
         label.setAttribute("aria-hidden", String(!onScreen));
         label.dataset.current = String(marker.userData.branchId === branchTargetRef.current);
+        label.dataset.anchorX = String(anchorX);
+        label.dataset.anchorY = String(anchorY);
+        if (onScreen) branchLabelPlacements.push({ label, anchorX, anchorY });
+      });
+      branchLabelPlacements.sort((first, second) => first.anchorY - second.anchorY);
+      const placedBranchLabels = [];
+      const navbarBottom = document.querySelector(".navbar-wrap")?.getBoundingClientRect().bottom || 0;
+      const hud = document.querySelector(".journey-hud")?.getBoundingClientRect();
+      const obstacles = [
+        { left: 0, right: bounds.width, top: navbarBottom - bounds.top, bottom: 0 },
+        ...(hud ? [{
+          left: hud.left - bounds.left,
+          right: hud.right - bounds.left,
+          top: hud.top - bounds.top,
+          bottom: hud.bottom - bounds.top,
+        }] : []),
+      ];
+      branchLabelPlacements.forEach(({ label, anchorX, anchorY }) => {
+        const halfWidth = label.offsetWidth / 2;
+        const halfHeight = label.offsetHeight / 2;
+        const x = Math.max(halfWidth + 8, Math.min(bounds.width - halfWidth - 8, anchorX));
+        const verticalStep = label.offsetHeight + 8;
+        const candidates = [0, -1, 1, -2, 2, -3, 3].map((step) => ({
+          x,
+          y: anchorY + step * verticalStep,
+        }));
+        const placement = candidates.find(({ x: candidateX, y }) => {
+          const box = {
+            left: candidateX - halfWidth,
+            right: candidateX + halfWidth,
+            top: y - halfHeight,
+            bottom: y + halfHeight,
+          };
+          return box.top >= navbarBottom - bounds.top + 6
+            && box.bottom <= bounds.height - 6
+            && [...obstacles, ...placedBranchLabels].every((other) =>
+              box.left >= other.right
+              || box.right <= other.left
+              || box.top >= other.bottom
+              || box.bottom <= other.top
+            );
+        });
+        const fallback = placement || candidates[0];
+        label.style.left = `${fallback.x}px`;
+        label.style.top = `${fallback.y}px`;
+        placedBranchLabels.push({
+          left: fallback.x - halfWidth,
+          right: fallback.x + halfWidth,
+          top: fallback.y - halfHeight,
+          bottom: fallback.y + halfHeight,
+        });
       });
 
       world.renderer.render(world.scene, world.camera);
