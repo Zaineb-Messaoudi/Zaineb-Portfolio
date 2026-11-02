@@ -45,7 +45,9 @@ export const personal = {
 export const navItems = [
   { id: "hero", label: "Home" },
   { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
+  { id: "summary", label: "Story" },
+  { id: "experience", label: "Internships" },
+  { id: "education", label: "Education" },
   { id: "projects", label: "Projects" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
@@ -285,6 +287,86 @@ export const skills = [
 
 export const projects = [
   {
+    slug: "legalgraph",
+    title: "LegalGraph",
+    subtitle: "Semantic Legal Research & NLP Platform",
+    period: "Updated Oct 2026",
+    organization: "Public GitHub project",
+    icon: Microscope,
+    image: null,
+    overview:
+      "A Python semantic web application with four legal NLP modules for contract analysis, case summarization, compliance classification, and entity extraction.",
+    features: [
+      "Analyzes contract clauses and identifies potential risks using French spaCy tokenization and pattern matching",
+      "Summarizes case-law text and extracts key legal principles",
+      "Classifies compliance requirements and flags urgency",
+      "Extracts named entities, dates, obligations, and legal references",
+      "Uses an RDF / OWL legal ontology to connect legal concepts",
+    ],
+    stack: ["Python", "Flask", "spaCy", "NLTK", "RDF / OWL", "NLP"],
+    emphasis: ["Applied NLP", "Semantic Web", "Legal Technology"],
+    impact: "Four specialized legal NLP workflows in one semantic platform",
+    role: "Full Stack Developer",
+    outcome: "Connects four distinct legal NLP workflows through a shared semantic model.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/legal-semantic-app",
+    },
+    problem:
+      "Legal research combines distinct jobs—reading contracts, summarizing case law, classifying compliance requirements, and parsing documents—that otherwise require separate tools and repeated manual review.",
+    decisions: [
+      {
+        title: "Specialist pipelines, one interface",
+        text: "Each legal task routes to the NLP approach suited to it, from spaCy and pattern matching to extractive summarization and entity parsing.",
+      },
+      {
+        title: "Ontology as shared context",
+        text: "The RDF / OWL ontology gives the four modules a common vocabulary for legal concepts instead of treating every result as an isolated text response.",
+      },
+    ],
+    constraint:
+      "The platform uses local NLP processing rather than external LLM APIs; the README notes that model-dependent compliance classification can fall back to keyword rules when a trained model is unavailable.",
+  },
+  {
+    slug: "learnwise",
+    title: "Learnwise",
+    subtitle: "Multimodal AI-Powered Learning Platform",
+    period: "Updated Oct 2026",
+    organization: "Public GitHub project",
+    icon: BrainCircuit,
+    image: null,
+    overview:
+      "A learning platform combining course management with source-grounded AI support, voice transcription, study resources, quizzes, and learning analytics.",
+    features: [
+      "Manages courses and learning materials for students, teachers, and administrators",
+      "Provides AI assistance grounded in learning sources",
+      "Adds voice transcription and AI-generated study resources",
+      "Includes quizzes and exercises for active practice",
+      "Surfaces personalized learning analytics",
+    ],
+    stack: ["React", "Django", "Python", "AI", "Voice"],
+    emphasis: ["EdTech", "Multimodal AI", "Personalized Learning"],
+    impact: "Course materials, voice tools, practice, and learning analytics in one platform",
+    role: "Full Stack Developer",
+    outcome: "Brings source-grounded assistance and active-learning tools into a course-centered experience.",
+    links: {
+      github: "https://github.com/Zaineb-Messaoudi/Learnwise-5twin7",
+    },
+    problem:
+      "Students often need to switch between course material, revision tools, practice exercises, and learning progress. Learnwise brings these study activities together around the materials they already use.",
+    decisions: [
+      {
+        title: "Keep learning material central",
+        text: "The README describes AI assistance grounded in course sources, keeping responses connected to the learning material rather than presenting a disconnected chatbot.",
+      },
+      {
+        title: "Mix modalities with active practice",
+        text: "Voice transcription and generated resources sit alongside quizzes, exercises, and analytics, supporting different ways to study and review.",
+      },
+    ],
+    constraint:
+      "The repository contains separate React/Vite frontend and Django backend applications with a documented frontend/backend contract.",
+  },
+  {
     slug: "oralis",
     title: "Oralis",
     subtitle: "AI-Assisted Oral Performance Assessment Platform",
@@ -479,8 +561,8 @@ export const sectionMeta = {
   },
   projects: {
     eyebrow: "Selected Projects",
-    title: "A project workbench for seeing how I think and build",
-    description: "Select a build to explore the problem, your role, the outcome, and the architecture behind the work.",
+    title: "Every build has a story worth exploring",
+    description: "Explore recent GitHub projects alongside the original portfolio work, including the problems, decisions, technologies, and outcomes behind each build.",
   },
   skills: {
     eyebrow: "Technical Skills",

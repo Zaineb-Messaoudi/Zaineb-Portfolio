@@ -54,7 +54,7 @@ async function submitContactForm(event, setStatus, t) {
   }
 }
 
-function ContactSection() {
+function ContactSection({ gameActive = false }) {
   const reduceMotion = useReducedMotion();
   const { language, t } = useLanguage();
   const localizedCards = localize(contactCards, language);
@@ -62,7 +62,7 @@ function ContactSection() {
   const [status, setStatus] = useState({ type: "", message: "" });
 
   return (
-    <SectionShell id="contact" {...localizedMeta}>
+    <SectionShell id="contact" gameActive={gameActive} {...localizedMeta}>
       <motion.div
         className="contact-grid"
         initial={reduceMotion ? false : "hidden"}

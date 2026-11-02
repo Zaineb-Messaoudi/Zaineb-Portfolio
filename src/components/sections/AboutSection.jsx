@@ -7,13 +7,13 @@ import SectionShell from "../ui/SectionShell";
 import { localize, useLanguage } from "../../i18n";
 
 const engineeringLayers = [
-  { id: "interface", number: "01", label: "Interface", icon: Braces, title: "Make complexity feel clear", description: "React interfaces, Figma thinking, keyboard-friendly flows, and accessible product decisions.", tools: ["React", "Angular", "Figma", "WCAG 2.1"], color: "#e47aa8" },
-  { id: "backend", number: "02", label: "Backend", icon: Layers3, title: "Design systems that hold up", description: "REST APIs, authentication, role-based access, data models, and real-time workflows.", tools: ["NestJS", "FastAPI", "Spring Boot", "MongoDB"], color: "#c487d8" },
-  { id: "intelligence", number: "03", label: "Intelligence", icon: BrainCircuit, title: "Turn data into useful decisions", description: "Speech analysis, explainable ML, prediction, NLP, and AI features integrated into real products.", tools: ["Python", "XGBoost", "SHAP", "NLP"], color: "#8e9cde" },
-  { id: "delivery", number: "04", label: "Delivery", icon: Rocket, title: "Take ideas to production", description: "Dockerized applications, CI/CD contribution, deployment readiness, and collaborative Agile delivery.", tools: ["Docker", "Jenkins", "GitHub", "Agile"], color: "#68bcb3" },
+  { id: "interface", number: "01", label: "Interface", icon: Braces, title: "Make complexity feel clear", description: "React interfaces, Figma thinking, keyboard-friendly flows, and accessible product decisions.", tools: ["React", "Angular", "Figma", "WCAG 2.1"], color: "#ff9a91" },
+  { id: "backend", number: "02", label: "Backend", icon: Layers3, title: "Design systems that hold up", description: "REST APIs, authentication, role-based access, data models, and real-time workflows.", tools: ["NestJS", "FastAPI", "Spring Boot", "MongoDB"], color: "#c6a9ff" },
+  { id: "intelligence", number: "03", label: "Intelligence", icon: BrainCircuit, title: "Turn data into useful decisions", description: "Speech analysis, explainable ML, prediction, NLP, and AI features integrated into real products.", tools: ["Python", "XGBoost", "SHAP", "NLP"], color: "#88beff" },
+  { id: "delivery", number: "04", label: "Delivery", icon: Rocket, title: "Take ideas to production", description: "Dockerized applications, CI/CD contribution, deployment readiness, and collaborative Agile delivery.", tools: ["Docker", "Jenkins", "GitHub", "Agile"], color: "#84e2cf" },
 ];
 
-function AboutSection() {
+function AboutSection({ gameActive = false }) {
   const reduceMotion = useReducedMotion();
   const { language, t } = useLanguage();
   const localizedCards = localize(aboutCards, language);
@@ -23,7 +23,7 @@ function AboutSection() {
   const ActiveIcon = activeLayer.icon;
 
   return (
-    <SectionShell id="about" {...localizedMeta}>
+    <SectionShell id="about" gameActive={gameActive} {...localizedMeta}>
       <motion.div className="cards-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.15 }} variants={staggerParent}>
         {localizedCards.map((card) => {
           const Icon = card.icon;

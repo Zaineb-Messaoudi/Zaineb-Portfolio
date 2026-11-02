@@ -92,7 +92,16 @@ function ProjectModal({ project, onClose }) {
                       <span className="project-shot-dot" /><span className="project-shot-dot" /><span className="project-shot-dot" />
                     </div>
                     <div className="project-shot-body">
-                      <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
+                      {project.video ? (
+                        <video className="project-preview-image" src={project.video} poster={project.poster} controls preload="metadata" playsInline aria-label={`${project.title} project video`} />
+                      ) : project.image ? (
+                        <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
+                      ) : (
+                        <div className="project-media-placeholder" role="img" aria-label={`${project.title} project media preview`}>
+                          <span>{project.title}</span>
+                          <span>{project.stack.slice(0, 3).join(" / ")}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>

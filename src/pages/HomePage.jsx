@@ -1,85 +1,372 @@
-import { motion, useScroll } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowRight, Gamepad2 } from "lucide-react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
 import Navbar from "../components/layout/Navbar";
 import AboutSection from "../components/sections/AboutSection";
 import ContactSection from "../components/sections/ContactSection";
 import EducationSection from "../components/sections/EducationSection";
 import ExperienceSection from "../components/sections/ExperienceSection";
-import HeroSection from "../components/sections/HeroSection";
 import ProjectsSection from "../components/sections/ProjectsSection";
 import SkillsSection from "../components/sections/SkillsSection";
 import SummarySection from "../components/sections/SummarySection";
-import ProjectModal from "../components/ui/ProjectModal";
+import GameWorld, { STOPS } from "../components/game/GameWorld";
+import JourneyHUD from "../components/game/JourneyHUD";
 import SEOHead from "../components/SEOHead";
-import { navItems } from "../data/portfolioData";
-import { useActiveSection } from "../hooks/useActiveSection";
-import { useLanguage } from "../i18n";
+import { experience, personal, projects } from "../data/portfolioData";
+import { localize, useLanguage } from "../i18n";
 
-function FlowerFall({ activeSection }) {
-  const flowers = Array.from({ length: 48 }, (_, index) => index);
-  return (
-    <div key={activeSection} className="flower-fall" aria-hidden="true">
-      {flowers.map((flower) => (
-        <span
-          key={flower}
-          className="falling-flower"
-          style={{
-            "--flower-x": `${(flower * 37) % 103 - 1}%`,
-            "--flower-delay": `${(flower % 24) * 0.11}s`,
-            "--flower-duration": `${4.2 + (flower % 8) * 0.38}s`,
-            "--flower-size": `${7 + (flower % 8) * 2}px`,
-          }}
-        >
-          ✿
-        </span>
-      ))}
-    </div>
-  );
-}
+const BRANCH_COUNTS = { experience: experience.length, projects: projects.length };
+
+const localizedStopNames = {
+  about: { en: "About me", fr: "À propos" },
+  summary: { en: "My story", fr: "Mon parcours" },
+  experience: { en: "Internships", fr: "Stages" },
+  education: { en: "Education", fr: "Formation" },
+  projects: { en: "Projects", fr: "Projets" },
+  skills: { en: "Skills", fr: "Compétences" },
+  contact: { en: "Contact", fr: "Contact" },
+};
 
 function HomePage() {
   const { language, setLanguage } = useLanguage();
-  const [theme, setTheme] = useState(() => localStorage.getItem("portfolio-theme") || "dark");
-  const sectionIds = useMemo(() => navItems.map((item) => item.id), []);
-  const activeSection = useActiveSection(sectionIds);
+  const [activeStop, setActiveStop] = useState("hero");
+  const [chapterOpen, setChapterOpen] = useState(false);
+  const [isTraveling, setIsTraveling] = useState(false);
+  const [branchCategory, setBranchCategory] = useState(null);
+  const [branchTarget, setBranchTarget] = useState(null);
+  const [branchRevealIntent, setBranchRevealIntent] = useState(false);
+  const [focusedBranchIndex, setFocusedBranchIndex] = useState(null);
+  const [journeyMapOpen, setJourneyMapOpen] = useState(false);
+  const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const { scrollYProgress } = useScroll();
-
-  // The flower layer is keyed on the section, so it replays whenever that key
-  // changes. Opening the modal locks body scroll, which fires resize/scroll and can
-  // flip the active section — freeze the key while the modal is open so the flowers
-  // don't re-trigger behind it.
-  const [decorSection, setDecorSection] = useState(activeSection);
-  const isModalOpen = Boolean(selectedProject);
+  const localizedProjects = localize(projects, language);
+  const localizedExperience = localize(experience, language);
+  const branchLabels = {
+    experience: localizedExperience.map((item) => item.company),
+    projects: localizedProjects.map((item) => item.title),
+  };
+  const currentStop = Math.max(0, STOPS.findIndex((stop) => stop.id === activeStop));
+  const copy = language === "fr"
+    ? {
+        role: "Étudiante en ingénierie logicielle · Full-stack & IA appliquée",
+        location: "Tunis, Tunisie · ESPRIT / TWIN",
+        start: "PARCOURIR LE MONDE",
+        pfe: "Ma prochaine quête : un stage PFE à partir de janvier 2027.",
+        gameHint: "Cliquez sur un repère ou placez le focus sur la carte : ← / → pour marcher, ↓ pour entrer.",
+        active: "ÉTAPE ACTIVE",
+        progress: "PROGRESSION DU PARCOURS",
+        return: "Retour au monde 3D",
+      }
+    : {
+        role: "Software engineering student · Full-stack & applied AI",
+        location: "Tunis, Tunisia · ESPRIT / TWIN",
+        start: "EXPLORE THE WORLD",
+        pfe: "My next quest: a PFE internship starting January 2027.",
+        gameHint: "Click a landmark or focus the map: ← / → to walk, ↓ to enter.",
+        active: "CURRENT STOP",
+        progress: "JOURNEY PROGRESS",
+        return: "Back to the 3D world",
+      };
 
   useEffect(() => {
-    if (!isModalOpen) setDecorSection(activeSection);
-  }, [activeSection, isModalOpen]);
+    document.documentElement.dataset.theme = "dark";
+  }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("portfolio-theme", theme);
-  }, [theme]);
+    if (!chapterOpen || isTraveling) return;
+    const destination = branchCategory && !selectedProject && selectedExperienceIndex === null
+      ? "hero"
+      : activeStop;
+    const target = document.getElementById(destination);
+    if (!target) return;
+    target.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+    if (branchCategory && !selectedProject && selectedExperienceIndex === null) {
+      document.querySelector(".game-world")?.focus({ preventScroll: true });
+    } else {
+      document.getElementById(`${activeStop}-title`)?.focus({ preventScroll: true });
+    }
+  }, [activeStop, branchCategory, chapterOpen, isTraveling, selectedExperienceIndex, selectedProject]);
+
+  const visitStop = (id) => {
+    setJourneyMapOpen(false);
+    if (id === activeStop) {
+      setChapterOpen(id !== "hero");
+      document.getElementById(id === "hero" || id === "projects" || id === "experience" ? "hero" : id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    setSelectedExperienceIndex(null);
+    setSelectedProject(null);
+    setBranchTarget(null);
+    setBranchRevealIntent(false);
+    setFocusedBranchIndex(null);
+    setBranchCategory(null);
+    setChapterOpen(false);
+    setIsTraveling(true);
+    setActiveStop(id);
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  };
+
+  const arriveAtStop = (id) => {
+    if (id !== activeStop) return;
+    setIsTraveling(false);
+    setChapterOpen(id !== "hero");
+    setBranchCategory(id === "experience" || id === "projects" ? id : null);
+    setBranchTarget(null);
+    setBranchRevealIntent(false);
+    setFocusedBranchIndex(null);
+    setSelectedExperienceIndex(null);
+  };
+
+  const selectBranch = (id, revealOnArrival = true) => {
+    const [category, index] = id.split(":");
+    if (category !== branchCategory || !Number.isInteger(Number(index))) return;
+    setFocusedBranchIndex(Number(index));
+    setSelectedExperienceIndex(null);
+    setSelectedProject(null);
+    setBranchTarget(id);
+    setBranchRevealIntent(revealOnArrival);
+    setIsTraveling(true);
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  };
+
+  const arriveAtBranch = (id, reveal = branchRevealIntent) => {
+    if (id !== branchTarget) return;
+    const [category, index] = id.split(":");
+    setIsTraveling(false);
+    if (!reveal) return;
+    setChapterOpen(true);
+    if (category === "experience") setSelectedExperienceIndex(Number(index));
+    if (category === "projects") setSelectedProject(localizedProjects[Number(index)]);
+  };
+
+  const revealSelectedBranch = () => {
+    if (!branchCategory || !branchTarget) return;
+    if (isTraveling) {
+      setBranchRevealIntent(true);
+      return;
+    }
+    arriveAtBranch(branchTarget, true);
+  };
+
+  const handleDirection = (direction) => {
+    if (branchCategory && branchCategory === activeStop) {
+      const count = BRANCH_COUNTS[branchCategory];
+      if (direction === "down") {
+        if (branchTarget) revealSelectedBranch();
+        else selectBranch(`${branchCategory}:0`, true);
+        return;
+      }
+      if (direction !== "left" && direction !== "right") return;
+      const selectedIndex = focusedBranchIndex ?? -1;
+      const offset = direction === "right" ? 1 : -1;
+      const baseIndex = focusedBranchIndex === null && direction === "left" ? 0 : selectedIndex;
+      selectBranch(`${branchCategory}:${(baseIndex + offset + count) % count}`, false);
+      return;
+    }
+
+    if (direction === "down") {
+      if (activeStop !== "hero" && !chapterOpen) setChapterOpen(true);
+      return;
+    }
+    if (direction !== "left" && direction !== "right") return;
+    const offset = direction === "right" ? 1 : -1;
+    const nextIndex = (currentStop + offset + STOPS.length) % STOPS.length;
+    visitStop(STOPS[nextIndex].id);
+  };
+
+  useLayoutEffect(() => {
+    const onKeyDown = (event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && (
+        target.isContentEditable
+        || target.matches("input, textarea, select, video, [role='dialog']")
+        || target.closest("[role='dialog']")
+      )) return;
+      if (!["ArrowLeft", "ArrowRight", "ArrowDown"].includes(event.key)) return;
+      if (event.key === "ArrowDown" && (
+        !(branchCategory && branchCategory === activeStop)
+        || !(target instanceof HTMLElement)
+        || !target.closest(".game-world, .journey-hud")
+      )) return;
+      event.preventDefault();
+      handleDirection(event.key === "ArrowLeft" ? "left" : event.key === "ArrowRight" ? "right" : "down");
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeStop, branchCategory, branchTarget, chapterOpen, currentStop, focusedBranchIndex, isTraveling]);
+
+  const closeChapter = () => {
+    setChapterOpen(false);
+    document.getElementById("hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const selectProject = (project) => {
+    const index = projects.findIndex((item) => item.slug === project.slug);
+    if (index >= 0) selectBranch(`projects:${index}`);
+  };
 
   return (
-    <div className="page-shell" data-modal-open={isModalOpen ? "true" : undefined}>
+    <div
+      className={`game-portfolio is-game-mode ${chapterOpen ? "is-chapter-open" : ""} ${isTraveling ? "is-traveling" : ""} ${branchCategory ? "has-branch-roads" : ""}`}
+      data-game-current={activeStop}
+      data-game-branch={branchCategory || ""}
+      data-game-traveling={String(isTraveling)}
+    >
       <SEOHead />
-      <FlowerFall activeSection={decorSection} />
-      <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
-      <Navbar activeSection={activeSection} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} language={language} onChangeLanguage={setLanguage} />
+      <Navbar
+        activeSection={activeStop}
+        language={language}
+        onChangeLanguage={setLanguage}
+        onNavigate={visitStop}
+      />
       <main id="main-content">
-        <HeroSection />
-        <AboutSection />
-        <SummarySection />
-        <ExperienceSection />
-        <EducationSection />
-        <ProjectsSection onOpenProject={setSelectedProject} />
-        <SkillsSection />
-        <ContactSection />
+        <section className="game-hero" id="hero" aria-labelledby="game-hero-title">
+          <div className="game-hero-backdrop" aria-hidden="true" />
+          <div className="game-hero-copy">
+            <div className="player-card">
+              <img className="profile-image" src={personal.profileImage} alt="" width="90" height="112" />
+              <div>
+                <span className="player-rank">{language === "fr" ? "INGÉNIEURE EN DEVENIR" : "ENGINEER IN PROGRESS"}</span>
+                <h1 id="game-hero-title">{personal.name}</h1>
+                <p>{copy.role}</p>
+                <span className="player-location">{copy.location}</span>
+              </div>
+            </div>
+            <div className="player-quest">
+              <span className="quest-pip" aria-hidden="true" />
+              <p>{copy.pfe}</p>
+              <button type="button" onClick={() => visitStop("contact")}>
+                {language === "fr" ? "VOIR LA QUÊTE" : "VIEW QUEST"} <ArrowRight size={15} aria-hidden="true" />
+              </button>
+            </div>
+            <button className="begin-journey" type="button" onClick={() => setJourneyMapOpen(true)}>
+              <Gamepad2 size={17} aria-hidden="true" />
+              {copy.start}
+              <ArrowDown size={16} aria-hidden="true" />
+            </button>
+          </div>
+          <GameWorld
+            activeSection={activeStop}
+            branchCategory={branchCategory}
+            branchTarget={branchTarget}
+            branchLabels={branchLabels}
+            branchCounts={BRANCH_COUNTS}
+            onArriveBranch={arriveAtBranch}
+            onArriveStop={arriveAtStop}
+            onSelectBranch={selectBranch}
+            onSelectStop={visitStop}
+            language={language}
+          />
+          <div className="world-bottom-fade" aria-hidden="true" />
+          <div className="world-caption" aria-hidden="true">
+            <span>36° 48′ N · TUNIS</span>
+            <span>{language === "fr" ? "CARTE D'EXPLORATION 3D" : "3D EXPLORATION MAP"}</span>
+          </div>
+        </section>
+
+        <section className="journey-map-section" id="journey-map" aria-labelledby="journey-map-title">
+          <div className="journey-map-inner">
+            <div className="journey-heading">
+              <div>
+                <p>{language === "fr" ? "CHOISISSEZ VOTRE PROCHAINE DESTINATION" : "CHOOSE YOUR NEXT DESTINATION"}</p>
+                <h2 id="journey-map-title">{language === "fr" ? "La route est à vous." : "The route is yours."}</h2>
+              </div>
+              <span className="journey-current">
+                <i aria-hidden="true" />
+                {copy.active}: {localizedStopNames[STOPS[currentStop].id]?.[language] || (language === "fr" ? "Départ" : "Start")}
+              </span>
+            </div>
+            <div className="journey-route">
+              <div className="journey-route-line" aria-hidden="true">
+                <span style={{ "--journey-scale": currentStop / (STOPS.length - 1) }} />
+              </div>
+              {STOPS.map((stop, index) => {
+                const isActive = currentStop === index;
+                const stopName = localizedStopNames[stop.id]?.[language] || (language === "fr" ? "Départ" : "Start");
+                return (
+                  <button
+                    className={`journey-stop ${isActive ? "is-active" : ""} ${index < currentStop ? "is-visited" : ""}`}
+                    type="button"
+                    key={stop.id}
+                    onClick={() => visitStop(stop.id)}
+                    aria-current={isActive ? "step" : undefined}
+                    aria-label={`${String(index).padStart(2, "0")} ${stopName}`}
+                  >
+                    <span className="journey-stop-marker"><span /></span>
+                    <span className="journey-stop-number">{String(index).padStart(2, "0")}</span>
+                    <strong>{stopName}</strong>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="journey-hint"><Gamepad2 size={15} aria-hidden="true" />{copy.gameHint}</p>
+            <div
+              className="journey-progress"
+              role="progressbar"
+              aria-label={copy.progress}
+              aria-valuemin={0}
+              aria-valuemax={STOPS.length - 1}
+              aria-valuenow={currentStop}
+            >
+              <span>{copy.progress}</span>
+              <div><i style={{ "--progress-scale": currentStop / (STOPS.length - 1) }} /></div>
+              <strong>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</strong>
+            </div>
+          </div>
+        </section>
+
+        <div className="journey-chapters">
+          <span>{language === "fr" ? "LE VOYAGE" : "THE JOURNEY"}</span>
+          <span aria-hidden="true" />
+          <span>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</span>
+        </div>
+        <AboutSection gameActive={chapterOpen && activeStop === "about"} />
+        <SummarySection gameActive={chapterOpen && activeStop === "summary"} />
+        <ExperienceSection
+          gameActive={chapterOpen && activeStop === "experience"}
+          selectedExperienceIndex={selectedExperienceIndex}
+          onClearExperience={() => setSelectedExperienceIndex(null)}
+        />
+        <EducationSection gameActive={chapterOpen && activeStop === "education"} />
+        <ProjectsSection
+          onOpenProject={selectProject}
+          selectedProject={selectedProject}
+          onBackToProjects={() => setSelectedProject(null)}
+          gameActive={chapterOpen && activeStop === "projects"}
+        />
+        <SkillsSection gameActive={chapterOpen && activeStop === "skills"} />
+        <ContactSection gameActive={chapterOpen && activeStop === "contact"} />
       </main>
       <Footer />
-      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      <JourneyHUD
+        activeSection={activeStop}
+        language={language}
+        mapOpen={journeyMapOpen}
+        onMapOpenChange={setJourneyMapOpen}
+        isTraveling={isTraveling}
+        travelTargetLabel={branchTarget
+          ? branchLabels[branchTarget.split(":")[0]]?.[Number(branchTarget.split(":")[1])]
+          : null}
+        onSelectStop={visitStop}
+        onDirection={handleDirection}
+      />
+      {activeStop !== "hero" ? (
+        <button type="button" className="game-chapter-close" onClick={closeChapter}>
+          <Gamepad2 size={15} aria-hidden="true" />
+          {copy.return}
+        </button>
+      ) : null}
     </div>
   );
 }

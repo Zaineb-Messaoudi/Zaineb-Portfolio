@@ -23,7 +23,7 @@ function Footer() {
           <div className="footer-column"><h3 className="footer-heading">{t("Connect")}</h3><div className="footer-link-list">{localizedFooterLinks.map((link) => <a key={link.label} className="footer-text-link" href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined}>{link.label}</a>)}</div></div>
           <div className="footer-column"><h3 className="footer-heading">{t("Contact")}</h3><div className="footer-contact-list"><a className="footer-contact-item" href={`mailto:${localizedPersonal.email}`}>{localizedPersonal.email}</a><span className="footer-contact-item">{localizedPersonal.location}</span></div></div>
         </div>
-        <div className="footer-bottom"><p className="footer-copy">© {year} {localizedPersonal.name}. {t("Designed for a recruiter-ready, accessible portfolio experience.")}</p><a className="button button-secondary footer-cta" href="#hero">{t("Back to top")}</a></div>
+        <div className="footer-bottom"><p className="footer-copy">© {year} {localizedPersonal.name}. {t("A world to explore, not a document to scan.")}</p><a className="button button-secondary footer-cta" href="#hero">{t("Back to top")}</a></div>
       </div>
     </footer>
   );

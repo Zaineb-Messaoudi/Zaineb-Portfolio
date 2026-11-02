@@ -4,7 +4,7 @@ import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
 import { localize, useLanguage } from "../../i18n";
 
-function SummarySection() {
+function SummarySection({ gameActive = false }) {
   const reduceMotion = useReducedMotion();
   const { language, t } = useLanguage();
   const localizedMeta = localize(sectionMeta.summary, language);
@@ -13,7 +13,7 @@ function SummarySection() {
   const localizedImpact = localize(impactStats, language);
   const localizedProcess = localize(processSteps, language);
   return (
-    <SectionShell id="summary" {...localizedMeta}>
+    <SectionShell id="summary" gameActive={gameActive} {...localizedMeta}>
       <motion.div className="summary-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.2 }} variants={staggerParent}>
         {localizedPoints.map((item) => <motion.article key={item} className="summary-item" variants={fadeUp}>{item}</motion.article>)}
       </motion.div>

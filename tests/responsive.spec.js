@@ -38,5 +38,5 @@ test("mobile navigation remains keyboard reachable", async ({ page }) => {
   await expect(menu).toBeFocused();
   await menu.press("Enter");
   await expect(page.getByRole("dialog", { name: /mobile navigation menu/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Projects" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Projects", exact: true })).toBeVisible();
 });

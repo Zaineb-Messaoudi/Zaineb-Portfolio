@@ -30,11 +30,11 @@ function SEOHead() {
   useEffect(() => {
     const siteUrl = (import.meta.env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, "");
     const title = language === "fr"
-      ? "Zaineb Messaoudi | Ingénierie logicielle & IA"
-      : "Zaineb Messaoudi | Software Engineering & AI";
+      ? "Zaineb Messaoudi | Ingénierie logicielle, IA & projets interactifs"
+      : "Zaineb Messaoudi | Software Engineering, AI & interactive projects";
     const description = language === "fr"
-      ? "Portfolio de Zaineb Messaoudi, étudiante en ingénierie logicielle spécialisée en full-stack, IA appliquée et produits numériques accessibles."
-      : "Portfolio of Zaineb Messaoudi, a software engineering student focused on full-stack systems, applied AI, and accessible digital products.";
+      ? "Explorez les projets full-stack et IA appliquée de Zaineb Messaoudi. Recherche de stage PFE de six mois à partir de janvier 2027."
+      : "Explore Zaineb Messaoudi’s full-stack and applied AI projects. Seeking a six-month PFE internship starting January 2027.";
     const imageUrl = `${siteUrl}/assets/zaineb-horizontal-logo-dark.webp`;
 
     document.title = title;

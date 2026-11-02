@@ -1,27 +1,36 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Gem, Github } from "lucide-react";
 import { projects, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
+import ProjectDetails from "./ProjectDetails";
 import { localize, useLanguage } from "../../i18n";
 
-function ProjectsSection({ onOpenProject }) {
+function ProjectsSection({ onOpenProject, gameActive = false, onSelectProjectStop, selectedProject, onBackToProjects }) {
   const reduceMotion = useReducedMotion();
   const { language, t } = useLanguage();
   const localizedProjects = localize(projects, language);
   const localizedMeta = localize(sectionMeta.projects, language);
 
   return (
-    <SectionShell id="projects" {...localizedMeta}>
-      <motion.div
-        className="project-grid"
-        initial={reduceMotion ? false : "hidden"}
-        whileInView={reduceMotion ? undefined : "visible"}
-        viewport={{ once: true, amount: 0.08 }}
-        variants={staggerParent}
-      >
-        {localizedProjects.map((project) => (
+    <SectionShell id="projects" gameActive={gameActive} {...localizedMeta}>
+      {selectedProject ? (
+        <ProjectDetails project={selectedProject} onBack={onBackToProjects} />
+      ) : (
+        <motion.div
+          className="project-grid"
+          initial={reduceMotion ? false : "hidden"}
+          whileInView={reduceMotion ? undefined : "visible"}
+          viewport={{ once: true, amount: 0.08 }}
+          variants={staggerParent}
+        >
+        {localizedProjects.map((project, index) => (
           <motion.article key={project.slug} className="project-card" variants={fadeUp}>
+            <div className="project-artifact-label" aria-hidden="true">
+              <span><Gem size={14} /></span>
+              <span>{language === "fr" ? "ARTEFACT DE PROJET" : "BUILD ARTIFACT"}</span>
+              <span>{String(index + 1).padStart(2, "0")} / {String(localizedProjects.length).padStart(2, "0")}</span>
+            </div>
             <div className="project-media">
               <div className="project-media-copy">
                 <span className="pill">{project.period}</span>
@@ -32,7 +41,16 @@ function ProjectsSection({ onOpenProject }) {
                     <span className="project-shot-dot" />
                   </div>
                   <div className="project-shot-body">
+                  {project.video ? (
+                    <video className="project-preview-image" src={project.video} poster={project.poster} controls preload="metadata" playsInline aria-label={`${project.title} project video`} />
+                  ) : project.image ? (
                     <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
+                  ) : (
+                    <div className="project-media-placeholder" role="img" aria-label={`${project.title} project media preview`}>
+                      <span>{project.title}</span>
+                      <span>{project.stack.slice(0, 3).join(" / ")}</span>
+                    </div>
+                  )}
                   </div>
                 </div>
               </div>
@@ -82,7 +100,8 @@ function ProjectsSection({ onOpenProject }) {
             </div>
           </motion.article>
         ))}
-      </motion.div>
+        </motion.div>
+      )}
     </SectionShell>
   );
 }

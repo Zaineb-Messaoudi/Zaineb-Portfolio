@@ -4,14 +4,14 @@ import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
 import { localize, useLanguage } from "../../i18n";
 
-function EducationSection() {
+function EducationSection({ gameActive = false }) {
   const reduceMotion = useReducedMotion();
   const { language } = useLanguage();
   const localizedEducation = localize(education, language);
   const localizedMeta = localize(sectionMeta.education, language);
 
   return (
-    <SectionShell id="education" {...localizedMeta}>
+    <SectionShell id="education" gameActive={gameActive} {...localizedMeta}>
       <motion.div
         className="education-grid"
         initial={reduceMotion ? false : "hidden"}
