@@ -12,7 +12,18 @@ const LABELS = {
   contact: { en: "Contact", fr: "Contact" },
 };
 
-function JourneyHUD({ activeSection, language, mapOpen, onMapOpenChange, isTraveling, travelTargetLabel, onSelectStop, onDirection }) {
+function JourneyHUD({
+  activeSection,
+  language,
+  mapOpen,
+  onMapOpenChange,
+  branchCategory,
+  onReturnToMainRoad,
+  isTraveling,
+  travelTargetLabel,
+  onSelectStop,
+  onDirection,
+}) {
   const currentIndex = Math.max(0, STOPS.findIndex((stop) => stop.id === activeSection));
   const currentLabel = LABELS[STOPS[currentIndex].id][language];
   const isFrench = language === "fr";
@@ -46,9 +57,9 @@ function JourneyHUD({ activeSection, language, mapOpen, onMapOpenChange, isTrave
         <i style={{ left: `${(currentIndex / (STOPS.length - 1)) * 100}%` }}><MapPin size={11} /></i>
       </div>
       <div className="journey-hud-controls" role="group" aria-label={isFrench ? "Commandes de déplacement" : "Movement controls"}>
-        <button type="button" aria-label={isFrench ? "Aller au point précédent" : "Walk to previous point"} onClick={() => onDirection("left")}><ArrowLeft size={16} aria-hidden="true" /></button>
+        <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point précédent" : "Walk to previous point"} onClick={() => onDirection("left")}><ArrowLeft size={16} aria-hidden="true" /></button>
         <button type="button" aria-label={isFrench ? "Ouvrir le point sélectionné" : "Open selected point"} onClick={() => onDirection("down")}><ArrowDown size={16} aria-hidden="true" /></button>
-        <button type="button" aria-label={isFrench ? "Aller au point suivant" : "Walk to next point"} onClick={() => onDirection("right")}><ArrowRight size={16} aria-hidden="true" /></button>
+        <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point suivant" : "Walk to next point"} onClick={() => onDirection("right")}><ArrowRight size={16} aria-hidden="true" /></button>
       </div>
       {mapOpen ? (
         <nav id="journey-hud-map" className="journey-hud-map" aria-label={isFrench ? "Destinations" : "Destinations"}>
@@ -71,6 +82,17 @@ function JourneyHUD({ activeSection, language, mapOpen, onMapOpenChange, isTrave
               </button>
             );
           })}
+          {branchCategory ? (
+            <button
+              type="button"
+              className="journey-hud-return"
+              disabled={isTraveling}
+              onClick={onReturnToMainRoad}
+            >
+              <ArrowLeft size={15} aria-hidden="true" />
+              {isFrench ? "Retourner à la route principale" : "Return to the main road"}
+            </button>
+          ) : null}
         </nav>
       ) : null}
     </aside>

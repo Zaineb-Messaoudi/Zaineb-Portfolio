@@ -3,6 +3,7 @@ import { ExternalLink, Github, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "../../i18n";
+import ProjectMedia from "../sections/ProjectMedia";
 
 function ProjectModal({ project, onClose }) {
   const reduceMotion = useReducedMotion();
@@ -92,16 +93,7 @@ function ProjectModal({ project, onClose }) {
                       <span className="project-shot-dot" /><span className="project-shot-dot" /><span className="project-shot-dot" />
                     </div>
                     <div className="project-shot-body">
-                      {project.video ? (
-                        <video className="project-preview-image" src={project.video} poster={project.poster} controls preload="metadata" playsInline aria-label={`${project.title} project video`} />
-                      ) : project.image ? (
-                        <img className="project-preview-image" src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
-                      ) : (
-                        <div className="project-media-placeholder" role="img" aria-label={`${project.title} project media preview`}>
-                          <span>{project.title}</span>
-                          <span>{project.stack.slice(0, 3).join(" / ")}</span>
-                        </div>
-                      )}
+                      <ProjectMedia project={project} imageClassName="project-preview-image" />
                     </div>
                   </div>
                   <div>

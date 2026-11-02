@@ -2309,10 +2309,7 @@ button {
   border-color: var(--accent-rose);
 }
 .theme-button:hover { transform: translateY(-2px); background: rgba(228, 122, 168, .16); }
-.brand-logo, .footer-logo { width: 2.8rem; height: 2.8rem; object-fit: contain; }
-.footer-logo-dark { display: none; }
-:root[data-theme="dark"] .footer-logo { display: none; }
-:root[data-theme="dark"] .footer-logo-dark { display: block; }
+.brand-logo { width: 2.8rem; height: 2.8rem; object-fit: contain; }
 
 .hero-kicker,
 .availability-line {

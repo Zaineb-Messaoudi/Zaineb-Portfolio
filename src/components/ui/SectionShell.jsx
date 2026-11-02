@@ -13,12 +13,35 @@ const CHAPTERS = [
   { id: "contact", en: "Next quest", fr: "Prochaine quête", region: { en: "Harbor Gate", fr: "Porte du port" } },
 ];
 
-function SectionShell({ id, eyebrow, title, description, children, gameActive = false }) {
+function SectionShell({ id, eyebrow, title, description, children, headerAside, gameActive = false }) {
   const reduceMotion = useReducedMotion();
   const { language } = useLanguage();
   const chapterIndex = CHAPTERS.findIndex((chapter) => chapter.id === id);
   const chapter = CHAPTERS[chapterIndex];
   const chapterNumber = String(chapterIndex + 1).padStart(2, "0");
+  const sectionHead = (
+    <motion.div
+      className="section-head"
+      initial={reduceMotion ? false : "hidden"}
+      whileInView={reduceMotion ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.25 }}
+      variants={fadeUp}
+    >
+      {chapter ? (
+        <div className="chapter-banner">
+          <span className="chapter-banner-mark"><Flag size={14} aria-hidden="true" />{language === "fr" ? "CHAPITRE" : "CHAPTER"} {chapterNumber}</span>
+          <span className="chapter-banner-line" aria-hidden="true" />
+          <span className="chapter-banner-location"><MapPin size={13} aria-hidden="true" />{chapter.region[language]}</span>
+          <span className="chapter-banner-mode">{chapter[language]}</span>
+        </div>
+      ) : null}
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 id={`${id}-title`} className="section-title" tabIndex={gameActive ? -1 : undefined}>
+        {title}
+      </h2>
+      <p className="section-description">{description}</p>
+    </motion.div>
+  );
 
   return (
     <section
@@ -29,27 +52,14 @@ function SectionShell({ id, eyebrow, title, description, children, gameActive = 
     >
       <div className="container">
         <div className="section-inner">
-          <motion.div
-            className="section-head"
-            initial={reduceMotion ? false : "hidden"}
-            whileInView={reduceMotion ? undefined : "visible"}
-            viewport={{ once: true, amount: 0.25 }}
-            variants={fadeUp}
-          >
-            {chapter ? (
-              <div className="chapter-banner">
-                <span className="chapter-banner-mark"><Flag size={14} aria-hidden="true" />{language === "fr" ? "CHAPITRE" : "CHAPTER"} {chapterNumber}</span>
-                <span className="chapter-banner-line" aria-hidden="true" />
-                <span className="chapter-banner-location"><MapPin size={13} aria-hidden="true" />{chapter.region[language]}</span>
-                <span className="chapter-banner-mode">{chapter[language]}</span>
-              </div>
-            ) : null}
-            <p className="eyebrow">{eyebrow}</p>
-            <h2 id={`${id}-title`} className="section-title" tabIndex={gameActive ? -1 : undefined}>
-              {title}
-            </h2>
-            <p className="section-description">{description}</p>
-          </motion.div>
+          {headerAside ? (
+            <div className="section-head-layout">
+              {sectionHead}
+              <div className="section-head-aside">{headerAside}</div>
+            </div>
+          ) : (
+            sectionHead
+          )}
           <motion.div
             className="section-content-depth"
             initial={reduceMotion ? false : { opacity: 0, y: 46, rotateX: 9, scale: .97 }}

@@ -40,3 +40,45 @@ test("mobile navigation remains keyboard reachable", async ({ page }) => {
   await expect(page.getByRole("dialog", { name: /mobile navigation menu/i })).toBeVisible();
   await expect(page.getByRole("button", { name: "Projects", exact: true })).toBeVisible();
 });
+
+for (const viewport of [
+  { name: "phone", width: 390, height: 844 },
+  { name: "tablet", width: 768, height: 1024 },
+  { name: "tablet-landscape", width: 1023, height: 768 },
+]) {
+  test(`keeps the 3D road full-screen and usable at ${viewport.name}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await expect(page.locator(".loading-overlay")).toBeHidden();
+
+    const layout = await page.evaluate(() => {
+      const world = document.querySelector(".game-world").getBoundingClientRect();
+      const hero = document.querySelector(".game-hero").getBoundingClientRect();
+      const intro = document.querySelector(".game-hero-copy").getBoundingClientRect();
+      const hud = document.querySelector(".journey-hud").getBoundingClientRect();
+      return {
+        worldTop: world.top,
+        worldBottom: world.bottom,
+        worldHeight: world.height,
+        heroHeight: hero.height,
+        introBottom: intro.bottom,
+        hudHeight: hud.height,
+      };
+    });
+
+    expect(layout.worldTop).toBeLessThanOrEqual(1);
+    expect(layout.worldHeight).toBeGreaterThanOrEqual(viewport.height - 1);
+    expect(layout.worldBottom).toBeGreaterThanOrEqual(layout.heroHeight - 1);
+    expect(layout.introBottom).toBeLessThan(layout.heroHeight);
+    expect(layout.hudHeight).toBeLessThan(140);
+    expect(layout.heroHeight).toBeGreaterThanOrEqual(viewport.height - 1);
+
+    await page.getByRole("button", { name: /open the journey map/i }).click();
+    await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Internships" }).click();
+    await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-branch", "experience");
+    await expect(page.locator(".game-world-canvas")).toHaveAttribute("data-camera-mode", "branch");
+    await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
+    const branchMapHeight = await page.locator(".game-world").evaluate((world) => world.getBoundingClientRect().height);
+    expect(branchMapHeight).toBeGreaterThanOrEqual(350);
+  });
+}

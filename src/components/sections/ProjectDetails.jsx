@@ -1,12 +1,13 @@
 import { ExternalLink, Github, X } from "lucide-react";
 import { useLanguage } from "../../i18n";
+import ProjectMedia from "./ProjectMedia";
 
 function ProjectDetails({ project, onBack }) {
   const { language, t } = useLanguage();
   const isFrench = language === "fr";
 
   return (
-    <article className="project-details">
+    <article id={`project-details-${project.slug}`} className="project-details" tabIndex="-1">
       <div className="project-details-heading">
         <div>
           <p className="eyebrow">{project.organization}</p>
@@ -20,16 +21,7 @@ function ProjectDetails({ project, onBack }) {
       </div>
 
       <div className="project-details-media">
-        {project.video ? (
-          <video src={project.video} poster={project.poster} controls preload="metadata" playsInline aria-label={`${project.title} project video`} />
-        ) : project.image ? (
-          <img src={project.image} alt={`${project.title} preview`} loading="lazy" decoding="async" />
-        ) : (
-          <div className="project-media-placeholder" role="img" aria-label={`${project.title} project media preview`}>
-            <span>{project.title}</span>
-            <span>{project.stack.slice(0, 3).join(" / ")}</span>
-          </div>
-        )}
+        <ProjectMedia project={project} />
       </div>
 
       <p className="project-overview">{project.overview}</p>

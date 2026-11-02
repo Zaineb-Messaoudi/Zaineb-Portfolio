@@ -49,7 +49,7 @@ body::after {
 }
 
 .game-portfolio .navbar-wrap {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -58,6 +58,12 @@ body::after {
   min-height: 74px;
   padding-top: 0;
   border: 0;
+  background: linear-gradient(180deg, rgb(9 17 28 / 86%), rgb(9 17 28 / 0%));
+  pointer-events: none;
+}
+
+.game-portfolio .navbar {
+  pointer-events: auto;
 }
 
 .game-portfolio .navbar {
@@ -421,8 +427,7 @@ body::after {
 }
 
 .player-card,
-.player-quest,
-.begin-journey {
+.player-quest {
   pointer-events: auto;
 }
 
@@ -514,7 +519,6 @@ body::after {
 
 .player-quest button {
   display: inline-flex;
-  grid-column: 2;
   align-items: center;
   gap: 8px;
   width: fit-content;
@@ -534,29 +538,31 @@ body::after {
   color: #fff;
 }
 
-.begin-journey {
-  display: inline-flex;
-  min-height: 48px;
+.hero-quest-actions {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  padding: 11px 17px;
-  border: 1px solid rgb(255 255 255 / 80%);
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 10px 24px rgb(9 16 31 / 26%);
-  color: #182035;
-  font-family: var(--font-body);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: transform 170ms ease, box-shadow 170ms ease;
-  cursor: pointer;
+  gap: 8px 18px;
 }
 
-.begin-journey:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgb(9 16 31 / 38%);
+.hero-quest-actions a {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 7px;
+  color: var(--game-gold);
+  font-family: var(--font-code);
+  font-size: 0.59rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.hero-quest-actions a:hover,
+.hero-quest-actions a:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .world-bottom-fade {
@@ -827,6 +833,11 @@ body::after {
 .game-portfolio .section {
   padding: clamp(40px, 6vw, 76px) 0;
   scroll-margin-top: 76px;
+}
+
+.game-portfolio .experience-card,
+.game-portfolio .project-details {
+  scroll-margin-top: 92px;
 }
 
 .game-portfolio .section + .section {
@@ -1348,12 +1359,6 @@ body::after {
     font-size: 0.53rem;
   }
 
-  .begin-journey {
-    min-height: 40px;
-    padding: 8px 12px;
-    font-size: 0.67rem;
-  }
-
   .world-caption {
     right: 18px;
     bottom: 17px;
@@ -1495,6 +1500,166 @@ body::after {
   .game-hero-copy {
     left: 12px;
     width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .game-portfolio.is-game-mode .game-hero {
+    display: block;
+    height: 100svh;
+    min-height: 100svh;
+    padding-top: 0;
+  }
+
+  .game-portfolio.is-game-mode .game-hero-copy {
+    position: absolute;
+    top: clamp(84px, 11svh, 118px);
+    left: 18px;
+    width: min(420px, 43vw);
+    gap: 12px;
+    margin: 0;
+  }
+
+  .game-portfolio.is-game-mode .player-card > img {
+    width: 62px;
+    height: 76px;
+  }
+
+  .game-portfolio.is-game-mode .player-card h1 {
+    max-width: none;
+    font-size: clamp(1.5rem, 4.5vw, 2.3rem);
+    line-height: 0.94;
+  }
+
+  .game-portfolio.is-game-mode .player-card p {
+    font-size: 0.72rem;
+  }
+
+  .game-portfolio.is-game-mode .player-location {
+    font-size: 0.64rem;
+  }
+
+  .game-portfolio.is-game-mode .player-quest {
+    width: min(460px, 100%);
+    grid-template-columns: 9px minmax(0, 1fr) auto;
+    gap: 0 10px;
+    padding: 10px 12px;
+  }
+
+  .game-portfolio.is-game-mode .player-quest p {
+    font-size: 0.73rem;
+  }
+
+  .game-portfolio.is-game-mode .player-quest button {
+    margin-top: 0;
+  }
+
+  .game-portfolio.is-game-mode .hero-quest-actions {
+    grid-column: 3;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .game-portfolio.is-game-mode .hero-quest-actions a {
+    min-height: 28px;
+    font-size: 0.54rem;
+  }
+
+  .game-portfolio.is-game-mode .game-world,
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+
+  .game-portfolio.is-game-mode .world-intro,
+  .game-portfolio.is-game-mode .world-coordinates {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero-copy {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: 100%;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: min(340px, calc(100vw - 24px));
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-track {
+    display: none;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-status {
+    min-height: 54px;
+    padding: 6px 9px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-compass,
+  .game-portfolio.is-game-mode .journey-hud-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-controls {
+    padding: 4px 8px 7px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-controls button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-map {
+    max-height: min(28svh, 250px);
+  }
+
+  .game-portfolio.is-game-mode .world-branch-label {
+    max-width: min(190px, 42vw);
+    min-height: 44px;
+    padding: 6px 9px;
+    font-size: clamp(0.65rem, 1.15vw, 0.75rem);
+    line-height: 1.2;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 700px) {
+  .game-portfolio.is-game-mode .game-hero-copy {
+    width: calc(100% - 36px);
+    margin-top: 12px;
+  }
+
+  .game-portfolio.is-game-mode .game-world {
+    height: 100%;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: clamp(350px, 55svh, 460px);
+  }
+
+  .game-portfolio.is-game-mode .journey-hud {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .game-portfolio.is-game-mode .journey-hud-map {
+    max-height: min(25svh, 190px);
   }
 }
 
@@ -2171,6 +2336,35 @@ body::after {
   color: var(--game-mint);
 }
 
+.journey-hud-return {
+  display: flex;
+  min-height: 42px;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 5px;
+  padding: 8px 10px;
+  border: 1px solid rgb(255 210 123 / 42%);
+  border-radius: 7px;
+  background: rgb(255 210 123 / 9%);
+  color: #ffe3a2;
+  font: 700 0.73rem var(--font-body);
+  cursor: pointer;
+}
+
+.journey-hud-return:hover,
+.journey-hud-return:focus-visible {
+  border-color: var(--game-gold);
+  background: rgb(255 210 123 / 18%);
+  color: #fff;
+}
+
+.journey-hud-return:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .game-world-canvas,
   .world-vignette,
@@ -2228,13 +2422,25 @@ body::after {
   scroll-margin-top: 84px;
 }
 
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-controls,
+.game-portfolio.is-game-mode.is-reading .journey-hud-controls,
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-track,
+.game-portfolio.is-game-mode.is-reading .journey-hud-track {
+  display: none;
+}
+
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-status,
+.game-portfolio.is-game-mode.is-reading .journey-hud-status {
+  min-height: 56px;
+}
+
 .game-portfolio.is-game-mode .game-hero {
   scroll-margin-top: 74px;
 }
 
 .game-portfolio.is-game-mode.has-branch-roads .game-hero {
-  height: min(56svh, 560px);
-  min-height: 410px;
+  height: 100svh;
+  min-height: 100svh;
 }
 
 .game-portfolio.is-game-mode.has-branch-roads .game-hero-copy {
@@ -2243,6 +2449,11 @@ body::after {
 
 .game-portfolio.is-game-mode.has-branch-roads .game-world {
   inset: 0;
+}
+
+.game-portfolio.is-game-mode.has-branch-roads .world-intro,
+.game-portfolio.is-game-mode.has-branch-roads .world-coordinates {
+  display: none;
 }
 
 .game-portfolio.is-game-mode .world-branch-label {
@@ -2296,8 +2507,8 @@ body::after {
 
 .journey-hud-controls button {
   display: grid;
-  width: 34px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid rgb(132 226 207 / 0.32);
   border-radius: 5px 9px 9px;
@@ -2388,6 +2599,92 @@ body::after {
   outline-color: var(--game-gold);
 }
 
+.game-portfolio .section-head-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  margin-bottom: clamp(2.3rem, 4vw, 3.35rem);
+}
+
+.game-portfolio .section-head-layout .section-head {
+  max-width: 860px;
+  margin-bottom: 0;
+}
+
+.about-portrait {
+  position: relative;
+  display: grid;
+  width: clamp(210px, 23vw, 310px);
+  height: clamp(210px, 23vw, 310px);
+  aspect-ratio: 1;
+  place-items: center;
+  margin: 0 14px 0 0;
+  isolation: isolate;
+}
+
+.about-portrait::before,
+.about-portrait::after {
+  position: absolute;
+  inset: 3%;
+  border: 1px solid rgb(159 226 120 / 48%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.about-portrait::before {
+  inset: -5%;
+  border-style: dashed;
+  border-color: rgb(132 226 207 / 52%);
+  animation: portrait-orbit 32s linear infinite;
+}
+
+.about-portrait::after {
+  inset: -13%;
+  border-color: rgb(255 210 123 / 25%);
+}
+
+.about-portrait-orbit {
+  position: absolute;
+  z-index: -1;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(132 226 207 / 19%), transparent 68%);
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+.about-portrait img {
+  display: block;
+  width: 85%;
+  height: 85%;
+  border: 3px solid #d5f1ce;
+  border-radius: 50%;
+  background: #192b34;
+  box-shadow: 0 16px 38px rgb(3 9 14 / 48%), 0 0 0 7px rgb(159 226 120 / 12%);
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.about-portrait figcaption {
+  position: absolute;
+  right: -7%;
+  bottom: 3%;
+  padding: 7px 10px;
+  border: 1px solid rgb(159 226 120 / 48%);
+  border-radius: 999px;
+  background: #102127;
+  color: #e5f3d9;
+  font-family: var(--font-code);
+  font-size: 0.62rem;
+  white-space: nowrap;
+}
+
+@keyframes portrait-orbit {
+  to { transform: rotate(1turn); }
+}
+
 @media (max-width: 700px) {
   .game-portfolio.is-game-mode .navbar-wrap {
     min-height: 68px;
@@ -2407,13 +2704,29 @@ body::after {
     min-height: 340px;
   }
 
+  .game-portfolio .section-head-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .game-portfolio .section-head-layout .section-head {
+    max-width: none;
+  }
+
+  .about-portrait {
+    width: clamp(190px, 55vw, 230px);
+    height: clamp(190px, 55vw, 230px);
+    justify-self: center;
+    margin: 0 14px 8px;
+  }
+
   .game-portfolio.is-game-mode.has-branch-roads .world-stop-labels {
     display: block;
   }
 
   .game-portfolio.is-game-mode .world-branch-label {
     max-width: min(132px, 37vw);
-    min-height: 30px;
+    min-height: 44px;
     gap: 4px;
     padding: 5px 7px;
     font-size: 0.53rem;
@@ -2437,7 +2750,227 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .game-chapter-close,
-  .journey-hud-controls button {
+  .journey-hud-controls button,
+  .about-portrait::before {
     transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+}
+
+.game-portfolio .footer-shell {
+  gap: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-color: rgb(132 226 207 / 0.32);
+  border-radius: 8px 22px 22px;
+  background:
+    radial-gradient(ellipse at 2% 0%, rgb(132 226 207 / 0.1), transparent 34%),
+    linear-gradient(145deg, #142630, #0d1b25);
+}
+
+.game-portfolio .footer-grid {
+  grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.game-portfolio .footer-brand-block,
+.game-portfolio .footer-column {
+  min-width: 0;
+  gap: 0.9rem;
+}
+
+.game-portfolio .footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.game-portfolio .footer-brand-mark {
+  position: relative;
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(132 226 207 / 0.34);
+  border-radius: 7px 14px 14px;
+  background: #19333a;
+  color: #d7fff4;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.game-portfolio .footer-brand-mark > span:last-child {
+  position: relative;
+}
+
+.game-portfolio .footer-logo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.3rem;
+  object-fit: contain;
+  background: #19333a;
+}
+
+:root[data-theme="dark"] .game-portfolio .footer-logo {
+  display: block;
+}
+
+.game-portfolio .experience-logo {
+  position: relative;
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(var(--region-rgb) / 0.3);
+  border-radius: 8px 14px 14px;
+  background: #eaf3ef;
+  color: #172a32;
+  font-family: var(--font-code);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.game-portfolio .experience-logo .logo-mark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.game-portfolio .footer-brand .eyebrow {
+  width: fit-content;
+  margin: 0 0 0.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--game-mint);
+  font-size: 0.56rem;
+}
+
+.game-portfolio .footer-title {
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.15;
+}
+
+.game-portfolio .footer-copy {
+  max-width: 48ch;
+  margin: 0;
+  color: #c6d3cf;
+  line-height: 1.6;
+}
+
+.game-portfolio .footer-status {
+  max-width: 100%;
+  width: fit-content;
+  border-radius: 6px 12px 12px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.game-portfolio .footer-heading {
+  margin: 0;
+  color: #f7f5eb;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+}
+
+.game-portfolio .footer-link-list,
+.game-portfolio .footer-contact-list {
+  gap: 0.8rem;
+}
+
+.game-portfolio .footer-text-link,
+.game-portfolio .footer-contact-item {
+  min-width: 0;
+  color: #c6d3cf;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.game-portfolio .footer-text-link:hover,
+.game-portfolio .footer-contact-item:hover {
+  color: var(--game-mint);
+}
+
+.game-portfolio .footer-bottom {
+  justify-content: flex-start;
+  padding-top: 1.15rem;
+  border-color: rgb(132 226 207 / 0.2);
+}
+
+.game-portfolio .footer-bottom .footer-copy {
+  flex: 0 1 auto;
+}
+
+.game-portfolio.is-game-mode .experience-number {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgb(132 226 207 / 0.36);
+  border-radius: 50%;
+  background: #132830;
+  box-shadow: 0 4px 14px rgb(3 8 13 / 26%);
+  color: var(--game-mint);
+  font-family: var(--font-code);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .game-portfolio.is-game-mode .game-hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+}
+
+@media (max-width: 1023px) {
+  .game-portfolio.is-game-mode .game-hero {
+    min-height: 100svh;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  .game-portfolio.is-game-mode.has-branch-roads .game-world {
+    height: 100%;
+  }
+
+  .game-portfolio .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 1.25rem;
+  }
+
+  .game-portfolio .footer-brand-block {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 420px) {
+  .game-portfolio .footer-shell {
+    padding: 1.25rem;
+  }
+
+  .game-portfolio .footer-status {
+    font-size: 0.75rem;
+  }
+
+  .game-portfolio .experience-number {
+    top: 1rem;
+    right: 1rem;
   }
 }

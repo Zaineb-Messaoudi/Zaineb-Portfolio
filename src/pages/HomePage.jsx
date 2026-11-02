@@ -1,5 +1,5 @@
-import { ArrowDown, ArrowRight, Gamepad2 } from "lucide-react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { ArrowRight, ExternalLink, Gamepad2 } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Footer from "../components/layout/Footer";
 import Navbar from "../components/layout/Navbar";
 import AboutSection from "../components/sections/AboutSection";
@@ -30,8 +30,10 @@ const localizedStopNames = {
 function HomePage() {
   const { language, setLanguage } = useLanguage();
   const [activeStop, setActiveStop] = useState("hero");
+  const [isReading, setIsReading] = useState(false);
   const [chapterOpen, setChapterOpen] = useState(false);
   const [isTraveling, setIsTraveling] = useState(false);
+  const [branchReturning, setBranchReturning] = useState(false);
   const [branchCategory, setBranchCategory] = useState(null);
   const [branchTarget, setBranchTarget] = useState(null);
   const [branchRevealIntent, setBranchRevealIntent] = useState(false);
@@ -39,6 +41,9 @@ function HomePage() {
   const [journeyMapOpen, setJourneyMapOpen] = useState(false);
   const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [arrivalReveal, setArrivalReveal] = useState(null);
+  const directNavigationTarget = useRef(null);
+  const selectionStartedAt = useRef(0);
   const localizedProjects = localize(projects, language);
   const localizedExperience = localize(experience, language);
   const branchLabels = {
@@ -49,9 +54,9 @@ function HomePage() {
   const copy = language === "fr"
     ? {
         role: "Étudiante en ingénierie logicielle · Full-stack & IA appliquée",
-        location: "Tunis, Tunisie · ESPRIT / TWIN",
-        start: "PARCOURIR LE MONDE",
+        location: "Tunis, Tunisie · ESPRIT",
         pfe: "Ma prochaine quête : un stage PFE à partir de janvier 2027.",
+        resume: "VOIR MON CV",
         gameHint: "Cliquez sur un repère ou placez le focus sur la carte : ← / → pour marcher, ↓ pour entrer.",
         active: "ÉTAPE ACTIVE",
         progress: "PROGRESSION DU PARCOURS",
@@ -59,9 +64,9 @@ function HomePage() {
       }
     : {
         role: "Software engineering student · Full-stack & applied AI",
-        location: "Tunis, Tunisia · ESPRIT / TWIN",
-        start: "EXPLORE THE WORLD",
+        location: "Tunis, Tunisia · ESPRIT",
         pfe: "My next quest: a PFE internship starting January 2027.",
+        resume: "VIEW MY RESUME",
         gameHint: "Click a landmark or focus the map: ← / → to walk, ↓ to enter.",
         active: "CURRENT STOP",
         progress: "JOURNEY PROGRESS",
@@ -73,25 +78,55 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!chapterOpen || isTraveling) return;
-    const destination = branchCategory && !selectedProject && selectedExperienceIndex === null
-      ? "hero"
-      : activeStop;
-    const target = document.getElementById(destination);
-    if (!target) return;
-    target.scrollIntoView({
+    let reading = false;
+    const updateReadingState = () => {
+      const nextReading = window.scrollY > 180;
+      if (reading === nextReading) return;
+      reading = nextReading;
+      setIsReading(nextReading);
+    };
+    updateReadingState();
+    window.addEventListener("scroll", updateReadingState, { passive: true });
+    return () => window.removeEventListener("scroll", updateReadingState);
+  }, []);
+
+  useEffect(() => {
+    if (!arrivalReveal || !chapterOpen || isTraveling) return undefined;
+    const delay = Math.max(0, 1000 - (performance.now() - arrivalReveal.requestedAt));
+    const reveal = window.setTimeout(() => {
+      if (arrivalReveal.stop !== activeStop) return;
+      const destination = document.getElementById(arrivalReveal.destination);
+      destination?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        block: "start",
+      });
+      if (destination?.matches(".experience-card, .project-details")) {
+        destination.focus({ preventScroll: true });
+      } else {
+        document.getElementById(`${activeStop}-title`)?.focus({ preventScroll: true });
+      }
+      setArrivalReveal(null);
+    }, delay);
+    return () => window.clearTimeout(reveal);
+  }, [activeStop, arrivalReveal, chapterOpen, isTraveling]);
+
+  useEffect(() => {
+    if (!selectedProject || branchCategory === "projects") return undefined;
+    const frame = window.requestAnimationFrame(() => {
+    const details = document.getElementById(`project-details-${selectedProject.slug}`);
+    details?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
       block: "start",
     });
-    if (branchCategory && !selectedProject && selectedExperienceIndex === null) {
-      document.querySelector(".game-world")?.focus({ preventScroll: true });
-    } else {
-      document.getElementById(`${activeStop}-title`)?.focus({ preventScroll: true });
-    }
-  }, [activeStop, branchCategory, chapterOpen, isTraveling, selectedExperienceIndex, selectedProject]);
+    details?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [branchCategory, selectedProject]);
 
   const visitStop = (id) => {
     setJourneyMapOpen(false);
+    setArrivalReveal(null);
+    directNavigationTarget.current = null;
     if (id === activeStop) {
       setChapterOpen(id !== "hero");
       document.getElementById(id === "hero" || id === "projects" || id === "experience" ? "hero" : id)
@@ -105,8 +140,10 @@ function HomePage() {
     setBranchRevealIntent(false);
     setFocusedBranchIndex(null);
     setBranchCategory(null);
+    setBranchReturning(false);
     setChapterOpen(false);
     setIsTraveling(true);
+    selectionStartedAt.current = performance.now();
     setActiveStop(id);
     window.scrollTo({
       top: 0,
@@ -116,16 +153,28 @@ function HomePage() {
 
   const arriveAtStop = (id) => {
     if (id !== activeStop) return;
+    if (directNavigationTarget.current === id) {
+      directNavigationTarget.current = null;
+      setIsTraveling(false);
+      return;
+    }
     setIsTraveling(false);
     setChapterOpen(id !== "hero");
-    setBranchCategory(id === "experience" || id === "projects" ? id : null);
+    const hasBranchRoads = id === "experience" || id === "projects";
+    setBranchCategory(hasBranchRoads ? id : null);
     setBranchTarget(null);
+    setBranchReturning(false);
     setBranchRevealIntent(false);
     setFocusedBranchIndex(null);
     setSelectedExperienceIndex(null);
+    setArrivalReveal(id !== "hero" && !hasBranchRoads
+      ? { stop: id, destination: id, requestedAt: selectionStartedAt.current }
+      : null);
+    if (hasBranchRoads) document.querySelector(".game-world")?.focus({ preventScroll: true });
   };
 
   const selectBranch = (id, revealOnArrival = true) => {
+    if (isTraveling || branchReturning) return;
     const [category, index] = id.split(":");
     if (category !== branchCategory || !Number.isInteger(Number(index))) return;
     setFocusedBranchIndex(Number(index));
@@ -134,6 +183,7 @@ function HomePage() {
     setBranchTarget(id);
     setBranchRevealIntent(revealOnArrival);
     setIsTraveling(true);
+    selectionStartedAt.current = performance.now();
     window.scrollTo({
       top: 0,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
@@ -142,12 +192,77 @@ function HomePage() {
 
   const arriveAtBranch = (id, reveal = branchRevealIntent) => {
     if (id !== branchTarget) return;
+    if (branchReturning) return;
     const [category, index] = id.split(":");
     setIsTraveling(false);
     if (!reveal) return;
     setChapterOpen(true);
     if (category === "experience") setSelectedExperienceIndex(Number(index));
     if (category === "projects") setSelectedProject(localizedProjects[Number(index)]);
+    setArrivalReveal(reveal
+      ? {
+          stop: category,
+          destination: category === "experience" ? `experience-entry-${index}` : `project-details-${localizedProjects[Number(index)].slug}`,
+          requestedAt: selectionStartedAt.current,
+        }
+      : null);
+  };
+
+  const returnToMainRoad = () => {
+    if (!branchCategory || isTraveling) return;
+    setJourneyMapOpen(false);
+    setArrivalReveal(null);
+    setSelectedExperienceIndex(null);
+    setSelectedProject(null);
+    if (!branchTarget) {
+      setBranchCategory(null);
+      setBranchRevealIntent(false);
+      setFocusedBranchIndex(null);
+      setChapterOpen(false);
+      setJourneyMapOpen(true);
+      return;
+    }
+    setBranchReturning(true);
+    setChapterOpen(false);
+    setIsTraveling(true);
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  };
+
+  const arriveAtMainRoad = () => {
+    setBranchCategory(null);
+    setBranchTarget(null);
+    setBranchReturning(false);
+    setBranchRevealIntent(false);
+    setFocusedBranchIndex(null);
+    setIsTraveling(false);
+    setChapterOpen(false);
+    setJourneyMapOpen(true);
+    document.querySelector(".game-world")?.focus({ preventScroll: true });
+  };
+
+  const navigateDirectly = (id) => {
+    const isSameStop = id === activeStop;
+    setJourneyMapOpen(false);
+    setArrivalReveal(null);
+    setSelectedExperienceIndex(null);
+    setSelectedProject(null);
+    setBranchCategory(null);
+    setBranchTarget(null);
+    setBranchReturning(false);
+    setBranchRevealIntent(false);
+    setFocusedBranchIndex(null);
+    setChapterOpen(id !== "hero");
+    setActiveStop(id);
+    directNavigationTarget.current = isSameStop ? null : id;
+    setIsTraveling(!isSameStop);
+    document.getElementById(id)?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+    document.getElementById(id === "hero" ? "game-hero-title" : `${id}-title`)?.focus({ preventScroll: true });
   };
 
   const revealSelectedBranch = () => {
@@ -160,6 +275,7 @@ function HomePage() {
   };
 
   const handleDirection = (direction) => {
+    if (isTraveling && direction !== "down") return;
     if (branchCategory && branchCategory === activeStop) {
       const count = BRANCH_COUNTS[branchCategory];
       if (direction === "down") {
@@ -192,8 +308,17 @@ function HomePage() {
         target.isContentEditable
         || target.matches("input, textarea, select, video, [role='dialog']")
         || target.closest("[role='dialog']")
+        || target.closest(".navbar")
       )) return;
       if (!["ArrowLeft", "ArrowRight", "ArrowDown"].includes(event.key)) return;
+      if (event.repeat) {
+        event.preventDefault();
+        return;
+      }
+      if (isTraveling && event.key !== "ArrowDown") {
+        event.preventDefault();
+        return;
+      }
       if (event.key === "ArrowDown" && (
         !(branchCategory && branchCategory === activeStop)
         || !(target instanceof HTMLElement)
@@ -213,12 +338,17 @@ function HomePage() {
 
   const selectProject = (project) => {
     const index = projects.findIndex((item) => item.slug === project.slug);
-    if (index >= 0) selectBranch(`projects:${index}`);
+    if (index < 0) return;
+    if (branchCategory === "projects" && activeStop === "projects") {
+      selectBranch(`projects:${index}`);
+      return;
+    }
+    setSelectedProject(localizedProjects[index]);
   };
 
   return (
     <div
-      className={`game-portfolio is-game-mode ${chapterOpen ? "is-chapter-open" : ""} ${isTraveling ? "is-traveling" : ""} ${branchCategory ? "has-branch-roads" : ""}`}
+      className={`game-portfolio is-game-mode ${chapterOpen ? "is-chapter-open" : ""} ${isReading ? "is-reading" : ""} ${isTraveling ? "is-traveling" : ""} ${branchCategory ? "has-branch-roads" : ""}`}
       data-game-current={activeStop}
       data-game-branch={branchCategory || ""}
       data-game-traveling={String(isTraveling)}
@@ -228,7 +358,7 @@ function HomePage() {
         activeSection={activeStop}
         language={language}
         onChangeLanguage={setLanguage}
-        onNavigate={visitStop}
+        onNavigate={navigateDirectly}
       />
       <main id="main-content">
         <section className="game-hero" id="hero" aria-labelledby="game-hero-title">
@@ -246,23 +376,25 @@ function HomePage() {
             <div className="player-quest">
               <span className="quest-pip" aria-hidden="true" />
               <p>{copy.pfe}</p>
-              <button type="button" onClick={() => visitStop("contact")}>
-                {language === "fr" ? "VOIR LA QUÊTE" : "VIEW QUEST"} <ArrowRight size={15} aria-hidden="true" />
-              </button>
+              <div className="hero-quest-actions">
+                <button type="button" onClick={() => visitStop("contact")}>
+                  {language === "fr" ? "VOIR LA QUÊTE" : "VIEW QUEST"} <ArrowRight size={15} aria-hidden="true" />
+                </button>
+                <a href="/assets/cv/zaineb-messaoudi-resume-en.pdf" target="_blank" rel="noreferrer noopener">
+                  {copy.resume} <ExternalLink size={14} aria-hidden="true" />
+                </a>
+              </div>
             </div>
-            <button className="begin-journey" type="button" onClick={() => setJourneyMapOpen(true)}>
-              <Gamepad2 size={17} aria-hidden="true" />
-              {copy.start}
-              <ArrowDown size={16} aria-hidden="true" />
-            </button>
           </div>
           <GameWorld
             activeSection={activeStop}
             branchCategory={branchCategory}
             branchTarget={branchTarget}
+            branchReturning={branchReturning}
             branchLabels={branchLabels}
             branchCounts={BRANCH_COUNTS}
             onArriveBranch={arriveAtBranch}
+            onArriveMainRoad={arriveAtMainRoad}
             onArriveStop={arriveAtStop}
             onSelectBranch={selectBranch}
             onSelectStop={visitStop}
@@ -354,6 +486,8 @@ function HomePage() {
         language={language}
         mapOpen={journeyMapOpen}
         onMapOpenChange={setJourneyMapOpen}
+        branchCategory={branchCategory}
+        onReturnToMainRoad={returnToMainRoad}
         isTraveling={isTraveling}
         travelTargetLabel={branchTarget
           ? branchLabels[branchTarget.split(":")[0]]?.[Number(branchTarget.split(":")[1])]
@@ -361,7 +495,7 @@ function HomePage() {
         onSelectStop={visitStop}
         onDirection={handleDirection}
       />
-      {activeStop !== "hero" ? (
+      {isReading ? (
         <button type="button" className="game-chapter-close" onClick={closeChapter}>
           <Gamepad2 size={15} aria-hidden="true" />
           {copy.return}
