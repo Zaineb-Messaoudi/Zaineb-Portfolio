@@ -30,6 +30,7 @@ const localizedStopNames = {
 function HomePage() {
   const { language, setLanguage } = useLanguage();
   const [activeStop, setActiveStop] = useState("hero");
+  const [isReading, setIsReading] = useState(false);
   const [chapterOpen, setChapterOpen] = useState(false);
   const [isTraveling, setIsTraveling] = useState(false);
   const [branchCategory, setBranchCategory] = useState(null);
@@ -70,6 +71,19 @@ function HomePage() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = "dark";
+  }, []);
+
+  useEffect(() => {
+    let reading = false;
+    const updateReadingState = () => {
+      const nextReading = window.scrollY > 180;
+      if (reading === nextReading) return;
+      reading = nextReading;
+      setIsReading(nextReading);
+    };
+    updateReadingState();
+    window.addEventListener("scroll", updateReadingState, { passive: true });
+    return () => window.removeEventListener("scroll", updateReadingState);
   }, []);
 
   useEffect(() => {
@@ -160,6 +174,7 @@ function HomePage() {
   };
 
   const handleDirection = (direction) => {
+    if (isTraveling && direction !== "down") return;
     if (branchCategory && branchCategory === activeStop) {
       const count = BRANCH_COUNTS[branchCategory];
       if (direction === "down") {
@@ -192,8 +207,17 @@ function HomePage() {
         target.isContentEditable
         || target.matches("input, textarea, select, video, [role='dialog']")
         || target.closest("[role='dialog']")
+        || target.closest(".navbar")
       )) return;
       if (!["ArrowLeft", "ArrowRight", "ArrowDown"].includes(event.key)) return;
+      if (event.repeat) {
+        event.preventDefault();
+        return;
+      }
+      if (isTraveling && event.key !== "ArrowDown") {
+        event.preventDefault();
+        return;
+      }
       if (event.key === "ArrowDown" && (
         !(branchCategory && branchCategory === activeStop)
         || !(target instanceof HTMLElement)
@@ -218,7 +242,7 @@ function HomePage() {
 
   return (
     <div
-      className={`game-portfolio is-game-mode ${chapterOpen ? "is-chapter-open" : ""} ${isTraveling ? "is-traveling" : ""} ${branchCategory ? "has-branch-roads" : ""}`}
+      className={`game-portfolio is-game-mode ${chapterOpen ? "is-chapter-open" : ""} ${isReading ? "is-reading" : ""} ${isTraveling ? "is-traveling" : ""} ${branchCategory ? "has-branch-roads" : ""}`}
       data-game-current={activeStop}
       data-game-branch={branchCategory || ""}
       data-game-traveling={String(isTraveling)}

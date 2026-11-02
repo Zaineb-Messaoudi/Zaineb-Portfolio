@@ -2228,6 +2228,18 @@ body::after {
   scroll-margin-top: 84px;
 }
 
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-controls,
+.game-portfolio.is-game-mode.is-reading .journey-hud-controls,
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-track,
+.game-portfolio.is-game-mode.is-reading .journey-hud-track {
+  display: none;
+}
+
+.game-portfolio.is-game-mode.is-chapter-open .journey-hud-status,
+.game-portfolio.is-game-mode.is-reading .journey-hud-status {
+  min-height: 56px;
+}
+
 .game-portfolio.is-game-mode .game-hero {
   scroll-margin-top: 74px;
 }
@@ -2243,6 +2255,11 @@ body::after {
 
 .game-portfolio.is-game-mode.has-branch-roads .game-world {
   inset: 0;
+}
+
+.game-portfolio.is-game-mode.has-branch-roads .world-intro,
+.game-portfolio.is-game-mode.has-branch-roads .world-coordinates {
+  display: none;
 }
 
 .game-portfolio.is-game-mode .world-branch-label {
@@ -2296,8 +2313,8 @@ body::after {
 
 .journey-hud-controls button {
   display: grid;
-  width: 34px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid rgb(132 226 207 / 0.32);
   border-radius: 5px 9px 9px;
@@ -2388,6 +2405,92 @@ body::after {
   outline-color: var(--game-gold);
 }
 
+.game-portfolio .section-head-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  margin-bottom: clamp(2.3rem, 4vw, 3.35rem);
+}
+
+.game-portfolio .section-head-layout .section-head {
+  max-width: 860px;
+  margin-bottom: 0;
+}
+
+.about-portrait {
+  position: relative;
+  display: grid;
+  width: clamp(170px, 19vw, 252px);
+  height: clamp(170px, 19vw, 252px);
+  aspect-ratio: 1;
+  place-items: center;
+  margin: 0 14px 0 0;
+  isolation: isolate;
+}
+
+.about-portrait::before,
+.about-portrait::after {
+  position: absolute;
+  inset: 3%;
+  border: 1px solid rgb(159 226 120 / 48%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.about-portrait::before {
+  inset: -5%;
+  border-style: dashed;
+  border-color: rgb(132 226 207 / 52%);
+  animation: portrait-orbit 32s linear infinite;
+}
+
+.about-portrait::after {
+  inset: -13%;
+  border-color: rgb(255 210 123 / 25%);
+}
+
+.about-portrait-orbit {
+  position: absolute;
+  z-index: -1;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(132 226 207 / 19%), transparent 68%);
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+.about-portrait img {
+  display: block;
+  width: 85%;
+  height: 85%;
+  border: 3px solid #d5f1ce;
+  border-radius: 50%;
+  background: #192b34;
+  box-shadow: 0 16px 38px rgb(3 9 14 / 48%), 0 0 0 7px rgb(159 226 120 / 12%);
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.about-portrait figcaption {
+  position: absolute;
+  right: -7%;
+  bottom: 3%;
+  padding: 7px 10px;
+  border: 1px solid rgb(159 226 120 / 48%);
+  border-radius: 999px;
+  background: #102127;
+  color: #e5f3d9;
+  font-family: var(--font-code);
+  font-size: 0.62rem;
+  white-space: nowrap;
+}
+
+@keyframes portrait-orbit {
+  to { transform: rotate(1turn); }
+}
+
 @media (max-width: 700px) {
   .game-portfolio.is-game-mode .navbar-wrap {
     min-height: 68px;
@@ -2407,13 +2510,29 @@ body::after {
     min-height: 340px;
   }
 
+  .game-portfolio .section-head-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .game-portfolio .section-head-layout .section-head {
+    max-width: none;
+  }
+
+  .about-portrait {
+    width: clamp(150px, 42vw, 190px);
+    height: clamp(150px, 42vw, 190px);
+    justify-self: center;
+    margin: 0 14px 8px;
+  }
+
   .game-portfolio.is-game-mode.has-branch-roads .world-stop-labels {
     display: block;
   }
 
   .game-portfolio.is-game-mode .world-branch-label {
     max-width: min(132px, 37vw);
-    min-height: 30px;
+    min-height: 44px;
     gap: 4px;
     padding: 5px 7px;
     font-size: 0.53rem;
@@ -2437,7 +2556,9 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .game-chapter-close,
-  .journey-hud-controls button {
+  .journey-hud-controls button,
+  .about-portrait::before {
     transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }

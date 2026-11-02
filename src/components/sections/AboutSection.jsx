@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BrainCircuit, Braces, Layers3, Rocket } from "lucide-react";
 import { useState } from "react";
-import { aboutCards, creativeInterests, personalMotto, sectionMeta } from "../../data/portfolioData";
+import { aboutCards, creativeInterests, personal, personalMotto, sectionMeta } from "../../data/portfolioData";
 import { fadeUp, staggerParent } from "../../utils/motion";
 import SectionShell from "../ui/SectionShell";
 import { localize, useLanguage } from "../../i18n";
@@ -21,9 +21,23 @@ function AboutSection({ gameActive = false }) {
   const localizedMeta = localize(sectionMeta.about, language);
   const [activeLayer, setActiveLayer] = useState(engineeringLayers[0]);
   const ActiveIcon = activeLayer.icon;
+  const portrait = (
+    <figure className="about-portrait">
+      <span className="about-portrait-orbit" aria-hidden="true" />
+      <img
+        src={personal.profileImage}
+        alt={language === "fr" ? "Portrait de Zaineb Messaoudi" : "Portrait of Zaineb Messaoudi"}
+        width="720"
+        height="960"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{language === "fr" ? "Exploratrice · Tunis" : "Explorer · Tunis"}</figcaption>
+    </figure>
+  );
 
   return (
-    <SectionShell id="about" gameActive={gameActive} {...localizedMeta}>
+    <SectionShell id="about" headerAside={portrait} gameActive={gameActive} {...localizedMeta}>
       <motion.div className="cards-grid" initial={reduceMotion ? false : "hidden"} whileInView={reduceMotion ? undefined : "visible"} viewport={{ once: true, amount: 0.15 }} variants={staggerParent}>
         {localizedCards.map((card) => {
           const Icon = card.icon;

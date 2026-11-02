@@ -3,6 +3,20 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.setTimeout(90_000);
 
+async function expectNoOverlappingBranchLabels(page) {
+  const overlaps = await page.locator(".world-branch-label:visible").evaluateAll((labels) => {
+    const boxes = labels.map((label) => {
+      const { left, right, top, bottom } = label.getBoundingClientRect();
+      return { label: label.innerText.trim(), left, right, top, bottom };
+    });
+
+    return boxes.flatMap((box, index) => boxes.slice(index + 1)
+      .filter((other) => box.left < other.right && box.right > other.left && box.top < other.bottom && box.bottom > other.top)
+      .map((other) => `${box.label} / ${other.label}`));
+  });
+  expect(overlaps).toEqual([]);
+}
+
 const accessibilityViewports = [
   { name: "small-phone", width: 320, height: 568 },
   { name: "foldable-open", width: 717, height: 512 },
@@ -45,6 +59,23 @@ test("the 3D journey includes every original section and recent GitHub projects"
   await expect(page.getByRole("heading", { name: "Learnwise" })).toBeAttached();
   await expect(page.getByRole("heading", { name: "Oralis" })).toBeAttached();
   await expect(page.locator("#experience .experience-card")).toHaveCount(4);
+});
+
+test("the About chapter features the same accessible profile portrait as the hero", async ({ page }) => {
+  await page.goto("/");
+  const portrait = page.locator("#about .about-portrait img");
+  await portrait.scrollIntoViewIfNeeded();
+  await expect(portrait).toBeVisible();
+  await expect(portrait).toHaveAttribute("src", "/assets/Zaineb.webp");
+  await expect(portrait).toHaveAttribute("alt", "Portrait of Zaineb Messaoudi");
+});
+
+test("the journey HUD collapses while visitors read the scrollable sections", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => window.scrollTo(0, document.querySelector("#about").offsetTop));
+  await expect(page.locator(".game-portfolio")).toHaveClass(/is-reading/);
+  await expect(page.locator(".journey-hud-controls")).toBeHidden();
+  await expect(page.getByRole("button", { name: "Open the journey map" })).toBeVisible();
 });
 
 test("journey map walks to a section, then scrolls the normal page to it", async ({ page }) => {
@@ -104,7 +135,11 @@ test("internship branch reveals the selected internship after travel", async ({ 
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Internships" }).click();
   await expect(page.locator("#experience")).toHaveClass(/is-game-active/);
+  await expect(page.locator(".world-intro")).toBeHidden();
   await expect(page.locator(".world-branch-label[data-branch-id^='experience:']")).toHaveCount(4);
+  await expect(page.locator(".world-branch-label[data-branch-id^='experience:']:visible")).toHaveCount(4);
+  await expect(page.locator(".world-stop-label:not(.world-branch-label):visible")).toHaveCount(0);
+  await expectNoOverlappingBranchLabels(page);
   await expect(page.locator("#experience .experience-card")).toHaveCount(4);
 
   await page.getByRole("button", { name: "Walk to QCMed" }).click();
@@ -121,6 +156,8 @@ test("project branch reveals full inline project details after travel", async ({
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
   await expect(page.locator("#projects")).toHaveClass(/is-game-active/);
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(5);
+  await expectNoOverlappingBranchLabels(page);
 
   await page.getByRole("button", { name: "Walk to LegalGraph" }).click();
   await expect(page.locator(".project-details")).toBeVisible();
@@ -128,11 +165,24 @@ test("project branch reveals full inline project details after travel", async ({
   await expect(page.locator(".project-details")).toContainText("Decisions & trade-offs");
 });
 
+test("mobile project branch labels remain readable without collisions", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open the journey map" }).click();
+  await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Projects" }).click();
+  await expect(page.locator(".world-branch-label[data-branch-id^='projects:']:visible")).toHaveCount(5);
+  await expectNoOverlappingBranchLabels(page);
+});
+
 test("desktop arrow keys move between landmarks and reveal a selected branch", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
-  await page.keyboard.press("ArrowRight");
+  await page.keyboard.down("ArrowRight");
   await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "about");
+  await page.keyboard.down("ArrowRight");
+  await page.keyboard.up("ArrowRight");
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "about");
+  await page.waitForFunction(() => document.querySelector(".game-portfolio")?.dataset.gameTraveling === "false", { timeout: 20000 });
   await expect(page.locator("#about")).toHaveClass(/is-game-active/);
   await page.getByRole("button", { name: "Open the journey map" }).click();
   await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "Internships" }).click();
@@ -144,6 +194,16 @@ test("desktop arrow keys move between landmarks and reveal a selected branch", a
   await page.keyboard.press("ArrowDown");
   await expect(page.locator("#experience .experience-card")).toHaveCount(1);
   await expect(page.locator("#experience .experience-card")).toContainText("QCMed");
+});
+
+test("reduced-motion visitors arrive at selected stops without travel animation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open the journey map" }).click();
+  await page.getByRole("navigation", { name: "Destinations" }).getByRole("button", { name: "About me" }).click();
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-current", "about");
+  await expect(page.locator(".game-portfolio")).toHaveAttribute("data-game-traveling", "false");
+  await expect(page.locator("#about")).toHaveClass(/is-game-active/);
 });
 
 test("starts in dark mode for a new visitor", async ({ page }) => {
