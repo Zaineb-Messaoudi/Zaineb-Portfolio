@@ -443,13 +443,15 @@ function HomePage() {
               className="journey-progress"
               role="progressbar"
               aria-label={copy.progress}
+              style={{ height: "24px", padding: "0 8px" }}
               aria-valuemin={0}
               aria-valuemax={STOPS.length - 1}
               aria-valuenow={currentStop}
             >
               <span>{copy.progress}</span>
-              <div><i style={{ "--progress-scale": currentStop / (STOPS.length - 1) }} /></div>
-              <strong>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</strong>
+              <div style={{ "--progress-scale": currentStop / (STOPS.length - 1), height: "100%" }} />
+              <strong style={{ fontSize: "0.65rem" }}>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</strong>
+              <span style={{ marginLeft: "8px" }}>/{String(STOPS.length - 1).padStart(2, "0")}</span>
             </div>
           </div>
         </section>
