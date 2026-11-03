@@ -526,7 +526,7 @@ function makeScene(THREE, host, branchCounts) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
   renderer.shadowMap.enabled = !lowPower;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute("aria-hidden", "true");
   renderer.domElement.setAttribute("tabindex", "-1");
   renderer.domElement.className = "game-world-canvas";
@@ -750,7 +750,6 @@ export default function GameWorld({
       world.adventurer.userData.ponytail.rotation.z = walking && !reduceMotion ? Math.sin(time * 0.012 + 0.8) * 0.13 : 0;
       world.adventurer.userData.ponytail.rotation.x = walking && !reduceMotion ? Math.sin(time * 0.009) * 0.08 : 0;
       world.adventurer.position.y += walking && !reduceMotion ? Math.abs(Math.sin(time * 0.024)) * 0.11 : 0;
-      world.adventurer.scale.setScalar(1.34);
 
       const nearbyStop = branchCurve && !branchWaitForHub
         ? branchCurve.getPointAt(returningToHub ? 1 - branchProgress : branchProgress)
@@ -1056,7 +1055,6 @@ export default function GameWorld({
         <span>{language === "fr" ? "UN MONDE. HUIT ARRÊTS." : "ONE WORLD. EIGHT STOPS."}</span>
         <strong>{language === "fr" ? "L'histoire se déroule en chemin." : "The story unfolds along the way."}</strong>
       </div>
-      <span className="world-coordinates world-coordinate-left" aria-hidden="true">36° 48′ N</span>
       <span className="world-coordinates world-coordinate-right" aria-hidden="true">TUNISIA / 01</span>
       <div className="world-stop-labels">
         {STOPS.map((stop, index) => (

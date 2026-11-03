@@ -451,7 +451,6 @@ function HomePage() {
               <span>{copy.progress}</span>
               <div style={{ "--progress-scale": currentStop / (STOPS.length - 1), height: "100%" }} />
               <strong style={{ fontSize: "0.65rem" }}>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</strong>
-              <span style={{ marginLeft: "8px" }}>/{String(STOPS.length - 1).padStart(2, "0")}</span>
             </div>
           </div>
         </section>
