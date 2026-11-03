@@ -174,33 +174,23 @@ test("SolarShare is included with its CV details and GitHub source", async ({ pa
   await expect(page.locator(".project-details")).toContainText("70 tests and 1,007 assertions");
 });
 
-test("projects without screenshots show project-specific animated infographics", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
+test("Learnwise, LegalGraph, and SolarShare show their supplied screenshots", async ({ page }) => {
   await page.goto("/");
   await page.locator("#projects").scrollIntoViewIfNeeded();
 
   const visualCases = [
-    { slug: "legalgraph", title: "LegalGraph", art: ".legal-graph-art" },
-    { slug: "learnwise", title: "Learnwise", art: ".learnwise-art" },
-    { slug: "solarshare", title: "SolarShare", art: ".solarshare-art" },
+    { title: "Learnwise", image: "/assets/projects/learnwise-preview.png" },
+    { title: "LegalGraph", image: "/assets/projects/legalgraph-preview.png" },
+    { title: "SolarShare", image: "/assets/projects/solarshare-preview.png" },
   ];
 
-  for (const { slug, title, art } of visualCases) {
+  for (const { title, image } of visualCases) {
     const projectCard = page.locator(".project-card").filter({ has: page.getByRole("heading", { name: title }) });
-    const infographic = projectCard.locator(`.project-infographic[data-project-slug="${slug}"]`);
-    await expect(infographic).toBeVisible();
-    await expect(infographic).toHaveAttribute("aria-label", new RegExp(title));
-    await expect(infographic.locator(art)).toBeVisible();
+    const screenshot = projectCard.locator(".project-preview-image");
+    await expect(screenshot).toBeVisible();
+    await expect(screenshot).toHaveAttribute("src", image);
+    await expect.poll(() => screenshot.evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
   }
-
-  const legalGraphStage = page.locator(".project-infographic[data-project-slug='legalgraph'] .project-infographic-stage");
-  await legalGraphStage.scrollIntoViewIfNeeded();
-  await expect(legalGraphStage).toHaveAttribute("data-motion-active", "true");
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.reload();
-  await page.locator("#projects").scrollIntoViewIfNeeded();
-  await legalGraphStage.scrollIntoViewIfNeeded();
-  await expect(legalGraphStage).toHaveAttribute("data-motion-active", "false");
 });
 
 test("portfolio chapter headings use their side space for responsive animated visuals", async ({ page }) => {

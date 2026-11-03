@@ -293,7 +293,7 @@ export const projects = [
     period: "Updated Oct 2026",
     organization: "Public GitHub project",
     icon: Microscope,
-    image: null,
+    image: "/assets/projects/legalgraph-preview.png",
     overview:
       "A Python semantic web application with four legal NLP modules for contract analysis, case summarization, compliance classification, and entity extraction.",
     features: [
@@ -333,7 +333,7 @@ export const projects = [
     period: "Updated Oct 2026",
     organization: "Public GitHub project",
     icon: BrainCircuit,
-    image: null,
+    image: "/assets/projects/learnwise-preview.png",
     overview:
       "A learning platform combining course management with source-grounded AI support, voice transcription, study resources, quizzes, and learning analytics.",
     features: [
@@ -373,7 +373,7 @@ export const projects = [
     period: "Sep 2026 – Oct 2026",
     organization: "Public GitHub project",
     icon: Sparkles,
-    image: null,
+    image: "/assets/projects/solarshare-preview.png",
     overview:
       "Built an equipment-rental marketplace combining a searchable catalogue and practical AI assistance, backed by a tested Laravel application and production-oriented Docker delivery.",
     features: [
