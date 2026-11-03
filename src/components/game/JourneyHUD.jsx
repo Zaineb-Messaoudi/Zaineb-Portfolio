@@ -49,15 +49,6 @@ function JourneyHUD({
         <button type="button" aria-label={isFrench ? "Ouvrir le point sélectionné" : "Open selected point"} onClick={() => onDirection("down")}><ArrowDown size={16} aria-hidden="true" /></button>
         <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point suivant" : "Walk to next point"} onClick={() => onDirection("right")}><ArrowRight size={16} aria-hidden="true" /></button>
       </div>
-      <div className="journey-hud-track" aria-hidden="true">
-        <span style={{ "--hud-progress": currentIndex / (STOPS.length - 1) }} />
-        <i style={{ left: `${(currentIndex / (STOPS.length - 1)) * 100}%` }}><MapPin size={11} /></i>
-      </div>
-      <div className="journey-hud-controls" role="group" aria-label={isFrench ? "Commandes de déplacement" : "Movement controls"}>
-        <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point précédent" : "Walk to previous point"} onClick={() => onDirection("left")}><ArrowLeft size={16} aria-hidden="true" /></button>
-        <button type="button" aria-label={isFrench ? "Ouvrir le point sélectionné" : "Open selected point"} onClick={() => onDirection("down")}><ArrowDown size={16} aria-hidden="true" /></button>
-        <button type="button" disabled={isTraveling} aria-label={isFrench ? "Aller au point suivant" : "Walk to next point"} onClick={() => onDirection("right")}><ArrowRight size={16} aria-hidden="true" /></button>
-      </div>
     </aside>
   );
 }
