@@ -1855,6 +1855,31 @@ body::after {
   justify-content: center;
 }
 
+.chapter-visual {
+  width: 280px;
+  height: auto;
+  filter: url(#chapter-visual-filter);
+}
+
+.chapter-visual-bg {
+  filter: var(--chapter-visual-bg-filter);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  .chapter-visual {
+    filter: none;
+  }
+}
+
+@keyframes chapter-visual-blend {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.chapter-visual {
+  animation: chapter-visual-blend 6s ease-in-out infinite;
+}
+
 .game-portfolio .section .eyebrow {
   border-color: rgb(var(--region-rgb) / 0.42);
   background: rgb(var(--region-rgb) / 0.1);

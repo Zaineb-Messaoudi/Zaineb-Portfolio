@@ -11,81 +11,35 @@ const CHAPTERS = [
   { id: "projects", en: "Artifact collection", fr: "Collection d'artefacts", region: { en: "The Foundry", fr: "La forge" } },
   { id: "skills", en: "Ability tree", fr: "Arbre de compétences", region: { en: "Canopy Heights", fr: "Cimes de la canopée" } },
   { id: "contact", en: "Next quest", fr: "Prochaine quête", region: { en: "Harbor Gate", fr: "Porte du port" } },
-];
+]
 
 function ChapterVisual({ id }) {
-  const projectNodes = [
-    { x: 94, y: 58 },
-    { x: 202, y: 46 },
-    { x: 310, y: 66 },
-    { x: 94, y: 172 },
-    { x: 202, y: 188 },
-    { x: 310, y: 164 },
-  ];
+  const regionRgb = id === "about" ? "65 162 119" : id === "summary" ? "80 152 195" : id === "experience" ? "55 153 133" : id === "education" ? "198 155 83" : id === "projects" ? "211 128 82" : id === "skills" ? "119 164 92" : "65 161 168";
+  const regionAccent = id === "about" ? "#9fe278" : id === "summary" ? "#88beff" : id === "experience" ? "#84e2cf" : id === "education" ? "#ffd27b" : id === "projects" ? "#ffad79" : id === "skills" ? "#b7dc83" : "#84e2cf";
 
   return (
-    <div className={`section-chapter-visual chapter-visual-${id}`} aria-hidden="true">
-      <svg viewBox="0 0 400 240" focusable="false">
-        {id === "summary" ? (
-          <>
-            <ellipse className="chapter-visual-orbit" cx="202" cy="120" rx="150" ry="76" />
-            <ellipse className="chapter-visual-orbit chapter-visual-orbit-tilted" cx="202" cy="120" rx="150" ry="76" />
-            <circle className="chapter-visual-core" cx="202" cy="120" r="31" />
-            <circle className="chapter-visual-node" cx="74" cy="89" r="8" />
-            <circle className="chapter-visual-node" cx="330" cy="148" r="8" />
-            <circle className="chapter-visual-node" cx="244" cy="46" r="6" />
-            <path className="chapter-visual-route" d="M92 90 170 109m62 9 80 25m-96-72-9 27" />
-          </>
-        ) : null}
-        {id === "experience" ? (
-          <>
-            <path className="chapter-visual-route chapter-visual-route-dash" d="M48 174c48-6 44-105 105-105s49 96 104 96 49-83 96-91" />
-            {[{ x: 48, y: 174 }, { x: 153, y: 69 }, { x: 257, y: 165 }, { x: 353, y: 74 }].map((point, index) => (
-              <g className={`chapter-visual-stop chapter-visual-stop-${index + 1}`} key={point.x}>
-                <circle cx={point.x} cy={point.y} r="18" />
-                <circle className="chapter-visual-stop-core" cx={point.x} cy={point.y} r="5" />
-              </g>
-            ))}
-          </>
-        ) : null}
-        {id === "education" ? (
-          <>
-            <path className="chapter-visual-book" d="M74 82c37-14 80-9 122 13v91c-42-21-85-26-122-12zm244 0c-37-14-80-9-122 13v91c42-21 85-26 122-12z" />
-            <path className="chapter-visual-route" d="M196 95v91m-97-77c26-7 55-2 79 9m-79 13c26-7 55-2 79 9m79-31c-26-7-55-2-79 9m79 13c-26-7-55-2-79 9" />
-            <path className="chapter-visual-cap" d="m122 62 80-28 80 28-80 29zM155 74v31c27 18 65 18 92 0V74m35-12v41" />
-            <circle className="chapter-visual-node" cx="282" cy="105" r="5" />
-          </>
-        ) : null}
-        {id === "projects" ? (
-          <>
-            <path className="chapter-visual-route" d="m94 58 108-12 108 20M94 58l108 62 108-54M94 172l108-52 108 44m-108-64v68m0-156v28" />
-            <path className="chapter-visual-core" d="m202 99 23 21-23 21-23-21z" />
-            {projectNodes.map((point, index) => (
-              <circle className="chapter-visual-node" cx={point.x} cy={point.y} r={index === 1 ? 10 : 8} key={`${point.x}-${point.y}`} />
-            ))}
-          </>
-        ) : null}
-        {id === "skills" ? (
-          <>
-            <path className="chapter-visual-route" d="M202 202V63m0 41-86-45m86 72 88-51m-88 4-77 57m77 17 81-38m-81-33 42-49" />
-            <circle className="chapter-visual-core" cx="202" cy="57" r="19" />
-            {[
-              { x: 116, y: 59 },
-              { x: 288, y: 59 },
-              { x: 125, y: 135 },
-              { x: 283, y: 122 },
-              { x: 244, y: 44 },
-              { x: 202, y: 202 },
-            ].map((point) => <circle className="chapter-visual-node" cx={point.x} cy={point.y} r="8" key={`${point.x}-${point.y}`} />)}
-          </>
-        ) : null}
-        {id === "contact" ? (
-          <>
-            <path className="chapter-visual-portal" d="M123 203v-74a79 79 0 0 1 158 0v74m-128 0v-69a49 49 0 0 1 98 0v69" />
-            <path className="chapter-visual-envelope" d="M151 127h99v65h-99zm2 4 48 36 47-36m-95 56 34-28m61 28-34-28" />
-            <circle className="chapter-visual-node" cx="202" cy="38" r="7" />
-          </>
-        ) : null}
+    <div className="chapter-visual-wrapper" aria-hidden="true">
+      <svg viewBox="0 0 400 240" className="chapter-visual">
+        <defs>
+          <filter id="chapter-visual-filter">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge> <feMergeNode in="blur"/> <feMergeNode in="SourceGraphic"/> </feMerge>
+          </filter>
+          <filter id="chapter-visual-bg-filter">
+            <feGaussianBlur stdDeviation="4" result="blur2"/>
+          </filter>
+        </defs>
+        <rect width="400" height="240" fill="var(--chapter-visual-bg, #0b1521)" opacity="0.8"/>
+        <ellipse cx="202" cy="120" rx="180" ry="90" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.15"/>
+        <ellipse cx="202" cy="120" rx="140" ry="70" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.1"/>
+        <circle cx="202" cy="120" r="35" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.08"/>
+        <circle cx="94" cy="89" r="12" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.4"/>
+        <circle cx="330" cy="148" r="12" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.4"/>
+        <circle cx="244" cy="46" r="10" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.4"/>
+        <path d="M92 90 170 109m62 9 80 25m-96-72-9 27" stroke="var(--chapter-visual-accent, #84e2cf)" stroke-width="1" fill="none" opacity="0.6"/>
+        <circle cx="94" cy="89" r="8" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.9"/>
+        <circle cx="330" cy="148" r="8" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.9"/>
+        <circle cx="244" cy="46" r="6" fill="var(--chapter-visual-accent, #84e2cf)" opacity="0.9"/>
       </svg>
     </div>
   );
@@ -130,15 +84,18 @@ function SectionShell({ id, eyebrow, title, description, children, headerAside, 
     >
       <div className="container">
         <div className="section-inner">
-          {chapter && (headerAside || id !== "about") ? (
+          {headerAside ? (
             <div className="section-head-layout">
               {sectionHead}
-              <div className="section-head-aside">{headerAside || <ChapterVisual id={id} />}</div>
+              <div className="section-head-aside">{headerAside}</div>
             </div>
           ) : (
-            sectionHead
+            <div className="section-head-layout">
+              {sectionHead}
+              <div className="section-head-visual chapter-visual-wrapper"/>
+            </div>
           )}
-          <motion.div
+          <motion-div
             className="section-content-depth"
             initial={reduceMotion ? false : { opacity: 0, y: 46, rotateX: 9, scale: .97 }}
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, rotateX: 0, scale: 1 }}
@@ -146,7 +103,7 @@ function SectionShell({ id, eyebrow, title, description, children, headerAside, 
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
             {children}
-          </motion.div>
+          </motion-div>
         </div>
       </div>
     </section>

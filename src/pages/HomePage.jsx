@@ -455,7 +455,6 @@ function HomePage() {
         </section>
 
         <div className="journey-chapters">
-          <span>{language === "fr" ? "LE VOYAGE" : "THE JOURNEY"}</span>
           <span aria-hidden="true" />
           <span>{String(currentStop).padStart(2, "0")} / {String(STOPS.length - 1).padStart(2, "0")}</span>
         </div>
