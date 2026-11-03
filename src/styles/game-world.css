@@ -2982,3 +2982,502 @@ body::after {
     right: 1rem;
   }
 }
+
+.game-portfolio .section .project-infographic {
+  display: grid;
+  min-height: 250px;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.62fr);
+  align-items: center;
+  gap: clamp(10px, 2vw, 22px);
+  padding: clamp(12px, 2vw, 22px);
+  border: 1px solid rgb(var(--region-rgb, 83 163 139) / 0.42);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 18% 82%, rgb(var(--region-rgb, 83 163 139) / 0.14), transparent 40%),
+    linear-gradient(145deg, #10232d, #142d38 58%, #0d1b25);
+  color: #eff8f1;
+  text-align: left;
+}
+
+.game-portfolio .project-infographic-stage {
+  display: grid;
+  min-width: 0;
+  min-height: 190px;
+  place-items: center;
+  overflow: hidden;
+}
+
+.project-infographic-art {
+  display: block;
+  width: min(100%, 440px);
+  height: auto;
+  overflow: visible;
+}
+
+.legal-graph-art {
+  width: min(100%, 310px);
+}
+
+.game-portfolio .project-infographic-copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 9px;
+  min-width: 0;
+}
+
+.game-portfolio .infographic-copy-kicker,
+.game-portfolio .infographic-eyebrow,
+.game-portfolio .infographic-small-label {
+  color: #c3d6cc;
+  font-family: var(--font-code);
+  font-size: 0.58rem;
+  letter-spacing: 0.045em;
+}
+
+.game-portfolio .section .project-infographic-copy .infographic-copy-kicker {
+  color: var(--region-accent, var(--game-gold));
+  font-size: 0.54rem;
+  letter-spacing: 0.1em;
+}
+
+.game-portfolio .project-infographic-copy strong {
+  color: var(--game-white);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.8vw, 1.6rem);
+  line-height: 1.05;
+}
+
+.game-portfolio .project-infographic-copy > span:last-child {
+  color: #d3e2dc;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.project-infographic-art text {
+  fill: #e7f2eb;
+  font-family: var(--font-code);
+  font-size: 8px;
+}
+
+.project-infographic-art .infographic-flow-line {
+  fill: none;
+  stroke: var(--region-accent, #84e2cf);
+  stroke-dasharray: 4 8;
+  stroke-width: 1.5;
+}
+
+.project-infographic-art .infographic-core {
+  fill: #1a3640;
+  stroke: var(--region-accent, #84e2cf);
+  stroke-width: 1.5;
+}
+
+.project-infographic-art .infographic-core-label {
+  fill: var(--game-gold);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.project-infographic-art .infographic-core-caption,
+.project-infographic-art .infographic-small-label {
+  fill: #c5d8d1;
+  font-size: 7px;
+}
+
+.infographic-graph-node circle {
+  fill: #152c36;
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.8);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.infographic-window {
+  fill: #10232d;
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.48);
+  stroke-width: 1.5;
+}
+
+.infographic-window-line {
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.32);
+}
+
+.infographic-window-dot {
+  fill: var(--region-accent, #84e2cf);
+}
+
+.infographic-eyebrow {
+  fill: var(--region-accent, #84e2cf) !important;
+  font-size: 7px !important;
+  letter-spacing: 0.08em;
+}
+
+.infographic-course,
+.infographic-assistant,
+.infographic-practice,
+.infographic-equipment-card rect {
+  fill: #19333c;
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.35);
+}
+
+.infographic-course-cover {
+  fill: rgb(var(--region-rgb, 83 163 139) / 0.28);
+}
+
+.infographic-course-symbol {
+  fill: var(--game-gold);
+}
+
+.infographic-progress-track {
+  stroke: #39514f;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.infographic-progress-fill {
+  stroke: var(--region-accent, #84e2cf);
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.infographic-assistant-orb {
+  fill: var(--game-gold);
+}
+
+.infographic-wave {
+  fill: none;
+  stroke: var(--region-accent, #84e2cf);
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.infographic-search {
+  fill: #192f38;
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.45);
+}
+
+.infographic-search-icon,
+.infographic-search-handle,
+.infographic-equipment-icon,
+.infographic-solar-panel,
+.infographic-assistant-mark {
+  fill: none;
+  stroke: var(--region-accent, #84e2cf);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.infographic-equipment-card rect {
+  fill: #19333c;
+}
+
+.infographic-equipment-card:nth-of-type(3) rect {
+  fill: #1c3940;
+}
+
+.infographic-equipment-label {
+  font-size: 7px !important;
+}
+
+.project-infographic-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  width: min(100%, 360px);
+}
+
+.infographic-stack-node {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid rgb(var(--region-rgb, 83 163 139) / 0.5);
+  border-radius: 7px;
+  background: #19333c;
+  color: #e8f4ec;
+  font-family: var(--font-code);
+  font-size: 0.68rem;
+}
+
+.project-infographic-stage[data-motion-active="true"] .infographic-flow-line {
+  animation: infographic-flow 12s linear infinite;
+}
+
+.project-infographic-stage[data-motion-active="true"] .infographic-graph-node circle,
+.project-infographic-stage[data-motion-active="true"] .infographic-assistant-orb {
+  animation: infographic-pulse 3.8s ease-in-out infinite alternate;
+}
+
+.project-infographic-stage[data-motion-active="true"] .infographic-graph-node:nth-of-type(3) circle {
+  animation-delay: -1.2s;
+}
+
+.project-infographic-stage[data-motion-active="true"] .infographic-graph-node:nth-of-type(4) circle {
+  animation-delay: -2.4s;
+}
+
+.project-infographic-stage[data-motion-active="true"] .infographic-wave {
+  stroke-dasharray: 4 5;
+  animation: infographic-flow 8s linear infinite;
+}
+
+@keyframes infographic-flow {
+  to { stroke-dashoffset: -120; }
+}
+
+@keyframes infographic-pulse {
+  to { transform: scale(1.12); }
+}
+
+@media (max-width: 700px) {
+  .game-portfolio .project-infographic {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .game-portfolio .project-infographic-stage {
+    min-height: 150px;
+  }
+
+  .game-portfolio .project-infographic-copy {
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgb(var(--region-rgb, 83 163 139) / 0.28);
+  }
+
+  .game-portfolio .infographic-copy-kicker {
+    grid-column: 1 / -1;
+  }
+
+  .game-portfolio .project-infographic-copy > span:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-infographic-stage[data-motion-active="true"] *,
+  .project-infographic-stage[data-motion-active="true"] *::before,
+  .project-infographic-stage[data-motion-active="true"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+.section-chapter-visual {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 260px;
+  place-items: center;
+  overflow: hidden;
+  color: var(--region-accent, #84e2cf);
+  isolation: isolate;
+}
+
+.section-chapter-visual::before,
+.section-chapter-visual::after {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgb(var(--region-rgb, 83 163 139) / 0.18);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.section-chapter-visual::before {
+  width: min(76%, 290px);
+  aspect-ratio: 1;
+}
+
+.section-chapter-visual::after {
+  width: min(58%, 220px);
+  aspect-ratio: 1;
+  border-style: dashed;
+  opacity: 0.65;
+}
+
+.section-chapter-visual svg {
+  display: block;
+  width: min(100%, 430px);
+  max-height: 260px;
+  overflow: visible;
+  filter: drop-shadow(0 14px 26px rgb(3 12 19 / 0.35));
+}
+
+.section-chapter-visual svg path,
+.section-chapter-visual svg ellipse {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.chapter-visual-orbit {
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.55) !important;
+  stroke-dasharray: 3 9;
+}
+
+.chapter-visual-orbit-tilted {
+  transform: rotate(-32deg);
+  transform-origin: 202px 120px;
+  stroke-dasharray: 1 11;
+}
+
+.chapter-visual-route {
+  stroke: rgb(var(--region-rgb, 83 163 139) / 0.72) !important;
+  stroke-dasharray: 4 8;
+}
+
+.chapter-visual-route-dash {
+  stroke-dasharray: 5 10;
+  stroke-width: 2.5 !important;
+}
+
+.chapter-visual-node,
+.chapter-visual-core,
+.chapter-visual-stop circle,
+.chapter-visual-portal {
+  fill: rgb(var(--region-rgb, 83 163 139) / 0.16);
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.chapter-visual-core {
+  fill: var(--game-gold);
+  stroke: #ffe8ad;
+}
+
+.chapter-visual-stop-core {
+  fill: var(--game-gold);
+  stroke: #fff0c8;
+}
+
+.chapter-visual-book {
+  fill: rgb(var(--region-rgb, 83 163 139) / 0.1) !important;
+  stroke-width: 2 !important;
+}
+
+.chapter-visual-cap {
+  fill: rgb(var(--region-rgb, 83 163 139) / 0.12) !important;
+  stroke: var(--game-gold) !important;
+  stroke-width: 2 !important;
+}
+
+.chapter-visual-portal {
+  fill: rgb(var(--region-rgb, 83 163 139) / 0.08);
+  stroke-width: 3;
+}
+
+.chapter-visual-envelope {
+  fill: #10232d !important;
+  stroke: var(--game-gold) !important;
+  stroke-width: 2 !important;
+}
+
+.chapter-visual-summary .chapter-visual-orbit {
+  animation: chapter-orbit 36s linear infinite;
+}
+
+.chapter-visual-experience .chapter-visual-route {
+  animation: infographic-flow 10s linear infinite;
+}
+
+.chapter-visual-experience .chapter-visual-stop {
+  animation: infographic-pulse 3.6s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.chapter-visual-experience .chapter-visual-stop-2 {
+  animation-delay: -1.2s;
+}
+
+.chapter-visual-experience .chapter-visual-stop-3 {
+  animation-delay: -2.4s;
+}
+
+.chapter-visual-education .chapter-visual-cap {
+  animation: chapter-float 4s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.chapter-visual-projects .chapter-visual-node {
+  animation: infographic-pulse 3.4s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.chapter-visual-projects .chapter-visual-node:nth-of-type(even) {
+  animation-delay: -1.7s;
+}
+
+.chapter-visual-skills .chapter-visual-node {
+  animation: infographic-pulse 4s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.chapter-visual-skills .chapter-visual-node:nth-of-type(odd) {
+  animation-delay: -2s;
+}
+
+.chapter-visual-contact .chapter-visual-portal {
+  animation: chapter-portal 3.8s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes chapter-orbit {
+  to { transform: rotate(328deg); }
+}
+
+@keyframes chapter-float {
+  to { transform: translateY(-5px); }
+}
+
+@keyframes chapter-portal {
+  to { opacity: 0.52; }
+}
+
+@media (max-width: 900px) {
+  .section-chapter-visual {
+    min-height: 210px;
+  }
+
+  .section-chapter-visual svg {
+    max-height: 220px;
+  }
+}
+
+@media (max-width: 700px) {
+  .section-chapter-visual {
+    min-height: 150px;
+    max-height: 170px;
+  }
+
+  .section-chapter-visual svg {
+    width: min(100%, 300px);
+    max-height: 165px;
+  }
+
+  .section-chapter-visual::before {
+    width: min(56%, 170px);
+  }
+
+  .section-chapter-visual::after {
+    width: min(43%, 130px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-chapter-visual *,
+  .section-chapter-visual *::before,
+  .section-chapter-visual *::after {
+    animation: none !important;
+  }
+}

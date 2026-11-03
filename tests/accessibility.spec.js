@@ -174,6 +174,56 @@ test("SolarShare is included with its CV details and GitHub source", async ({ pa
   await expect(page.locator(".project-details")).toContainText("70 tests and 1,007 assertions");
 });
 
+test("projects without screenshots show project-specific animated infographics", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.locator("#projects").scrollIntoViewIfNeeded();
+
+  const visualCases = [
+    { slug: "legalgraph", title: "LegalGraph", art: ".legal-graph-art" },
+    { slug: "learnwise", title: "Learnwise", art: ".learnwise-art" },
+    { slug: "solarshare", title: "SolarShare", art: ".solarshare-art" },
+  ];
+
+  for (const { slug, title, art } of visualCases) {
+    const projectCard = page.locator(".project-card").filter({ has: page.getByRole("heading", { name: title }) });
+    const infographic = projectCard.locator(`.project-infographic[data-project-slug="${slug}"]`);
+    await expect(infographic).toBeVisible();
+    await expect(infographic).toHaveAttribute("aria-label", new RegExp(title));
+    await expect(infographic.locator(art)).toBeVisible();
+  }
+
+  const legalGraphStage = page.locator(".project-infographic[data-project-slug='legalgraph'] .project-infographic-stage");
+  await legalGraphStage.scrollIntoViewIfNeeded();
+  await expect(legalGraphStage).toHaveAttribute("data-motion-active", "true");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.reload();
+  await page.locator("#projects").scrollIntoViewIfNeeded();
+  await legalGraphStage.scrollIntoViewIfNeeded();
+  await expect(legalGraphStage).toHaveAttribute("data-motion-active", "false");
+});
+
+test("portfolio chapter headings use their side space for responsive animated visuals", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+
+  const chapterIds = ["summary", "experience", "education", "projects", "skills", "contact"];
+  for (const id of chapterIds) {
+    const visual = page.locator(`#${id} .section-head-aside .section-chapter-visual`);
+    await expect(visual).toBeVisible();
+    await expect(visual).toHaveAttribute("aria-hidden", "true");
+  }
+
+  const orbit = page.locator("#summary .chapter-visual-orbit").first();
+  await expect(orbit).toHaveCSS("animation-name", "chapter-orbit");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.reload();
+  await expect(page.locator("#summary .chapter-visual-orbit").first()).toHaveCSS("animation-name", "none");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator("#summary .section-head-aside .section-chapter-visual")).toBeVisible();
+});
+
 test("unavailable project and internship images show branded fallbacks", async ({ page }) => {
   await page.route("**/assets/projects/oralis-preview.png", (route) => route.abort());
   await page.route("**/assets/I-WAY.jpg", (route) => route.abort());
